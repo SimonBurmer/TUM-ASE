@@ -5,11 +5,10 @@ import edu.tum.ase.project.exceptions.BoxNotFoundException;
 import edu.tum.ase.project.model.Box;
 import edu.tum.ase.project.repository.BoxRepository;
 import edu.tum.ase.project.service.BoxService;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest
 public class BoxServiceTest {
 
     @Mock
