@@ -13,7 +13,7 @@ build:
 test:
   stage: test
   script:
-    - mvn $MAVEN_CLI_OPTS test -Ptest
+    - mvn $MAVEN_CLI_OPTS test -Dspring.profiles.active=test
 
 #deploy:
 #  stage: deploy
