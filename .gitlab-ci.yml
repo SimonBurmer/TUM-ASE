@@ -2,7 +2,7 @@ image: maven:latest
 
 cache:
   paths:
-    - ~/.m2/repository/
+    - ./.m2/repository
     - target/
 
 build:
@@ -13,7 +13,7 @@ build:
 test:
   stage: test
   script:
-    - mvn $MAVEN_CLI_OPTS test
+    - mvn $MAVEN_CLI_OPTS test -Ptest
 
 #deploy:
 #  stage: deploy
