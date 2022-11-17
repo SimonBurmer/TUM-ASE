@@ -2,6 +2,7 @@ package edu.tum.ase.project;
 
 import com.mongodb.client.MongoClient;
 import edu.tum.ase.project.model.Project;
+import edu.tum.ase.project.repository.BoxRepository;
 import edu.tum.ase.project.repository.ProjectRepository;
 import edu.tum.ase.project.service.ProjectService;
 import org.slf4j.Logger;
@@ -15,7 +16,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 import java.util.List;
 
 @SpringBootApplication
-@EnableMongoRepositories(basePackageClasses = ProjectRepository.class)
+@EnableMongoRepositories(basePackageClasses = {ProjectRepository.class, BoxRepository.class})
 public class ProjectApplication implements CommandLineRunner {
 
     @Autowired
@@ -32,7 +33,7 @@ public class ProjectApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        log.info("MongoClient = " + mongoClient.getClusterDescription());
+        /*log.info("MongoClient = " + mongoClient.getClusterDescription());
 
         String projectName = "ASE Delivery";
 
@@ -50,7 +51,7 @@ public class ProjectApplication implements CommandLineRunner {
 
         List<Project> projectList = projectService.getAllProjects();
         log.info("Number of Project in Database is " + projectList.size());
-
+*/
     }
 
 }
