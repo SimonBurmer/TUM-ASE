@@ -30,7 +30,7 @@ public class BoxServiceTest {
     @Test
     public void testCreateSuccessful() {
         // Given
-        Box before = new Box("Garching");
+        Box before = new Box("Garching", "Garching", "123");
         when(boxRepository.save(before)).thenReturn(before);
 
         // When
@@ -44,25 +44,25 @@ public class BoxServiceTest {
     @Test
     public void testCreateDuplicate() {
         // Given
-        String location = "Garching";
-        Box box1 = new Box(location);
+        String name = "Garching";
+        Box box1 = new Box(name, "Garching", "123");
 
-        when(boxRepository.findByLocation(location)).thenReturn(Optional.of(box1));
+        when(boxRepository.findByName(name)).thenReturn(Optional.of(box1));
 
         // When
-        Box before = new Box(location);
+        Box before = new Box(name, "Garching", "123");
 
         // Then
         assertThatThrownBy(() -> boxService.createBox(before)).isInstanceOf(BoxAlreadyExistsException.class);
-        verify(boxRepository).findByLocation(location);
+        verify(boxRepository).findByName(name);
     }
 
     @Test
     public void testGetAll() {
         // Given
-        Box box1 = new Box("Garching");
-        Box box2 = new Box("Ismaning");
-        Box box3 = new Box("Schwabing");
+        Box box1 = new Box("Garching", "Garching", "123");
+        Box box2 = new Box("Ismaning", "Ismaning", "234");
+        Box box3 = new Box("Schwabing", "Schwabing", "345");
 
         List<Box> allBoxes = new java.util.ArrayList<>(List.of(new Box[]{box1, box2, box3}));
         when(boxRepository.findAll()).thenReturn(allBoxes);
@@ -78,28 +78,28 @@ public class BoxServiceTest {
     @Test
     public void testGetByLocation() {
         // Given
-        String location1 = "Garching";
-        Box box1 = new Box(location1);
+        String name1 = "Garching";
+        Box box1 = new Box(name1, "Garching", "123");
 
         String location2 = "Schwabing";
 
-        when(boxRepository.findByLocation(location1)).thenReturn(Optional.of(box1));
-        when(boxRepository.findByLocation(location2)).thenReturn(Optional.empty());
+        when(boxRepository.findByName(name1)).thenReturn(Optional.of(box1));
+        when(boxRepository.findByName(location2)).thenReturn(Optional.empty());
 
         // When
-        Box result = boxService.findByLocation(location1);
+        Box result = boxService.findByName(name1);
 
         // Then
         assertThat(result).isEqualTo(box1);
-        assertThatThrownBy(() -> boxService.findByLocation(location2)).isInstanceOf(BoxNotFoundException.class);
-        verify(boxRepository).findByLocation(location1);
-        verify(boxRepository).findByLocation(location2);
+        assertThatThrownBy(() -> boxService.findByName(location2)).isInstanceOf(BoxNotFoundException.class);
+        verify(boxRepository).findByName(name1);
+        verify(boxRepository).findByName(location2);
     }
 
     @Test
     public void testDelete() {
         // Given
-        Box box1 = new Box("Garching");
+        Box box1 = new Box("Garching", "Garching", "123");
 
         //When
         boxService.delete(box1);

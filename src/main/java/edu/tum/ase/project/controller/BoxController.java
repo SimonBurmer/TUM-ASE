@@ -20,21 +20,20 @@ public class BoxController {
 
     @GetMapping("")
     public List<Box> getAllBoxes() {
-        // DONE: Implement
         return boxService.getAllBoxes();
     }
 
-    @GetMapping("{location}")
-    public Box getBoxByLocation(@PathVariable String location) {
-        return boxService.findByLocation(location);
+    @GetMapping("{name}")
+    public Box getBoxByName(@PathVariable String name) {
+        return boxService.findByName(name);
     }
 
     //##################################################################################################################
     // POST mappings
 
     @PostMapping("create")
-    public Box createBox(@RequestBody String location) {
-        return boxService.createBox(new Box(location));
+    public Box createBox(@RequestBody Box box) {
+        return boxService.createBox(box);
     }
 
     //##################################################################################################################
@@ -43,9 +42,9 @@ public class BoxController {
     //##################################################################################################################
     // DELETE mappings
 
-    @DeleteMapping("{location}")
-    public HttpStatus deleteBoxByLocation(@PathVariable String location) {
-        Box box = boxService.findByLocation(location);
+    @DeleteMapping("{name}")
+    public HttpStatus deleteBoxByName(@PathVariable String name) {
+        Box box = boxService.findByName(name);
         boxService.delete(box);
 
         return HttpStatus.OK;

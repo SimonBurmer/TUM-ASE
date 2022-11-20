@@ -7,6 +7,7 @@ import edu.tum.ase.project.repository.BoxRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -19,7 +20,7 @@ public class BoxService {
     // Create
 
     public Box createBox(Box box) {
-        if (boxRepository.findByLocation(box.getLocation()).isPresent()) {
+        if (boxRepository.findByName(box.getName()).isPresent()) {
             throw new BoxAlreadyExistsException();
         }
         return boxRepository.save(box);
@@ -28,8 +29,8 @@ public class BoxService {
     //##################################################################################################################
     // Retrieve
 
-    public Box findByLocation(String location) {
-        return boxRepository.findByLocation(location).orElseThrow(BoxNotFoundException::new);
+    public Box findByName(String name) {
+        return boxRepository.findByName(name).orElseThrow(BoxNotFoundException::new);
     }
 
     public List<Box> getAllBoxes() {
