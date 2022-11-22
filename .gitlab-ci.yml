@@ -1,2 +1,2 @@
 include:
-  - 'boxService/.gitlab-ci.yml'
+  - 'deliveryService/.gitlab-ci.yml'
