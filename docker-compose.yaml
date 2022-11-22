@@ -1,0 +1,14 @@
+version: "3"
+services:
+
+  # Dependencies
+  discovery-service:
+    image: "discovery"
+    # environment:
+    #  - ALLOW_EMPTY_PASSWORD=yes
+
+  # App
+  cas-service:
+    image: "cas"
+    depends_on:
+      - discovery-service
