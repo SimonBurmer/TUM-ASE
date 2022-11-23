@@ -1,11 +1,15 @@
 package edu.tum.ase.project.model;
 
 import com.mongodb.lang.NonNull;
+import edu.tum.ase.project.exceptions.SingleCustomerPerBoxViolationException;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Optional;
 
 @Document(collection = "boxes")
@@ -15,7 +19,7 @@ public class Box {
     // Fields
 
     @Id
-    private ObjectId id;
+    private String id;
 
     @Indexed(unique = true)
     @NonNull
@@ -27,9 +31,7 @@ public class Box {
     @NonNull
     private String rasPiId;
 
-    // TODO: implement these classes
-    //private Optional<Customer> currentCustomer;
-    //private Collection<Delivery> deliveries;
+    private Collection<Delivery> deliveries;
 
     //##################################################################################################################
     // Constructors
@@ -38,6 +40,7 @@ public class Box {
         name = "";
         address = "";
         rasPiId = "";
+        this.deliveries = new HashSet<>();
     }
 
     public Box(String name, String address, String rasPiId)
@@ -45,12 +48,13 @@ public class Box {
         this.name = name;
         this.address = address;
         this.rasPiId = rasPiId;
+        this.deliveries = new HashSet<>();
     }
 
     //##################################################################################################################
     // Getters and Setters
 
-    public ObjectId getId() {
+    public String getId() {
         return id;
     }
 
@@ -79,5 +83,21 @@ public class Box {
 
     public void setRasPiId(@NonNull String rasPiId) {
         this.rasPiId = rasPiId;
+    }
+
+    public Collection<Delivery> getDeliveries() {
+        return deliveries;
+    }
+
+    public void setDeliveries(Collection<Delivery> deliveries) {
+        this.deliveries = deliveries;
+    }
+
+    public void addDelivery(Delivery delivery) {
+        this.deliveries.add(delivery);
+    }
+
+    public void removeDelivery(Delivery delivery) {
+        this.deliveries.remove(delivery);
     }
 }
