@@ -1,5 +1,4 @@
-import './App.css';
-import Quote from "./Quote";
+import Quote from './Quote';
 
 function App() {
     return (
