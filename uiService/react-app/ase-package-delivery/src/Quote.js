@@ -24,7 +24,8 @@ function Quote() {
         <div>
             <Container>
                 <Paper>
-                    <p>{currentQuote}</p>
+                    <h1>Welcome to Quoter</h1>
+                    <p>"{currentQuote}"</p>
                     <TextField fullWidth id="quote" size="small" label="New Quote" onChange={handleChange}/>
                     <Button variant="contained" onClick={handleAddButton} style={{backgroundColor: "blue"}}>ADD</Button>
                     <Button variant="contained" onClick={handleRandomQuoteButton}
