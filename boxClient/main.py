@@ -13,18 +13,22 @@ reader = SimpleMFRC522()
 try:
     while True:
         id, text = reader.read()
-        print("id", id)
-        print("text", text)
         user_id_json = json.loads(text)
         authenticated = authenticate(user_id_json)
-        print(authenticated)
 
         if authenticated:
+
+            # light led green
+            print("Successfully authenticated")
             green()
+
+            # after 10s check if closed
             sleep(10)
             while not is_closed():
+                # if not blink red until it is closed
                 blink_red()
         else:
+            print("Unsuccessful authentication attempt")
             red()
 
 except KeyboardInterrupt:
