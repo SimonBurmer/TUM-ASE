@@ -1,15 +1,31 @@
+import json
+from time import sleep
+
 import RPi.GPIO as GPIO
+from mfrc522 import SimpleMFRC522
 
-from src.state import Closed
+from src.authorize import authenticate
+from src.led import green, red, blink_red
+from src.sensor import is_closed
 
-
-state = Closed()
+reader = SimpleMFRC522()
 
 try:
     while True:
-        new_state = state.handle()
-        print("New state is: " + new_state.__class__.__name__)
-        state = new_state
+        id, text = reader.read()
+        print("id", id)
+        print("text", text)
+        user_id_json = json.loads(text)
+        authenticated = authenticate(user_id_json)
+        print(authenticated)
+
+        if authenticated:
+            green()
+            sleep(10)
+            while not is_closed():
+                blink_red()
+        else:
+            red()
 
 except KeyboardInterrupt:
     GPIO.cleanup()

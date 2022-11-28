@@ -15,6 +15,12 @@ def red():
     sleep(1)
     GPIO.output(RED_GPIO, GPIO.LOW)
 
+def blink_red():
+    for _ in range(5):
+        GPIO.output(RED_GPIO, GPIO.HIGH)
+        sleep(0.1)
+        GPIO.output(RED_GPIO, GPIO.LOW)
+        sleep(0.1)
 
 def green():
     GPIO.output(GREEN_GPIO, GPIO.HIGH)
