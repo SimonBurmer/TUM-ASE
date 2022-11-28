@@ -5,7 +5,7 @@ from mfrc522 import SimpleMFRC522
 
 from src.authorize import authenticate
 from src.led import red, green
-
+from src.sensor import is_closed
 
 reader = SimpleMFRC522()
 
@@ -34,7 +34,7 @@ class Closed(State):
 class Open(State):
     def handle(self):
         sleep(10)
-        if True:  # is_open()
+        if is_closed():  # is_open()
             return Closed()
         else:
             return Blinking()
@@ -54,6 +54,6 @@ class Green(State):
 
 class Blinking(State):
     def handle(self):
-        while True:  # is_open()
+        while not is_closed():
             red()
         return Closed()
