@@ -9,6 +9,7 @@ try:
     while True:
         new_state = state.handle()
         print("New state is: " + new_state.__class__.__name__)
+        state = new_state
 
 except KeyboardInterrupt:
     GPIO.cleanup()
