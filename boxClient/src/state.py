@@ -49,7 +49,7 @@ class Red(State):
 class Green(State):
     def handle(self):
         green()
-        return Closed()
+        return Open()
 
 
 class Blinking(State):
