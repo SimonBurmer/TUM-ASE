@@ -43,10 +43,6 @@ public class BoxService {
         return boxRepository.findAll();
     }
 
-    public Box findBoxForDelivery(Delivery delivery) {
-        return boxRepository.findBoxForDelivery(delivery).orElseThrow(DeliveryNotFoundException::new);
-    }
-
     //##################################################################################################################
     // Update
 

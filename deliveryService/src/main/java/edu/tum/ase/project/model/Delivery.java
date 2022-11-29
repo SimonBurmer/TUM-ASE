@@ -1,11 +1,18 @@
 package edu.tum.ase.project.model;
 
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+
 import static edu.tum.ase.project.model.DeliveryStatus.*;
+import static java.util.UUID.randomUUID;
 
 public class Delivery {
 
     //##################################################################################################################
     // Fields
+
+    @Id
+    private String _id;
 
     private DeliveryStatus status;
 
@@ -17,12 +24,14 @@ public class Delivery {
     // Constructors
 
     public Delivery() {
+        _id = randomUUID() + "";
         status = ORDERED;
         customer = "";
         deliverer = "";
     }
 
     public Delivery(String customer, String deliverer) {
+        _id = randomUUID() + "";
         status = ORDERED;
         this.customer = customer;
         this.deliverer = deliverer;
@@ -30,6 +39,15 @@ public class Delivery {
 
     //##################################################################################################################
     // Getters and Setters
+
+
+    public String get_id() {
+        return _id;
+    }
+
+    public void set_id(String _id) {
+        this._id = _id;
+    }
 
     public DeliveryStatus getStatus() {
         return status;
@@ -53,25 +71,5 @@ public class Delivery {
 
     public void setDeliverer(String deliverer) {
         this.deliverer = deliverer;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Delivery delivery = (Delivery) o;
-
-        // do not consider status
-        if (!customer.equals(delivery.customer)) return false;
-        return deliverer.equals(delivery.deliverer);
-    }
-
-    @Override
-    public int hashCode() {
-        // do not consider status
-        int result = customer.hashCode();
-        result = 31 * result + deliverer.hashCode();
-        return result;
     }
 }

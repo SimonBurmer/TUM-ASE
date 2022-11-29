@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.Optional;
 
 @Service
 public class DeliveryService {
@@ -33,46 +32,29 @@ public class DeliveryService {
     //##################################################################################################################
     // Retrieve
 
+    public Delivery findDelivery(Box box, String id) {
+        return box.getDeliveries().stream()
+                .filter((d)->d.get_id().equals(id))
+                .findFirst()
+                .orElseThrow(DeliveryNotFoundException::new);
+    }
+
     public Collection<Delivery> findDeliveriesForBox(Box box) {
         return box.getDeliveries();
     }
 
     //##################################################################################################################
     // Update
-    public void updateStatus(Box box, Delivery delivery) {
-        Optional<Delivery> maybeDelivery = box.getDeliveries().stream().filter(d -> d.equals(delivery)).findFirst();
-        if (maybeDelivery.isPresent()) {
-            maybeDelivery.get().setStatus(delivery.getStatus());
-            boxRepository.save(box);
-        } else {
-            throw new DeliveryNotFoundException();
-        }
+    public void updateStatus(Box box, Delivery delivery, DeliveryStatus deliveryStatus) {
+        delivery.setStatus(deliveryStatus);
+        boxRepository.save(box);
     }
 
     //##################################################################################################################
     // Delete
 
-    public void deleteFromBox(Box box, Delivery delivery) {
-        for (Delivery boxDelivery : box.getDeliveries()) {
-            // TODO: this requires improvement
-            if (boxDelivery.equals(delivery)) {
-                delivery = boxDelivery;
-                break;
-            }
-        }
+    public void delete(Box box, Delivery delivery) {
         box.removeDelivery(delivery);
         boxRepository.save(box);
     }
-
-    public void delete(Delivery delivery) {
-        for (Box box : boxRepository.findAll()) {
-            // TODO: this requires database design improvements
-            if (box.getDeliveries().contains(delivery)) {
-                box.removeDelivery(delivery);
-                boxRepository.save(box);
-            }
-        }
-    }
-
-
 }

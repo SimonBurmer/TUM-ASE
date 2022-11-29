@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/delivery")
+@RequestMapping("/box/{boxId}/delivery")
 public class DeliveryController {
 
     @Autowired
@@ -24,18 +24,18 @@ public class DeliveryController {
     //##################################################################################################################
     // GET mappings
 
-    @GetMapping("{id}")
-    public Collection<Delivery> getDeliveriesForBox(@PathVariable String id) {
-        Box box = boxService.findById(id);
+    @GetMapping("")
+    public Collection<Delivery> getDeliveriesForBox(@PathVariable String boxId) {
+        Box box = boxService.findById(boxId);
         return deliveryService.findDeliveriesForBox(box);
     }
 
     //##################################################################################################################
     // POST mappings
 
-    @PostMapping("{id}/create")
-    public Delivery createDeliveryForBox(@PathVariable String id, @RequestBody Delivery delivery) {
-        Box box = boxService.findById(id);
+    @PostMapping("")
+    public Delivery createDeliveryForBox(@PathVariable String boxId, @RequestBody Delivery delivery) {
+        Box box = boxService.findById(boxId);
         delivery = deliveryService.createDelivery(box, delivery);
         return delivery;
     }
@@ -43,10 +43,11 @@ public class DeliveryController {
     //##################################################################################################################
     // PUT mappings
 
-    @PutMapping("status")
-    public HttpStatus updateDeliveryStatusForBox(@RequestBody Delivery delivery) {
-        Box box = boxService.findBoxForDelivery(delivery);
-        deliveryService.updateStatus(box, delivery);
+    @PutMapping("{deliveryId}/status")
+    public HttpStatus updateDeliveryStatusForBox(@PathVariable String boxId, @PathVariable String deliveryId, @RequestBody DeliveryStatus deliveryStatus) {
+        Box box = boxService.findById(boxId);
+        Delivery delivery = deliveryService.findDelivery(box, deliveryId);
+        deliveryService.updateStatus(box, delivery, deliveryStatus);
 
         return HttpStatus.OK;
     }
@@ -54,10 +55,11 @@ public class DeliveryController {
     //##################################################################################################################
     // DELETE mappings
 
-    @DeleteMapping("{id}")
-    public HttpStatus deleteDeliveryForBox(@PathVariable String id, @RequestBody Delivery delivery) {
-        Box box = boxService.findByName(id);
-        deliveryService.deleteFromBox(box, delivery);
+    @DeleteMapping("{deliveryId}")
+    public HttpStatus deleteDeliveryForBox(@PathVariable String boxId, @PathVariable String deliveryId) {
+        Box box = boxService.findById(boxId);
+        Delivery delivery = deliveryService.findDelivery(box, deliveryId);
+        deliveryService.delete(box, delivery);
 
         return HttpStatus.OK;
     }
