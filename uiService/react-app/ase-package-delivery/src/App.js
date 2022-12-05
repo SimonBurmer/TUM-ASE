@@ -1,4 +1,4 @@
-import Quote from './Quote';
+import Quote from './views/quote/Quote';
 
 function App() {
     return (
