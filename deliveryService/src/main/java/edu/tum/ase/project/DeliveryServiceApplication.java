@@ -10,19 +10,17 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
-import java.util.List;
-
 @SpringBootApplication
 @EnableMongoRepositories(basePackageClasses = {BoxRepository.class})
-public class ProjectApplication implements CommandLineRunner {
+public class DeliveryServiceApplication implements CommandLineRunner {
 
     @Autowired
     MongoClient mongoClient;
 
-    private static final Logger log = LoggerFactory.getLogger(ProjectApplication.class);
+    private static final Logger log = LoggerFactory.getLogger(DeliveryServiceApplication.class);
 
     public static void main(String[] args) {
-        SpringApplication.run(ProjectApplication.class, args);
+        SpringApplication.run(DeliveryServiceApplication.class, args);
     }
 
     @Override

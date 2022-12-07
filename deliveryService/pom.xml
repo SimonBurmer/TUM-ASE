@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>edu.tum.ase</groupId>
-    <artifactId>project</artifactId>
+    <artifactId>delivery-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>project</name>
-    <description>project</description>
+    <name>delivery-service</name>
+    <description>delivery-service</description>
     <properties>
         <java.version>11</java.version>
     </properties>
