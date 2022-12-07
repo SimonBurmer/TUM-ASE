@@ -21,6 +21,8 @@
         <module>../backend-common</module>
         <module>../deliveryService</module>
         <module>../discoveryService</module>
+        <module>../casService</module>
+        <module>../gatewayService</module>
     </modules>
 
     <properties>

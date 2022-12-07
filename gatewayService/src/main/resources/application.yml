@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+      - id: regulation-service
+        uri: lb://REGULATION-SERVICE
+        predicates:
+        - Path=/regulation
+      - id: project-service
+        uri: lb://PROJECT-SERVICE
+        predicates:
+        - Path=/project,/project/**,/login,/auth
+        filters:
+          - JwtAuthenticationFilter
+
+# TODO: Configure routes to access project services
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:8761/eureka
+server:
+  port: ${PORT:10789}

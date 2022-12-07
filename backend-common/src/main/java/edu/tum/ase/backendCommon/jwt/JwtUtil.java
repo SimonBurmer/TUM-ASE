@@ -1,4 +1,4 @@
-package edu.tum.ase.backendcommon.jwt;
+package edu.tum.ase.backendCommon.jwt;
 
 import com.nimbusds.jose.crypto.RSADecrypter;
 import io.jsonwebtoken.Claims;

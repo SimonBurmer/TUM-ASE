@@ -1,4 +1,4 @@
-package edu.tum.ase.backendcommon.jwt;
+package edu.tum.ase.backendCommon.jwt;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
@@ -29,7 +29,7 @@ public class KeyStoreManager {
         FileInputStream fis = null;
         try {
             // Get the path to the keystore file in the resources folder
-            File keystoreFile = ResourceUtils.getFile("classpath:ase_project.keystore");
+            File keystoreFile = ResourceUtils.getFile("classpath:ase_delivery.keystore");
             fis = new FileInputStream(keystoreFile);
             keyStore.load(fis, password);
             keyAlias = keyStore.aliases().nextElement();
