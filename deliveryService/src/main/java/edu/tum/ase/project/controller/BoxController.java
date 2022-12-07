@@ -23,9 +23,9 @@ public class BoxController {
         return boxService.getAllBoxes();
     }
 
-    @GetMapping("{name}")
-    public Box getBoxByName(@PathVariable String name) {
-        return boxService.findByName(name);
+    @GetMapping("{id}")
+    public Box getBox(@PathVariable String id) {
+        return boxService.findById(id);
     }
 
     //##################################################################################################################
@@ -42,9 +42,9 @@ public class BoxController {
     //##################################################################################################################
     // DELETE mappings
 
-    @DeleteMapping("{name}")
-    public HttpStatus deleteBoxByName(@PathVariable String name) {
-        Box box = boxService.findByName(name);
+    @DeleteMapping("{id}")
+    public HttpStatus deleteBox(@PathVariable String id) {
+        Box box = boxService.findById(id);
         boxService.delete(box);
 
         return HttpStatus.OK;

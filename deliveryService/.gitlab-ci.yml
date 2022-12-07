@@ -8,13 +8,13 @@ cache:
 build:
   stage: build
   script:
-    - cd "$CI_PROJECT_DIR/boxService"
+    - cd "$CI_PROJECT_DIR/deliveryService"
     - mvn $MAVEN_CLI_OPTS compile
 
 test:
   stage: test
   script:
-    - cd "$CI_PROJECT_DIR/boxService"
+    - cd "$CI_PROJECT_DIR/deliveryService"
     - mvn $MAVEN_CLI_OPTS test -Dspring.profiles.active=test
 
 #deploy:
