@@ -1,15 +1,12 @@
-package edu.tum.ase.project.service;
+package edu.tum.ase.deliveryservice.service;
 
-import edu.tum.ase.project.exceptions.BoxAlreadyExistsException;
-import edu.tum.ase.project.exceptions.BoxNotFoundException;
-import edu.tum.ase.project.exceptions.DeliveryNotFoundException;
-import edu.tum.ase.project.model.Box;
-import edu.tum.ase.project.model.Delivery;
-import edu.tum.ase.project.repository.BoxRepository;
+import edu.tum.ase.deliveryservice.exceptions.BoxAlreadyExistsException;
+import edu.tum.ase.deliveryservice.exceptions.BoxNotFoundException;
+import edu.tum.ase.deliveryservice.model.Box;
+import edu.tum.ase.deliveryservice.repository.BoxRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.List;
 
 @Service

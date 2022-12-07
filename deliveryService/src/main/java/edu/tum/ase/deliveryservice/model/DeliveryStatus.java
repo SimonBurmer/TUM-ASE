@@ -1,4 +1,4 @@
-package edu.tum.ase.project.model;
+package edu.tum.ase.deliveryservice.model;
 
 public enum DeliveryStatus {
 

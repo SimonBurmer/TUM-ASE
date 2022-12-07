@@ -1,16 +1,12 @@
-package edu.tum.ase.project.model;
+package edu.tum.ase.deliveryservice.model;
 
 import com.mongodb.lang.NonNull;
-import edu.tum.ase.project.exceptions.SingleCustomerPerBoxViolationException;
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Optional;
 
 @Document(collection = "boxes")
 public class Box {

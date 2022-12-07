@@ -1,7 +1,7 @@
-package edu.tum.ase.project.repository;
+package edu.tum.ase.deliveryservice.repository;
 
-import edu.tum.ase.project.model.Box;
-import edu.tum.ase.project.model.Delivery;
+import edu.tum.ase.deliveryservice.model.Box;
+import edu.tum.ase.deliveryservice.model.Delivery;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;

@@ -1,10 +1,10 @@
-package edu.tum.ase.project;
+package edu.tum.ase.deliveryservice;
 
-import edu.tum.ase.project.exceptions.BoxAlreadyExistsException;
-import edu.tum.ase.project.exceptions.BoxNotFoundException;
-import edu.tum.ase.project.model.Box;
-import edu.tum.ase.project.repository.BoxRepository;
-import edu.tum.ase.project.service.BoxService;
+import edu.tum.ase.deliveryservice.exceptions.BoxAlreadyExistsException;
+import edu.tum.ase.deliveryservice.exceptions.BoxNotFoundException;
+import edu.tum.ase.deliveryservice.model.Box;
+import edu.tum.ase.deliveryservice.repository.BoxRepository;
+import edu.tum.ase.deliveryservice.service.BoxService;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;

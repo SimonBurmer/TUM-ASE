@@ -1,9 +1,8 @@
-package edu.tum.ase.project.model;
+package edu.tum.ase.deliveryservice.model;
 
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 
-import static edu.tum.ase.project.model.DeliveryStatus.*;
+import static edu.tum.ase.deliveryservice.model.DeliveryStatus.*;
 import static java.util.UUID.randomUUID;
 
 public class Delivery {

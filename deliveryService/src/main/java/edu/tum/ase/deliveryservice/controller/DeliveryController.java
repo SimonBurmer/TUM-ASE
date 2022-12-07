@@ -1,10 +1,10 @@
-package edu.tum.ase.project.controller;
+package edu.tum.ase.deliveryservice.controller;
 
-import edu.tum.ase.project.model.Box;
-import edu.tum.ase.project.model.Delivery;
-import edu.tum.ase.project.model.DeliveryStatus;
-import edu.tum.ase.project.service.BoxService;
-import edu.tum.ase.project.service.DeliveryService;
+import edu.tum.ase.deliveryservice.model.Box;
+import edu.tum.ase.deliveryservice.model.Delivery;
+import edu.tum.ase.deliveryservice.model.DeliveryStatus;
+import edu.tum.ase.deliveryservice.service.BoxService;
+import edu.tum.ase.deliveryservice.service.DeliveryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

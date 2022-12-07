@@ -1,4 +1,4 @@
-package edu.tum.ase.project.exceptions;
+package edu.tum.ase.deliveryservice.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
