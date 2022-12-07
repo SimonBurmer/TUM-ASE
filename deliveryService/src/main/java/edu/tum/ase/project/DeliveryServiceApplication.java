@@ -1,6 +1,7 @@
 package edu.tum.ase.project;
 
 import com.mongodb.client.MongoClient;
+import edu.tum.ase.backendcommon.Foo;
 import edu.tum.ase.project.repository.BoxRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
