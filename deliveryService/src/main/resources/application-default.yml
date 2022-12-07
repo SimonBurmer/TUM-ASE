@@ -1,5 +1,8 @@
 # Configuration for the connection string to MongoDB database
 spring:
+  application:
+    name:
+      delivery-service
   data:
     mongodb:
 
@@ -20,3 +23,11 @@ spring:
       #enable the usage of Spring Data Mongo Repository
       repositories:
         enabled: true
+server:
+  port: ${PORT:9091}
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_SERVER:http://localhost:8761/eureka}
