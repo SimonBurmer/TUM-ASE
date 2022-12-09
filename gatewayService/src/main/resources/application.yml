@@ -4,16 +4,14 @@ spring:
   cloud:
     gateway:
       routes:
-      - id: regulation-service
-        uri: lb://REGULATION-SERVICE
+      - id: cas-service
+        uri: lb://CAS-SERVICE
         predicates:
-        - Path=/regulation
-      - id: project-service
-        uri: lb://PROJECT-SERVICE
+        - Path=/auth,/auth/pkey
+      - id: delivery-service
+        uri: lb://DELIVERY-SERVICE
         predicates:
-        - Path=/project,/project/**,/login,/auth
-        filters:
-          - JwtAuthenticationFilter
+        - Path=/box
 
 # TODO: Configure routes to access project services
 

@@ -5,9 +5,9 @@
 
 	<parent>
 		<groupId>edu.tum.ase</groupId>
-		<artifactId>backend-parent</artifactId>
+		<artifactId>backendParent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../backend-parent</relativePath>
+		<relativePath>../backendParent</relativePath>
 	</parent>
 
 	<artifactId>api-gateway</artifactId>
@@ -33,13 +33,6 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
-        <dependency>
-            <groupId>edu.tum.ase</groupId>
-            <artifactId>backend-common</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-
     </dependencies>
 
 	<dependencyManagement>

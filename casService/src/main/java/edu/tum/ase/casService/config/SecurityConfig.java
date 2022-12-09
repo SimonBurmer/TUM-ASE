@@ -1,6 +1,5 @@
 package edu.tum.ase.casService.config;
 
-import edu.tum.ase.casService.service.MongoUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +8,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
@@ -16,21 +16,20 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    MongoUserDetailsService mongoUserDetailsService;
+    UserDetailsService userDetailsService;
 
     @Override
     public void configure(AuthenticationManagerBuilder builder) throws Exception {
-        builder.userDetailsService(mongoUserDetailsService);
+        builder.userDetailsService(userDetailsService);
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.formLogin() // 1. Use Spring Login Form
-                .and().csrf().disable() // Note: for demonstration purposes only, this should not be done
+        http.csrf().disable() // Note: for demonstration purposes only, this should not be done
                 .cors().disable()
                 .authorizeRequests() // 2. Require authentication in all endpoints except login
-                    .antMatchers("/**").authenticated()
-                    .antMatchers("/auth/**").permitAll()
+                .antMatchers("/auth/**").permitAll()
+                .antMatchers("/**").authenticated()
                 .and().httpBasic() // 3. Use Basic Authentication
                 .and().sessionManagement().disable();
     }

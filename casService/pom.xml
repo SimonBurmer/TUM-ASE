@@ -5,9 +5,9 @@
 
     <parent>
         <groupId>edu.tum.ase</groupId>
-        <artifactId>backend-parent</artifactId>
+        <artifactId>backendParent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../backend-parent</relativePath>
+        <relativePath>../backendParent</relativePath>
     </parent>
 
     <groupId>edu.tum.ase</groupId>
@@ -21,14 +21,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
@@ -44,14 +37,10 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>com.nimbusds</groupId>
-            <artifactId>nimbus-jose-jwt</artifactId>
-            <version>9.15.2</version>
-        </dependency>
+
         <dependency>
             <groupId>edu.tum.ase</groupId>
-            <artifactId>backend-common</artifactId>
+            <artifactId>backendCommon</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
@@ -78,6 +67,7 @@
             </plugin>
         </plugins>
     </build>
+
     <repositories>
         <repository>
             <id>netflix-candidates</id>

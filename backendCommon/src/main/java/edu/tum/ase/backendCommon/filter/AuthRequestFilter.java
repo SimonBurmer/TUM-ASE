@@ -1,0 +1,78 @@
+package edu.tum.ase.backendCommon.filter;
+
+import edu.tum.ase.backendCommon.jwt.JwtUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+@Component
+public class AuthRequestFilter extends OncePerRequestFilter {
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    private static final List<String> excluded_urls = List.of("/auth/**");
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        AntPathMatcher antPathMatcher = new AntPathMatcher();
+        String url = request.getRequestURI();
+        return excluded_urls.stream().anyMatch(x -> antPathMatcher.match(x, url));
+    }
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+
+        Cookie[] cookies = request.getCookies();
+        Optional<Cookie> maybeJwt = Arrays.stream(cookies).filter(c -> c.getName().equals("jwt")).findFirst();
+
+        if (maybeJwt.isEmpty()) {
+            response.sendError(HttpStatus.BAD_REQUEST.value(), "no jwt token found");
+            return;
+        }
+
+        Cookie jwtCookie = maybeJwt.get();
+        String jwt = jwtCookie.getValue();
+
+        if (!jwtUtil.verifyJwtSignature(jwt)) {
+            response.sendError(HttpStatus.BAD_REQUEST.value(), "jwt is not valid");
+            return;
+        }
+
+        String username = jwtUtil.extractUsername(jwt);
+
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            User userDetails = new User(username, "" /*TODO: check if password is necessary here*/, List.of(/*TODO: add authorities*/));
+
+            Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            Authentication authContext = SecurityContextHolder.getContext().getAuthentication();
+            System.out.printf("Authenticate Token Set:\n"
+                            + "Username: %s\n"
+                            + "Password: %s\n"
+                            + "Authority: %s\n%n",
+                    authContext.getPrincipal(),
+                    authContext.getCredentials(),
+                    authContext.getAuthorities().toString());
+        }
+
+        filterChain.doFilter(request, response);
+    }
+}

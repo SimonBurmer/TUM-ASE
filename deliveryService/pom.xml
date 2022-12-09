@@ -5,31 +5,20 @@
 
     <parent>
         <groupId>edu.tum.ase</groupId>
-        <artifactId>backend-parent</artifactId>
+        <artifactId>backendParent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../backend-parent</relativePath>
+        <relativePath>../backendParent</relativePath>
     </parent>
 
-    <groupId>edu.tum.ase</groupId>
     <artifactId>delivery-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>delivery-service</name>
     <description>delivery-service</description>
 
-    <properties>
-        <java.version>11</java.version>
-        <spring-cloud.version>2020.0.0</spring-cloud.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
         <dependency>
@@ -42,12 +31,18 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>edu.tum.ase</groupId>
+            <artifactId>backendCommon</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
 
     <dependencyManagement>
@@ -61,6 +56,15 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
     <repositories>
         <repository>

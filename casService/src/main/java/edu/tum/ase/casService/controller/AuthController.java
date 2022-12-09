@@ -5,9 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 
 @RestController
@@ -17,11 +19,10 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
-    @PostMapping
+    @PostMapping("")
     // DONE: Implement Authentication of the user credentials
-    public ResponseEntity<String> authenticate(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader, HttpServletRequest request) throws Exception {
-        String authorization = "?";
-        return authService.authenticateUser(authorization, request);
+    public ResponseEntity<String> authenticateCustomer(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization, HttpServletResponse response) {
+        return authService.authenticateUser(authorization, response);
     }
 
     @GetMapping("/pkey")
@@ -29,11 +30,4 @@ public class AuthController {
         HashMap<String, String> pKeyData = authService.getPublicKeyData();
         return new ResponseEntity<HashMap<String, String>>(pKeyData, HttpStatus.OK);
     }
-
-    @PostMapping("/enc")
-    public HttpStatus testJWEToken(@RequestBody String token) {
-        authService.decryptPassword(token);
-        return HttpStatus.OK;
-    }
-
 }
