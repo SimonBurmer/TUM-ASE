@@ -5,7 +5,7 @@ public class UserRole {
     public static final String DISPATCHER = "DISPATCHER";
     public static final String DELIVERER = "DELIVERER";
 
-    public String getCompleteRole(String role) {
+    public static String getCompleteRole(String role) {
         return "ROLE_" + role;
     }
 

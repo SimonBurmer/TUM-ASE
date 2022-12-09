@@ -10,10 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.interfaces.RSAPrivateKey;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 @Component
@@ -34,9 +31,9 @@ public class JwtUtil {
         return extractClaim(token, Claims::getSubject);
     }
 
-    public Collection<String> extractAuthorities(String token) {
+    public List<Map<String, String>> extractAuthorities(String token) {
         //noinspection unchecked
-        return (Collection<String>) extractClaim(token, c -> c.get("roles", Collection.class));
+        return (List<Map<String, String>>) extractClaim(token, c -> c.get("roles", Object.class));
     }
 
     private Date extractExpiration(String token) {

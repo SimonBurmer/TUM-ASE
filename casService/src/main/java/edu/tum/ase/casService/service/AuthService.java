@@ -58,7 +58,7 @@ public class AuthService {
             jwtCookie.setMaxAge(3600); // TODO: check this
             response.addCookie(jwtCookie);
 
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(userDetails.getAuthorities().toString() ,HttpStatus.OK);
         } else {
             return new ResponseEntity<>(
                     "Username or password is incorrect",

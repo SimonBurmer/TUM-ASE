@@ -1,13 +1,15 @@
 package edu.tum.ase.backendCommon.filter;
 
 import edu.tum.ase.backendCommon.jwt.JwtUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import edu.tum.ase.backendCommon.roles.UserRole;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.stereotype.Component;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -17,15 +19,16 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
-@Component
 public class AuthRequestFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
+
+    public AuthRequestFilter(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
 
     private static final List<String> excluded_urls = List.of("/auth/**");
     @Override
@@ -56,11 +59,17 @@ public class AuthRequestFilter extends OncePerRequestFilter {
         }
 
         String username = jwtUtil.extractUsername(jwt);
+        List<Map<String, String>> authorities = jwtUtil.extractAuthorities(jwt);
+
+        List<SimpleGrantedAuthority> authorityList = authorities.stream()
+                .flatMap(s -> s.values().stream())
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            User userDetails = new User(username, "" /*TODO: check if password is necessary here*/, List.of(/*TODO: add authorities*/));
+            User userDetails = new User(username, "" /*TODO: check if password is necessary here*/, authorityList);
 
-            Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null);
+            Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, authorityList);
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             Authentication authContext = SecurityContextHolder.getContext().getAuthentication();

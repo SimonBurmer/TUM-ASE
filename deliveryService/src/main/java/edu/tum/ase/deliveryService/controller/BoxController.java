@@ -4,6 +4,8 @@ import edu.tum.ase.deliveryService.model.Box;
 import edu.tum.ase.deliveryService.service.BoxService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +21,7 @@ public class BoxController {
     // GET mappings
 
     @GetMapping("")
+    @PreAuthorize("hasRole('DISPATCHER')")
     public List<Box> getAllBoxes() {
         return boxService.getAllBoxes();
     }

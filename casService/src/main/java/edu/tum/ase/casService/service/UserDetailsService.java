@@ -1,5 +1,6 @@
 package edu.tum.ase.casService.service;
 
+import edu.tum.ase.backendCommon.roles.UserRole;
 import edu.tum.ase.casService.model.AseUser;
 import edu.tum.ase.casService.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,9 @@ public class UserDetailsService implements org.springframework.security.core.use
                     true,
                     true,
                     true,
-                    aseUser.getRoles().stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())
+                    aseUser.getRoles().stream()
+                            .map(UserRole::getCompleteRole)
+                            .map(SimpleGrantedAuthority::new).collect(Collectors.toList())
             );
         }
     }
