@@ -1,2 +1,2 @@
 include:
-  - 'deliveryService/.gitlab-ci.yml'
+  - 'backendParent/.gitlab-ci.yml'
