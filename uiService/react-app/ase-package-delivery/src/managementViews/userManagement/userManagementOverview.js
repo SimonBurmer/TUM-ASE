@@ -12,7 +12,6 @@ export default function UserManagementOverview () {
 
     return (
         <Container>
-            <NewUserFormDialog ></NewUserFormDialog>
             <InteractiveList></InteractiveList>
         </Container>
     )
