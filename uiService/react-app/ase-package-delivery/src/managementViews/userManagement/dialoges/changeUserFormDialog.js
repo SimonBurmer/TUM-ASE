@@ -6,8 +6,11 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import EditIcon from "@mui/icons-material/Edit";
+import IconButton from "@mui/material/IconButton";
 
-export default function NewUserFormDialog() {
+export default function ChangeUserFormDialog() {
+    let user= ["Max", "Mustermann", "maxmustermann@gmail.com", "Dispatcher", "123456" ]
     const [open, setOpen] = React.useState(false);
 
     const handleClickOpen = () => {
@@ -17,18 +20,17 @@ export default function NewUserFormDialog() {
     const handleClose = () => {
         setOpen(false);
     };
-    //TODO handleAdd hinzufügen bei der eine Request an den Server geschickt wird (Name und Email)
 
     return (
         <div>
-            <Button sx={{ml: 3, mt: 3}} variant="outlined" onClick={handleClickOpen}>
-                Add new User
-            </Button>
+            <IconButton  edge="end" aria-label="delete" onClick={handleClickOpen}>
+                <EditIcon/>
+            </IconButton>
             <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>Add User</DialogTitle>
+                <DialogTitle>Editing the user profile of {user[0]} {user[1]}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Please enter the information on the user you want to add.
+                        Here you can change the properties of your user. Only enter the information you would like to change.
                     </DialogContentText>
                     <TextField
                         autoFocus
@@ -42,26 +44,34 @@ export default function NewUserFormDialog() {
                     <TextField
                         autoFocus
                         margin="dense"
-                        id="Last Name"
-                        label="Last Name"
-                        type="Last Name"
+                        id="Last name"
+                        label="Last name"
+                        type="Last name"
                         fullWidth
                         variant="standard"
                     />
                     <TextField
                         autoFocus
                         margin="dense"
-                        id="email"
-                        label="E-Mail"
-                        type="email"
+                        id="role"
+                        label="role"
+                        type="role"
                         fullWidth
                         variant="standard"
                     />
-
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="RFID"
+                        label="RFID"
+                        type="RFID"
+                        fullWidth
+                        variant="standard"
+                    />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
-                    <Button onClick={handleClose}>Add</Button>
+                    <Button onClick={handleClose}>Subscribe</Button>
                 </DialogActions>
             </Dialog>
         </div>

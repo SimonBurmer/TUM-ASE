@@ -4,13 +4,13 @@ import BoxManagementOverview from "../managementViews/boxManagement/boxManagemen
 import DeliveryManagementOverview from "../managementViews/deliveryManagement/deliveryManagementOverview";
 import {Routes, Route, BrowserRouter} from "react-router-dom";
 import ResponsiveAppBar from "../components/navbar";
+import {Container} from "@mui/material";
 
 
 function MainPage() {
 
     return (
             <div>
-                <h1>Welcome to ASE Delivery</h1>
                 <ResponsiveAppBar />
                 <Routes>
                     <Route path={"/userManagement"} element={<UserManagementOverview />} />

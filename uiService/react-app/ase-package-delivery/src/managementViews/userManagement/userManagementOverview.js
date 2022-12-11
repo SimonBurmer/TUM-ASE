@@ -1,8 +1,8 @@
-import React, {useState} from "react";
+import React from "react";
 import InteractiveList from "./userManagementList";
-import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
-import NewUserFormDialog from "./newUserFormDialog";
+import NewUserFormDialog from "./dialoges/newUserFormDialog";
+import {Container} from "@mui/material";
 
 
 
@@ -11,12 +11,9 @@ import NewUserFormDialog from "./newUserFormDialog";
 export default function UserManagementOverview () {
 
     return (
-        <div>
-            <Box>
-                <NewUserFormDialog ></NewUserFormDialog>
-            </Box>
+        <Container>
+            <NewUserFormDialog ></NewUserFormDialog>
             <InteractiveList></InteractiveList>
-
-        </div>
+        </Container>
     )
 }
