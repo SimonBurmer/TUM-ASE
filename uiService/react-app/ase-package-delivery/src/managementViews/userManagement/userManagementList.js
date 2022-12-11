@@ -17,11 +17,29 @@ import EditIcon from '@mui/icons-material/Edit';
 import PersonIcon from '@mui/icons-material/Person';
 import {Divider} from "@mui/material";
 
-function generate(element) {
-    return users.map((value) =>
-        React.cloneElement(element, {
-            key: value,
-        }),
+function generate() {
+    return users.map((value) => (
+            <ListItem
+                secondaryAction={
+                    <IconButton edge="end" aria-label="edit">
+                        <EditIcon/>
+                        <Typography variant="h6" component="div">
+                            EDIT
+                        </Typography>
+                    </IconButton>
+                }
+            >
+                <ListItemAvatar>
+                    <Avatar>
+                        <PersonIcon/>
+                    </Avatar>
+                </ListItemAvatar>
+                <ListItemText
+                    primary= {value}
+                    secondary={'Secondary text'}
+                />
+            </ListItem>
+        )
     );
 }
 
@@ -33,7 +51,7 @@ const Demo = styled('div')(({ theme }) => ({
 
 export default function InteractiveList() {
     const [dense, setDense] = React.useState(false);
-    const [secondary, setSecondary] = React.useState(false);
+
 
     return (
         <Box sx={{ flexGrow: 1, maxWidth: 1500 }}>
@@ -44,29 +62,7 @@ export default function InteractiveList() {
                     </Typography>
                     <Demo>
                         <List dense={dense}>
-                            {generate(
-                                <ListItem
-                                    secondaryAction={
-                                        <IconButton edge="end" aria-label="edit" >
-                                            <EditIcon />
-                                            <Typography variant="h6" component="div" >
-                                                EDIT
-                                            </Typography>
-                                        </IconButton>
-                                    }
-                                >
-                                    <ListItemAvatar>
-                                        <Avatar>
-                                            <PersonIcon />
-                                        </Avatar>
-                                    </ListItemAvatar>
-                                    <ListItemText
-                                        primary="user"
-                                        secondary={secondary ? 'Secondary text' : null}
-                                    />
-                                    <Divider />
-                                </ListItem>,
-                            )}
+                            {generate()}
                         </List>
                     </Demo>
                 </Grid>
