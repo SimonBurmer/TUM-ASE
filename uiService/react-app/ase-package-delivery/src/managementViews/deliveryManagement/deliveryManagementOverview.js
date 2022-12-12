@@ -1,11 +1,10 @@
 import React from "react";
+import DeliveryManagementList from "./deliveryManagementList";
 
 export default function DeliveryManagementOverview () {
     return (
         <div>
-            <h1>Delivery Overview</h1>
-            <h1>Delivery Overview</h1>
-            <h1>Delivery Overview</h1>
+            <DeliveryManagementList/>
         </div>
     )
 }

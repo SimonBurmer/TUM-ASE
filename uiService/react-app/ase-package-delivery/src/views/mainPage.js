@@ -2,20 +2,24 @@ import React from "react";
 import UserManagementOverview from "../managementViews/userManagement/userManagementOverview";
 import BoxManagementOverview from "../managementViews/boxManagement/boxManagementOverview";
 import DeliveryManagementOverview from "../managementViews/deliveryManagement/deliveryManagementOverview";
-import {Routes, Route, BrowserRouter} from "react-router-dom";
+import {Routes, Route} from "react-router-dom";
 import ResponsiveAppBar from "../components/navbar";
-import {Container} from "@mui/material";
+import {useSelector} from "react-redux";
+
+
 
 
 function MainPage() {
+
+    const userRole= useSelector(state => state.role.userRole)
 
     return (
             <div>
                 <ResponsiveAppBar />
                 <Routes>
-                    <Route path={"/userManagement"} element={<UserManagementOverview />} />
-                    <Route path={"/boxManagement"} element={<BoxManagementOverview />} />
-                    <Route path={"/DeliveryManagement"} element={<DeliveryManagementOverview />} />
+                    {userRole === "Dispatcher" ? <Route path={"/userManagement"} element={<UserManagementOverview />} />: ""}
+                    {userRole === "Dispatcher" ? <Route path={"/boxManagement"} element={<BoxManagementOverview />} />: ""}
+                    {userRole === "Dispatcher"||"Deliverer"||"Customer" ? <Route path={"/DeliveryManagement"} element={<DeliveryManagementOverview />} />: ""}
                 </Routes>
             </div>
     )
