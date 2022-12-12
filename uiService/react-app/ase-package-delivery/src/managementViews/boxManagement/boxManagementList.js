@@ -8,22 +8,23 @@ import Avatar from '@mui/material/Avatar';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import PersonIcon from '@mui/icons-material/Person';
-import DeleteUserAlertDialog from "./dialoges/deleteUserAlertDialog";
+import DeleteBoxAlertDialog from "./dialoges/deleteBoxAlertDialog";
 import {Container} from "@mui/material";
-import ChangeUserFormDialog from "./dialoges/changeUserFormDialog";
-import NewUserFormDialog from "./dialoges/newUserFormDialog";
+import ChangeBoxFormDialog from "./dialoges/changeBoxFormDialog";
+import NewBoxFormDialog from "./dialoges/newBoxFormDialog";
 
+//TODO statt dem Icon Button den Bearbeiten Dialog hinterlegen
 function generate() {
-    return users.map((value) => (
+    return boxes.map((value) => (
             <ListItem
                 divider
                 secondaryAction={
                     <Grid container spacing={0}>
                         <Grid item xs={8}>
-                            <ChangeUserFormDialog />
+                            <ChangeBoxFormDialog />
                         </Grid>
                         <Grid item xs={4}>
-                            <DeleteUserAlertDialog/>
+                            <DeleteBoxAlertDialog/>
                         </Grid>
                     </Grid>
                 }
@@ -35,20 +36,20 @@ function generate() {
                 </ListItemAvatar>
                 <ListItemText
                     primary= {value}
-                    secondary={'Email als UUID'}
+                    secondary={'RaspiID als UUID'}
                 />
             </ListItem>
         )
     );
 }
-//TODO Liste and Objekten an users übergeben und generate und IntercativeList entsprechend anpassen
-let users= ["Peter", "Simon", "Simon", "Leonard", "Felix"]
+//TODO Liste and Objekten an boxes übergeben und generate und IntercativeList entsprechend anpassen
+let boxes= ["Box 1", "Box 2", "Box 3", "Box 4", "Box 5"]
 
 const Demo = styled('div')(({ theme }) => ({
     backgroundColor: theme.palette.background.paper,
 }));
 
-export default function UserManagementList() {
+export default function BoxManagementList() {
     const [dense, setDense] = React.useState(false);
 
     return (
@@ -56,11 +57,11 @@ export default function UserManagementList() {
             <Grid container spacing={2}>
                 <Grid item xs={10}>
                     <Typography sx={{ mt: 3, mb: 2 , ml:3}} variant="h6" component="div">
-                        Users
+                        Boxes
                     </Typography>
                 </Grid>
                 <Grid item xs={2}>
-                    <NewUserFormDialog />
+                    <NewBoxFormDialog />
                 </Grid>
             </Grid>
             <Demo>

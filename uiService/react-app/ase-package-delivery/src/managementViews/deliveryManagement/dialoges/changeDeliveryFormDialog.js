@@ -9,8 +9,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 import EditIcon from "@mui/icons-material/Edit";
 import IconButton from "@mui/material/IconButton";
 
-export default function ChangeUserFormDialog() {
-    let user= ["Max", "Mustermann", "maxmustermann@gmail.com", "Dispatcher", "123456" ]
+export default function ChangeDeliveryFormDialog() {
+    let delivery= ["Delivery A", "DID1234567"]
     const [open, setOpen] = React.useState(false);
 
     const handleClickOpen = () => {
@@ -27,44 +27,26 @@ export default function ChangeUserFormDialog() {
                 <EditIcon/>
             </IconButton>
             <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>Editing the user profile of {user[0]} {user[1]}</DialogTitle>
+                <DialogTitle>Editing {delivery[0]}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Here you can change the properties of your user. Only enter the information you would like to change.
+                        Here you can change the properties of your delivery. Only enter the information you would like to change.
                     </DialogContentText>
                     <TextField
                         autoFocus
                         margin="dense"
-                        id="First Name"
-                        label="First Name"
-                        type="First Name"
+                        id="name"
+                        label="name"
+                        type="name"
                         fullWidth
                         variant="standard"
                     />
                     <TextField
                         autoFocus
                         margin="dense"
-                        id="Last name"
-                        label="Last name"
-                        type="Last name"
-                        fullWidth
-                        variant="standard"
-                    />
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="role"
-                        label="role"
-                        type="role"
-                        fullWidth
-                        variant="standard"
-                    />
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="RFID"
-                        label="RFID"
-                        type="RFID"
+                        id="DeliveryID"
+                        label="DeliveryID"
+                        type="DeliveryID"
                         fullWidth
                         variant="standard"
                     />

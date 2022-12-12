@@ -8,22 +8,23 @@ import Avatar from '@mui/material/Avatar';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import PersonIcon from '@mui/icons-material/Person';
-import DeleteUserAlertDialog from "./dialoges/deleteUserAlertDialog";
+import DeleteDeliveryAlertDialog from './dialoges/deleteDeliveryAlertDialog';
 import {Container} from "@mui/material";
-import ChangeUserFormDialog from "./dialoges/changeUserFormDialog";
-import NewUserFormDialog from "./dialoges/newUserFormDialog";
+import ChangeDeliveryFormDialog from './dialoges/changeDeliveryFormDialog';
+import NewDeliveryFormDialog from './dialoges/newDeliveryFormDialog';
+
 
 function generate() {
-    return users.map((value) => (
+    return deliveries.map((value) => (
             <ListItem
                 divider
                 secondaryAction={
                     <Grid container spacing={0}>
                         <Grid item xs={8}>
-                            <ChangeUserFormDialog />
+                            <ChangeDeliveryFormDialog />
                         </Grid>
                         <Grid item xs={4}>
-                            <DeleteUserAlertDialog/>
+                            <DeleteDeliveryAlertDialog/>
                         </Grid>
                     </Grid>
                 }
@@ -35,20 +36,20 @@ function generate() {
                 </ListItemAvatar>
                 <ListItemText
                     primary= {value}
-                    secondary={'Email als UUID'}
+                    secondary={'DeliveryID als UUID'}
                 />
             </ListItem>
         )
     );
 }
 //TODO Liste and Objekten an users übergeben und generate und IntercativeList entsprechend anpassen
-let users= ["Peter", "Simon", "Simon", "Leonard", "Felix"]
+let deliveries= ["Delivery 1", "Delivery 2", "Delivery 3"]
 
 const Demo = styled('div')(({ theme }) => ({
     backgroundColor: theme.palette.background.paper,
 }));
 
-export default function UserManagementList() {
+export default function DeliveryManagementList() {
     const [dense, setDense] = React.useState(false);
 
     return (
@@ -56,11 +57,11 @@ export default function UserManagementList() {
             <Grid container spacing={2}>
                 <Grid item xs={10}>
                     <Typography sx={{ mt: 3, mb: 2 , ml:3}} variant="h6" component="div">
-                        Users
+                        Deliveries
                     </Typography>
                 </Grid>
                 <Grid item xs={2}>
-                    <NewUserFormDialog />
+                    <NewDeliveryFormDialog />
                 </Grid>
             </Grid>
             <Demo>

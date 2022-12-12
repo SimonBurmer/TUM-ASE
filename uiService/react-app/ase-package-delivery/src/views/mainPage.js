@@ -2,9 +2,9 @@ import React from "react";
 import UserManagementOverview from "../managementViews/userManagement/userManagementOverview";
 import BoxManagementOverview from "../managementViews/boxManagement/boxManagementOverview";
 import DeliveryManagementOverview from "../managementViews/deliveryManagement/deliveryManagementOverview";
-import {Routes, Route, BrowserRouter} from "react-router-dom";
+import {Routes, Route} from "react-router-dom";
 import ResponsiveAppBar from "../components/navbar";
-import {Container} from "@mui/material";
+
 
 
 function MainPage() {
