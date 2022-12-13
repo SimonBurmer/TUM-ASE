@@ -11,7 +11,7 @@ spring:
       - id: delivery-service
         uri: lb://DELIVERY-SERVICE
         predicates:
-        - Path=/box
+        - Path=/box/**
 
 # TODO: Configure routes to access project services
 

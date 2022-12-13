@@ -3,11 +3,12 @@ package edu.tum.ase.deliveryService.controller;
 import edu.tum.ase.deliveryService.model.Box;
 import edu.tum.ase.deliveryService.service.BoxService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -21,7 +22,6 @@ public class BoxController {
     // GET mappings
 
     @GetMapping("")
-    @PreAuthorize("hasRole('DISPATCHER')")
     public List<Box> getAllBoxes() {
         return boxService.getAllBoxes();
     }
@@ -35,6 +35,7 @@ public class BoxController {
     // POST mappings
 
     @PostMapping("create")
+    @PreAuthorize("hasRole('DISPATCHER')")
     public Box createBox(@RequestBody Box box) {
         return boxService.createBox(box);
     }
@@ -46,6 +47,7 @@ public class BoxController {
     // DELETE mappings
 
     @DeleteMapping("{id}")
+    @PreAuthorize("hasRole('DISPATCHER')")
     public HttpStatus deleteBox(@PathVariable String id) {
         Box box = boxService.findById(id);
         boxService.delete(box);

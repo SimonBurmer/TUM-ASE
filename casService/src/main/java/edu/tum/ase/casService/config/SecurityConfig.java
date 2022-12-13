@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -25,11 +26,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable() // Note: for demonstration purposes only, this should not be done
-                .cors().disable()
-                .authorizeRequests() // 2. Require authentication in all endpoints except login
+        http.cors().disable();
+
+        http.authorizeRequests() // 2. Require authentication in all endpoints except login
                 .antMatchers("/auth/**").permitAll()
                 .antMatchers("/**").authenticated()
+                .and().csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .and().httpBasic() // 3. Use Basic Authentication
                 .and().sessionManagement().disable();
     }
