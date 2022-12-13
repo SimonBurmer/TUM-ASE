@@ -1,15 +1,16 @@
 package edu.tum.ase.backendCommon.jwt;
 
+import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.crypto.RSADecrypter;
+import com.nimbusds.jwt.EncryptedJWT;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.interfaces.RSAPrivateKey;
+import java.text.ParseException;
 import java.util.*;
 import java.util.function.Function;
 
@@ -62,19 +63,16 @@ public class JwtUtil {
         return loadJwtParser().isSigned(token) && !isTokenExpired(token);
     }
 
-    public String decryptPasswordInJwe(String password) {
+    public Map<String, Object> decryptPasswordInJwe(String input) {
         RSADecrypter decrypter = new RSADecrypter((RSAPrivateKey) keyStoreManager.getPrivateKey());
-        String decryptedPw = "";
-        /*try {*/
-            // TODO: Parse the encrypted JWE
-            // TODO: Decrypt the JWE and extract the "password" info
+        try {
+            EncryptedJWT encryptedJWT = EncryptedJWT.parse(input);
 
-            Claims claims = extractAllClaims(password);
+            encryptedJWT.decrypt(decrypter);
+            return encryptedJWT.getJWTClaimsSet().getClaims();
 
-            System.out.println(claims);
-        /*} catch (JOSEException | ParseException e) {
-            e.printStackTrace();
-        }*/
-        return decryptedPw;
+        } catch (JOSEException | ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -96,6 +96,6 @@ public class AuthService {
     }
 
     public String decryptPassword(String token) {
-        return jwtUtil.decryptPasswordInJwe(token);
+        return (String) jwtUtil.decryptPasswordInJwe(token).get("password");
     }
 }
