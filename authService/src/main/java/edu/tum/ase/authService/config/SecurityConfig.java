@@ -1,4 +1,4 @@
-package edu.tum.ase.casService.config;
+package edu.tum.ase.authService.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

@@ -1,7 +1,6 @@
 package edu.tum.ase.deliveryService;
 
 import com.mongodb.client.MongoClient;
-import com.netflix.discovery.shared.resolver.aws.ConfigClusterResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

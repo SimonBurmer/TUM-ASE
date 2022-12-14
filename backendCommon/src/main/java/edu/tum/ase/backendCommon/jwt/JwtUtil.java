@@ -3,7 +3,9 @@ package edu.tum.ase.backendCommon.jwt;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.crypto.RSADecrypter;
 import com.nimbusds.jwt.EncryptedJWT;
+import edu.tum.ase.backendCommon.exceptions.JWEDecryptException;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +65,7 @@ public class JwtUtil {
         return loadJwtParser().isSigned(token) && !isTokenExpired(token);
     }
 
-    public Map<String, Object> decryptPasswordInJwe(String input) {
+    public Map<String, Object> decryptJwe(String input) {
         RSADecrypter decrypter = new RSADecrypter((RSAPrivateKey) keyStoreManager.getPrivateKey());
         try {
             EncryptedJWT encryptedJWT = EncryptedJWT.parse(input);
@@ -72,7 +74,7 @@ public class JwtUtil {
             return encryptedJWT.getJWTClaimsSet().getClaims();
 
         } catch (JOSEException | ParseException e) {
-            throw new RuntimeException(e);
+            throw new JWEDecryptException();
         }
     }
 }

@@ -1,7 +1,7 @@
-package edu.tum.ase.casService.service;
+package edu.tum.ase.authService.service;
 
 import edu.tum.ase.backendCommon.jwt.KeyStoreManager;
-import edu.tum.ase.casService.jwt.ExtendedJwtUtil;
+import edu.tum.ase.authService.jwt.ExtendedJwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,17 +29,39 @@ public class AuthService {
     private ExtendedJwtUtil jwtUtil;
 
 
-    public ResponseEntity<String> authenticateUser(String authorization, HttpServletResponse response) {
+    public ResponseEntity<String> authenticateUser(String email, String password_enc, HttpServletResponse response) {
+        String password = (String) jwtUtil.decryptJwe(password_enc).get("password");
 
-        if (!authorization.startsWith("Basic ")) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+
+        if (bcryptPasswordEncoder.matches(password, userDetails.getPassword())) {
+            String jwt = jwtUtil.generateToken(userDetails);
+
+            Cookie jwtCookie = new Cookie("jwt", jwt);
+            jwtCookie.setHttpOnly(true);
+            jwtCookie.setMaxAge(3600); // TODO: check this
+            response.addCookie(jwtCookie);
+
+            return new ResponseEntity<>(userDetails.getAuthorities().toString(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(
+                    "Username or password is incorrect",
+                    HttpStatus.BAD_REQUEST
+            );
+        }
+    }
+
+    public ResponseEntity<String> authenticateUser(String basicAuthHeader, HttpServletResponse response) {
+
+        if (!basicAuthHeader.startsWith("Basic ")) {
             return new ResponseEntity<>("Did not find a basic auth header",
                     HttpStatus.BAD_REQUEST);
         }
 
-        authorization = authorization.substring(6);
-        authorization = new String(Base64.getDecoder().decode(authorization));
+        basicAuthHeader = basicAuthHeader.substring(6);
+        basicAuthHeader = new String(Base64.getDecoder().decode(basicAuthHeader));
 
-        String[] split = authorization.split(":");
+        String[] split = basicAuthHeader.split(":");
 
         String username = split[0];
         String password = split[1];
@@ -58,7 +80,7 @@ public class AuthService {
             jwtCookie.setMaxAge(3600); // TODO: check this
             response.addCookie(jwtCookie);
 
-            return new ResponseEntity<>(userDetails.getAuthorities().toString() ,HttpStatus.OK);
+            return new ResponseEntity<>(userDetails.getAuthorities().toString(), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(
                     "Username or password is incorrect",
@@ -96,6 +118,6 @@ public class AuthService {
     }
 
     public String decryptPassword(String token) {
-        return (String) jwtUtil.decryptPasswordInJwe(token).get("password");
+        return (String) jwtUtil.decryptJwe(token).get("password");
     }
 }

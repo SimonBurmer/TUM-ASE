@@ -1,7 +1,7 @@
 # Configuration for the connection string to MongoDB database
 spring:
   application:
-    name: cas-service
+    name: auth-service
   data:
     mongodb:
 
@@ -24,6 +24,9 @@ spring:
         enabled: true
 server:
   port: ${PORT:8080}
+  error:
+    include-message: always
+
 eureka:
   instance:
     hostname: localhost

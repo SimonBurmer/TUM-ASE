@@ -1,6 +1,6 @@
-package edu.tum.ase.casService.repository;
+package edu.tum.ase.authService.repository;
 
-import edu.tum.ase.casService.model.AseUser;
+import edu.tum.ase.authService.model.AseUser;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;

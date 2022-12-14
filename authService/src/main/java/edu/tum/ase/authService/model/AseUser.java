@@ -1,10 +1,7 @@
-package edu.tum.ase.casService.model;
+package edu.tum.ase.authService.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Document(collection = "users")
 public class AseUser {
@@ -16,16 +13,16 @@ public class AseUser {
 
     protected String password;
 
-    private List<String> roles;
+    private String roles;
 
     public AseUser() {
         id = null;
         email = "";
         password = "";
-        roles = new ArrayList<>();
+        roles = "";
     }
 
-    public AseUser(String email, String password, List<String> roles) {
+    public AseUser(String email, String password, String roles) {
         this.email = email;
         this.password = password;
         this.roles = roles;
@@ -55,11 +52,11 @@ public class AseUser {
         this.id = id;
     }
 
-    public List<String> getRoles() {
+    public String getRoles() {
         return roles;
     }
 
-    public void setRoles(List<String> roles) {
+    public void setRoles(String roles) {
         this.roles = roles;
     }
 }

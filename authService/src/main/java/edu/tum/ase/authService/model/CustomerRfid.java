@@ -1,16 +1,15 @@
-package edu.tum.ase.casService.model;
+package edu.tum.ase.authService.model;
 
-import edu.tum.ase.backendCommon.roles.UserRole;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "delivererTokens")
-public class DelivererRfid {
+@Document(collection = "customerTokens")
+public class CustomerRfid {
 
     String rfidToken;
 
     String userId;
 
-    public DelivererRfid(String rfidToken, String userId) {
+    public CustomerRfid(String rfidToken, String userId) {
         this.rfidToken = rfidToken;
         this.userId = userId;
     }
@@ -30,4 +29,6 @@ public class DelivererRfid {
     public void setUserId(String userId) {
         this.userId = userId;
     }
+
+
 }

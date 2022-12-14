@@ -1,4 +1,4 @@
-package edu.tum.ase.casService.jwt;
+package edu.tum.ase.authService.jwt;
 
 import edu.tum.ase.backendCommon.jwt.JwtUtil;
 import io.jsonwebtoken.Jwts;

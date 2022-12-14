@@ -1,8 +1,12 @@
 spring:
   application:
     name: discovery-service
+
 server:
   port: 8761
+  error:
+    include-message: always
+
 eureka:
   instance:
     hostname: localhost
