@@ -31,8 +31,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests() // 2. Require authentication in all endpoints except login
                 .antMatchers("/auth/**").permitAll()
                 .antMatchers("/**").authenticated()
-                .and().csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .and().httpBasic() // 3. Use Basic Authentication
+                //.and().csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .and().csrf().disable()
+                //.and()
+                .httpBasic() // 3. Use Basic Authentication
                 .and().sessionManagement().disable();
     }
 
