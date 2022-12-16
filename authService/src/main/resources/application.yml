@@ -1,17 +1,20 @@
+# Configuration for the connection string to MongoDB database
 spring:
+  application:
+    name: auth-service
   data:
     mongodb:
 
       # Configure database location
-      host: 172.17.0.2
+      host: 172.17.0.3
       port: 27017
-      database: delivery
-
+      database: auth
+      
       # Configure credential
       username: aseAdmin
       password: ase
       authentication-database: admin
-
+      
       # Configure Database Operation,
       # allow creating index automatically from the code
       auto-index-creation: true
@@ -19,3 +22,14 @@ spring:
       #enable the usage of Spring Data Mongo Repository
       repositories:
         enabled: true
+server:
+  port: ${PORT:8080}
+  error:
+    include-message: always
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_SERVER:http://localhost:8761/eureka}

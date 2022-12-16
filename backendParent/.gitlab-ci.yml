@@ -1,0 +1,25 @@
+image: maven:latest
+
+cache:
+  paths:
+    - ./.m2/repository
+    - target/
+
+build:
+  stage: build
+  script:
+    - cd "$CI_PROJECT_DIR/backendParent"
+    - mvn $MAVEN_CLI_OPTS compile
+
+test:
+  stage: test
+  script:
+    - cd "$CI_PROJECT_DIR/backendParent"
+    - mvn $MAVEN_CLI_OPTS test -Dspring.profiles.active=test
+
+#deploy:
+#  stage: deploy
+#  script:
+#    - mvn $MAVEN_CLI_OPTS deploy
+#  only:
+#    - master

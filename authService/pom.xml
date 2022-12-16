@@ -10,10 +10,11 @@
         <relativePath>../backendParent</relativePath>
     </parent>
 
-    <artifactId>delivery-service</artifactId>
+    <groupId>edu.tum.ase</groupId>
+    <artifactId>auth-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>delivery-service</name>
-    <description>delivery-service</description>
+    <name>auth-service</name>
+    <description>authentication service, authenticates customers, deliverers and dispatchers</description>
 
     <dependencies>
         <dependency>
@@ -41,6 +42,7 @@
             <groupId>edu.tum.ase</groupId>
             <artifactId>backendCommon</artifactId>
             <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
 
     </dependencies>

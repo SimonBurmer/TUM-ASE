@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+      - id: cas-service
+        uri: lb://AUTH-SERVICE
+        predicates:
+        - Path=/auth/**
+      - id: delivery-service
+        uri: lb://DELIVERY-SERVICE
+        predicates:
+        - Path=/box/**
+
+# TODO: Configure routes to access project services
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:8761/eureka
+server:
+  port: ${PORT:10789}
+  error:
+    include-message: always
