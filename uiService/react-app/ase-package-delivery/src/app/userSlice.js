@@ -1,6 +1,7 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
 import {fetchQuoteAsync} from "../views/quote/quoteSlice";
+import { Jose } from 'jose-jwe-jws';
 
 //TODO den default auf null setzten und bei login auf die rolle des angemeldeten users setzten
 const initialState = {
@@ -23,7 +24,7 @@ export const userSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(postUserAsync().fulfilled, (state, action) => {
+            .addCase(postUserAsync.fulfilled, (state, action) => {
                 //hier im store speichern
             });
     },
@@ -32,7 +33,12 @@ export const userSlice = createSlice({
 export const postUserAsync = createAsyncThunk(
     'user/postUser',
     async (payload) => {
-        const api = axios.create({baseURL: 'http://localhost:10789'}) //TODO move to specific file for constants
+
+        await console.log(`Attempting login with email: ${payload.email} and ${payload.password}`)
+
+        const api = axios.create({baseURL: 'http://127.0.0.1:10789'}) //TODO move to specific file for constants
+
+
         const publicKey = api.get('/auth/pkey')
         let encryptedPassword =
         await publicKey.then((key) => {

@@ -7,6 +7,8 @@ import {Box, Checkbox, FormControlLabel, IconButton, InputAdornment, Stack, Text
 import {LoadingButton} from "@mui/lab";
 import {Icon} from "@iconify/react";
 import {motion} from "framer-motion";
+import {postUserAsync} from "../app/userSlice";
+import {useDispatch} from "react-redux";
 
 let easing = [0.6, -0.05, 0.01, 0.99];
 const animate = {
@@ -21,6 +23,7 @@ const animate = {
 
 const LoginForm = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const [showPassword, setShowPassword] = useState(false);
 
@@ -40,6 +43,7 @@ const LoginForm = () => {
         validationSchema: LoginSchema,
         onSubmit: () => {
             console.log("submitting...");
+            dispatch(postUserAsync({ email: formik.values.email, password: formik.values.password }))
             setTimeout(() => {
                 console.log("submited!!");
                 navigate("/mainPage/");
