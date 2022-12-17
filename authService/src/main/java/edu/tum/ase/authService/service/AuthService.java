@@ -29,7 +29,7 @@ public class AuthService {
     private ExtendedJwtUtil jwtUtil;
 
 
-    public ResponseEntity<String> authenticateUser(String email, String password_enc, HttpServletResponse response) {
+    public ResponseEntity<String> authenticateUser(String email, String password_enc, boolean remember, HttpServletResponse response) {
         String password = (String) jwtUtil.decryptJwe(password_enc).get("password");
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
@@ -39,7 +39,8 @@ public class AuthService {
 
             Cookie jwtCookie = new Cookie("jwt", jwt);
             jwtCookie.setHttpOnly(true);
-            jwtCookie.setMaxAge(3600); // TODO: check this
+            jwtCookie.setMaxAge(remember ? 60 * 60 * 24 * 2 : -1);
+            jwtCookie.setPath("/");
             response.addCookie(jwtCookie);
 
             return new ResponseEntity<>(userDetails.getAuthorities().toString(), HttpStatus.OK);
@@ -77,7 +78,8 @@ public class AuthService {
 
             Cookie jwtCookie = new Cookie("jwt", jwt);
             jwtCookie.setHttpOnly(true);
-            jwtCookie.setMaxAge(3600); // TODO: check this
+            jwtCookie.setMaxAge(-1);
+            jwtCookie.setPath("/");
             response.addCookie(jwtCookie);
 
             return new ResponseEntity<>(userDetails.getAuthorities().toString(), HttpStatus.OK);
@@ -98,21 +100,21 @@ public class AuthService {
         byte[] modulusByte = rsaPubKey.getModulus().toByteArray();// DONE: Get Modulus of Public key;
 
         // Format the modulus into byte format (e.g. AB:CD:E1)
-        String modulusByteStr = "";
+        StringBuilder modulusByteStr = new StringBuilder();
         for (byte b : modulusByte) {
-            modulusByteStr += String.format(":%02x", b);
+            modulusByteStr.append(String.format(":%02x", b));
         }
-        modulusByteStr = modulusByteStr.substring(1);
+        modulusByteStr = new StringBuilder(modulusByteStr.substring(1));
 
-        byte[] publicKeyByte = rsaPubKey.getEncoded(); // TODO: not sure if this is necessary
-        String publicKeyByteString = "";
+        byte[] publicKeyByte = rsaPubKey.getEncoded();
+        StringBuilder publicKeyByteString = new StringBuilder();
         for (byte b : publicKeyByte) {
-            publicKeyByteString += String.format(":%02x", b);
+            publicKeyByteString.append(String.format(":%02x", b));
         }
-        publicKeyByteString = publicKeyByteString.substring(1);
+        publicKeyByteString = new StringBuilder(publicKeyByteString.substring(1));
 
-        pKeyResponse.put("key", publicKeyByteString);// DONE: Get encoded public key);
-        pKeyResponse.put("n", modulusByteStr);
+        pKeyResponse.put("key", publicKeyByteString.toString());// DONE: Get encoded public key);
+        pKeyResponse.put("n", modulusByteStr.toString());
         pKeyResponse.put("e", String.valueOf(rsaPubKey.getPublicExponent())); // DONE: Get public exponent);
         return pKeyResponse;
     }

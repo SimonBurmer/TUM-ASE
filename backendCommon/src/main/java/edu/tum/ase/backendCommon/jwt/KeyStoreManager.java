@@ -53,7 +53,6 @@ public class KeyStoreManager {
         }
     }
 
-    /* TODO: check if this is allowed to be public */
     public Key getPrivateKey() {
         try {
             // DONE: return the private key in the keystore.

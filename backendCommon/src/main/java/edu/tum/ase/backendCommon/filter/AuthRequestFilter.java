@@ -71,7 +71,7 @@ public class AuthRequestFilter extends OncePerRequestFilter {
                 .collect(Collectors.toList());
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            User userDetails = new User(username, "" /*TODO: check if password is necessary here*/, authorityList);
+            User userDetails = new User(username, "" /* Apparently, a password is not necessary here*/, authorityList);
 
             Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, authorityList);
             SecurityContextHolder.getContext().setAuthentication(authentication);

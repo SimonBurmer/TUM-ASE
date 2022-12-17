@@ -22,7 +22,7 @@ public class AuthController {
     @PostMapping("")
     // DONE: Implement Authentication of the user credentials
     public ResponseEntity<String> authenticateUser(@Valid @RequestBody AuthRequest authRequest, HttpServletResponse response) {
-        return authService.authenticateUser(authRequest.getEmail(), authRequest.getPassword_enc(), response);
+        return authService.authenticateUser(authRequest.getEmail(), authRequest.getPassword_enc(), authRequest.getRemember(), response);
     }
 
     @PostMapping("legacy") // TODO: remove this

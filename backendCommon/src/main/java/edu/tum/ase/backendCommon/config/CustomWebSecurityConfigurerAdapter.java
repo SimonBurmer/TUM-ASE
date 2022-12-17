@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
@@ -19,7 +20,7 @@ public class CustomWebSecurityConfigurerAdapter extends WebSecurityConfigurerAda
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000")); // TODO: correct this
+        configuration.setAllowedOrigins(List.of("http://localhost:3000")); // TODO: set correct value here
         configuration.setAllowedMethods(List.of("*"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
@@ -31,15 +32,21 @@ public class CustomWebSecurityConfigurerAdapter extends WebSecurityConfigurerAda
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests() // 2. Require authentication in all endpoints except login
-                .antMatchers("/auth/**").permitAll()
-                .antMatchers("/**").authenticated()
-
-                .and().cors()
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.cors()
                 .and().csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .and().addFilterBefore(new AuthRequestFilter(jwtUtil), AnonymousAuthenticationFilter.class);
 
-                .and().addFilterBefore(new AuthRequestFilter(jwtUtil), AnonymousAuthenticationFilter.class)
-                .sessionManagement().disable();
+        http.authorizeRequests()
+                .antMatchers("/auth/**").permitAll(); // Used to acquire jwt auth token
+
+        http.authorizeRequests()
+                // TODO: add endpoints that can be called by the frontend here
+                .antMatchers("/box/**").authenticated()
+                .antMatchers("/delivery/**").authenticated();
+
+        http.authorizeRequests()
+                // TODO: add endpoints that can be called by the boxClient here
+                .antMatchers("/client/**").authenticated();
     }
 }
