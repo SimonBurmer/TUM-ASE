@@ -16,9 +16,12 @@ public class AuthRequest {
     @NotEmpty
     private final String password_enc;
 
-    public AuthRequest(String email, String password_enc) {
+    private boolean remember = false;
+
+    public AuthRequest(String email, String password_enc, boolean remember) {
         this.email = email;
         this.password_enc = password_enc;
+        this.remember = remember;
     }
 
     public String getEmail() {
@@ -27,5 +30,9 @@ public class AuthRequest {
 
     public String getPassword_enc() {
         return password_enc;
+    }
+
+    public boolean getRemember() {
+        return remember;
     }
 }
