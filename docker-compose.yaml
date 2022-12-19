@@ -1,14 +1,27 @@
 version: "3"
 services:
 
-  # Dependencies
-  discovery-service:
-    image: "discovery"
-    # environment:
-    #  - ALLOW_EMPTY_PASSWORD=yes
+  authentication-db:
+    build: authService/authenticationDB
+    ports:
+      - "27017:27017"
+      - "28017:28017"
 
-  # App
-  cas-service:
-    image: "cas"
-    depends_on:
-      - discovery-service
+  delivery-db:
+    build: deliveryService/deliveryDB
+    ports:
+      - "27018:27017"
+      - "28018:28017"
+
+  auth-service:
+    build: authService
+
+  delivery-service:
+    build: deliveryService
+
+  discovery-service:
+    build: discoveryService
+
+  gateway-service:
+    build: gatewayService
+
