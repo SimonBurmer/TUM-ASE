@@ -1,1 +1,4 @@
-todo
+FROM openjdk:11
+COPY target/delivery-service-0.0.1-SNAPSHOT.jar delivery-service.jar
+ENTRYPOINT ["java", "-jar","delivery-service.jar"]
+EXPOSE 8080

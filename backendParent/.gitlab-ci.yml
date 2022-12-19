@@ -15,7 +15,7 @@ test:
   stage: test
   script:
     - cd "$CI_PROJECT_DIR/backendParent"
-    - mvn $MAVEN_CLI_OPTS test -Dspring.profiles.active=test
+    - mvn $MAVEN_CLI_OPTS test
 
 #deploy:
 #  stage: deploy
