@@ -24,4 +24,12 @@ services:
 
   gateway-service:
     build: gatewayService
+    ports:
+      - "8080:8080"
 
+  frontend-nginx:
+    build:
+      context: uiService
+      dockerfile: Prod.Dockerfile
+    ports:
+      - '1337:80'
