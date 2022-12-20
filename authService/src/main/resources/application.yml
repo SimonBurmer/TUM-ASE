@@ -30,7 +30,7 @@ server:
 
 eureka:
   instance:
-    hostname: ${EUREKA_HOSTNAME}
+    hostname: auth-service
   client:
     serviceUrl:
-      defaultZone: http://${eureka.instance.hostname}:8761/eureka
+      defaultZone: http://${EUREKA_SERVER_ADDRESS}:8761/eureka
