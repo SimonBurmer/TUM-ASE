@@ -3,9 +3,9 @@ spring:
     mongodb:
 
       # Configure database location
-      host: 172.17.0.2
-      port: 27017
-      database: delivery
+      host: ${MONGODB_HOST}
+      port: ${MONGODB_PORT}
+      database: ${MONGODB_DATABASE}
 
       # Configure credential
       username: aseAdmin

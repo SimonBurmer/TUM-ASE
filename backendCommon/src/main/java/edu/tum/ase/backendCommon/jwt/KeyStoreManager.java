@@ -1,11 +1,15 @@
 package edu.tum.ase.backendCommon.jwt;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.util.ResourceUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -29,9 +33,9 @@ public class KeyStoreManager {
         FileInputStream fis = null;
         try {
             // Get the path to the keystore file in the resources folder
-            File keystoreFile = ResourceUtils.getFile("classpath:ase_delivery.keystore");
-            fis = new FileInputStream(keystoreFile);
-            keyStore.load(fis, password);
+            ClassPathResource classPathResource = new ClassPathResource("ase_delivery.keystore");
+            InputStream inputStream = classPathResource.getInputStream();
+            keyStore.load(inputStream, password);
             keyAlias = keyStore.aliases().nextElement();
         } catch (Exception e) {
             System.err.println("Error when loading KeyStore");

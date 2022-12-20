@@ -13,19 +13,43 @@ services:
       - "27018:27017"
       - "28018:28017"
 
+  discovery-service:
+    build: discoveryService
+    ports:
+      - "8761:8761"
+    environment:
+      - EUREKA_HOSTNAME=discovery-service
+
   auth-service:
     build: authService
+    depends_on:
+      - authentication-db
+      - discovery-service
+    environment:
+      - EUREKA_HOSTNAME=discovery-service
+      - MONGODB_HOST=authentication-db
+      - MONGODB_PORT=27017
+      - MONGODB_DATABASE=auth
 
   delivery-service:
     build: deliveryService
-
-  discovery-service:
-    build: discoveryService
+    depends_on:
+      - delivery-db
+      - discovery-service
+    environment:
+      - EUREKA_HOSTNAME=discovery-service
+      - MONGODB_HOST=delivery-db
+      - MONGODB_PORT=27017
+      - MONGODB_DATABASE=delivery
 
   gateway-service:
     build: gatewayService
     ports:
-      - "8080:8080"
+      - "8080:10789"
+    depends_on:
+      - discovery-service
+    environment:
+      - EUREKA_HOSTNAME=discovery-service
 
   frontend-nginx:
     build:
