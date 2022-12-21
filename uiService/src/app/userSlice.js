@@ -1,7 +1,6 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
-import {fetchQuoteAsync} from "../views/quote/quoteSlice";
-import { Jose } from 'jose-jwe-jws';
+import {Jose} from 'jose-jwe-jws';
 
 //TODO den default auf null setzten und bei login auf die rolle des angemeldeten users setzten
 const initialState = {
@@ -41,23 +40,26 @@ export const postUserAsync = createAsyncThunk(
 
         const publicKey = api.get('/auth/pkey')
         let encryptedPassword =
-        await publicKey.then((key) => {
-            let rsaKey = Jose.Utils.importRsaPublicKey({"e": parseInt(key.e), "n": key.n}, "RSA-OAEP");
-            console.log("Key built");
-            return rsaKey;
-        })
-            .then(async (rsaKey) => {
+            await publicKey.then((response) => {
+                let rsaKey = Jose.Utils.importRsaPublicKey({
+                    "e": parseInt(response.data.e),
+                    "n": response.data.n
+                }, "RSA-OAEP");
+                console.log("Key built");
+                return rsaKey;
+            })
+                .then(async (rsaKey) => {
 
-                let cryptographer = await new Jose.WebCryptographer();
-                let encrypter = await new Jose.JoseJWE.Encrypter(cryptographer, rsaKey);
+                    let cryptographer = await new Jose.WebCryptographer();
+                    let encrypter = await new Jose.JoseJWE.Encrypter(cryptographer, rsaKey);
 
-                let password = encrypter.encrypt(payload.password)
-                // TODO: Replace encryptAct with a command to encrypt a password written in JSON (i.e., {" password": password}) pw = await encryptAct
+                    let password = encrypter.encrypt(payload.password)
+                    // TODO: Replace encryptAct with a command to encrypt a password written in JSON (i.e., {" password": password}) pw = await encryptAct
 
-                await console.log(`encrypted pw: ${password}`);
-                return password
+                    await console.log(`encrypted pw: ${password}`);
+                    return password
 
-            });
+                });
         const response = await api.post('/auth', {email: payload.email, password_enc: encryptedPassword})
         console.log("Login successful" + response.data)
         return response.data.content

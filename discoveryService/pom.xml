@@ -38,7 +38,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>edu.tum.ase.dicoveryServer.DiscoveryServerApplication</mainClass>
+                            <mainClass>edu.tum.ase.discoveryServer.DiscoveryServerApplication</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

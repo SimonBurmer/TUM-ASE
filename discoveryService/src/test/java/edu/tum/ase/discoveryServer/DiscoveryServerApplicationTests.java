@@ -1,4 +1,4 @@
-package edu.tum.ase.dicoveryServer;
+package edu.tum.ase.discoveryServer;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

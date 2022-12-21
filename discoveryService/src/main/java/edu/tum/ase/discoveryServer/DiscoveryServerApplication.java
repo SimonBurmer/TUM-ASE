@@ -1,4 +1,4 @@
-package edu.tum.ase.dicoveryServer;
+package edu.tum.ase.discoveryServer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
