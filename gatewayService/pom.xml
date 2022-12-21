@@ -15,11 +15,6 @@
     <name>api-gateway</name>
     <description>API Gateway</description>
 
-    <properties>
-        <java.version>11</java.version>
-        <spring-cloud.version>2020.0.0</spring-cloud.version>
-    </properties>
-
     <dependencies>
 
         <!-- API gateway -->
@@ -35,25 +30,8 @@
         </dependency>
     </dependencies>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring-cloud.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -70,5 +48,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
