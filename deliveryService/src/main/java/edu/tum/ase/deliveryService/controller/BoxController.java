@@ -45,6 +45,7 @@ public class BoxController {
         return boxService.createBox(box);
     }
 
+
     //##################################################################################################################
     // PUT mappings
     @PutMapping("{id}")
@@ -77,7 +78,7 @@ public class BoxController {
         if (deliveries.size() > 0) {
             throw new BoxHasActiveDeliveriesException();
         } else {
-            boxService.delete(box);
+            boxService.deleteBox(box);
         }
         return HttpStatus.OK;
     }

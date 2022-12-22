@@ -27,4 +27,12 @@ public class DeliveryService {
     public Delivery findById(String id) {
         return deliveryRepository.findById(id).orElseThrow(BoxNotFoundException::new);
     }
+
+    public Delivery updateDelivery(Delivery delivery) {
+        return deliveryRepository.save(delivery);
+    }
+
+    public void deleteDelivery(Delivery delivery) {
+        deliveryRepository.delete(delivery);
+    }
 }

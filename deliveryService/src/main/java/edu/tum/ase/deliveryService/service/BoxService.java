@@ -68,7 +68,7 @@ public class BoxService {
 
     //##################################################################################################################
     // Delete
-    public void delete(Box box) {
+    public void deleteBox(Box box) {
         boxRepository.delete(box);
     }
 }

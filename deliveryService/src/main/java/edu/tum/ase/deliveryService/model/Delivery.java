@@ -16,7 +16,7 @@ public class Delivery {
     // Fields
 
     @Id
-    private String _id;
+    private String id;
 
     private DeliveryStatus status;
 
@@ -26,24 +26,16 @@ public class Delivery {
 
 
     public Delivery() {
-        _id = randomUUID() + "";
+        id = randomUUID() + "";
         status = ORDERED;
         customer = "";
         deliverer = "";
     }
 
     public Delivery(String customer, String deliverer) {
-        _id = randomUUID() + "";
+        id = randomUUID() + "";
         status = ORDERED;
         this.customer = customer;
         this.deliverer = deliverer;
-    }
-
-    public String get_id() {
-        return _id;
-    }
-
-    public void set_id(String _id) {
-        this._id = _id;
     }
 }
