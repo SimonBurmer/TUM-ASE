@@ -6,7 +6,7 @@ spring:
     mongodb:
 
       # Configure database location
-      host: 172.17.0.3
+      host: localhost
       port: 27017
       database: auth
       

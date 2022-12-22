@@ -1,10 +1,15 @@
 package edu.tum.ase.deliveryService.model;
 
+import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import static edu.tum.ase.deliveryService.model.DeliveryStatus.*;
 import static java.util.UUID.randomUUID;
 
+
+@Data
+@Document(collection = "deliveries")
 public class Delivery {
 
     //##################################################################################################################
@@ -19,8 +24,6 @@ public class Delivery {
 
     private String deliverer;
 
-    //##################################################################################################################
-    // Constructors
 
     public Delivery() {
         _id = randomUUID() + "";
@@ -36,39 +39,11 @@ public class Delivery {
         this.deliverer = deliverer;
     }
 
-    //##################################################################################################################
-    // Getters and Setters
-
-
     public String get_id() {
         return _id;
     }
 
     public void set_id(String _id) {
         this._id = _id;
-    }
-
-    public DeliveryStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(DeliveryStatus status) {
-        this.status = status;
-    }
-
-    public String getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(String customer) {
-        this.customer = customer;
-    }
-
-    public String getDeliverer() {
-        return deliverer;
-    }
-
-    public void setDeliverer(String deliverer) {
-        this.deliverer = deliverer;
     }
 }

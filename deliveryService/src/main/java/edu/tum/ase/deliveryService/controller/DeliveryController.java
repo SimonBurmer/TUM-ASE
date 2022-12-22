@@ -10,13 +10,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.List;
 
 @RestController
-@RequestMapping("/box/{boxId}/delivery")
+@RequestMapping("/delivery")
 public class DeliveryController {
 
-    @Autowired
-    BoxService boxService;
 
     @Autowired
     DeliveryService deliveryService;
@@ -25,42 +24,20 @@ public class DeliveryController {
     // GET mappings
 
     @GetMapping("")
-    public Collection<Delivery> getDeliveriesForBox(@PathVariable String boxId) {
-        Box box = boxService.findById(boxId);
-        return deliveryService.findDeliveriesForBox(box);
+    public List<Delivery> getAllDeliveries() {
+        return deliveryService.getAllDeliveries();
     }
 
-    //##################################################################################################################
-    // POST mappings
-
-    @PostMapping("")
-    public Delivery createDeliveryForBox(@PathVariable String boxId, @RequestBody Delivery delivery) {
-        Box box = boxService.findById(boxId);
-        delivery = deliveryService.createDelivery(box, delivery);
-        return delivery;
+    @GetMapping("{id}")
+    public Delivery getDelivery(@PathVariable String id) {
+        return deliveryService.findById(id);
     }
 
-    //##################################################################################################################
-    // PUT mappings
+    // Update delivery
 
-    @PutMapping("{deliveryId}/status")
-    public HttpStatus updateDeliveryStatusForBox(@PathVariable String boxId, @PathVariable String deliveryId, @RequestBody DeliveryStatus deliveryStatus) {
-        Box box = boxService.findById(boxId);
-        Delivery delivery = deliveryService.findDelivery(box, deliveryId);
-        deliveryService.updateStatus(box, delivery, deliveryStatus);
+    // Delete delivery from box
 
-        return HttpStatus.OK;
-    }
 
-    //##################################################################################################################
-    // DELETE mappings
+    // TODO: GET BOX of delivery?
 
-    @DeleteMapping("{deliveryId}")
-    public HttpStatus deleteDeliveryForBox(@PathVariable String boxId, @PathVariable String deliveryId) {
-        Box box = boxService.findById(boxId);
-        Delivery delivery = deliveryService.findDelivery(box, deliveryId);
-        deliveryService.delete(box, delivery);
-
-        return HttpStatus.OK;
-    }
 }

@@ -1,14 +1,17 @@
 package edu.tum.ase.deliveryService.model;
 
 import com.mongodb.lang.NonNull;
+import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Collection;
 import java.util.HashSet;
 
 @Document(collection = "boxes")
+@Data
 public class Box {
 
     //##################################################################################################################
@@ -27,10 +30,9 @@ public class Box {
     @NonNull
     private String rasPiId;
 
+    @DBRef(db = "deliveries")
     private Collection<Delivery> deliveries;
 
-    //##################################################################################################################
-    // Constructors
 
     public Box() {
         name = "";
@@ -47,47 +49,6 @@ public class Box {
         this.deliveries = new HashSet<>();
     }
 
-    //##################################################################################################################
-    // Getters and Setters
-
-    public String getId() {
-        return id;
-    }
-
-    @NonNull
-    public String getName() {
-        return name;
-    }
-
-    public void setName(@NonNull String name) {
-        this.name = name;
-    }
-
-    @NonNull
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(@NonNull String address) {
-        this.address = address;
-    }
-
-    @NonNull
-    public String getRasPiId() {
-        return rasPiId;
-    }
-
-    public void setRasPiId(@NonNull String rasPiId) {
-        this.rasPiId = rasPiId;
-    }
-
-    public Collection<Delivery> getDeliveries() {
-        return deliveries;
-    }
-
-    public void setDeliveries(Collection<Delivery> deliveries) {
-        this.deliveries = deliveries;
-    }
 
     public void addDelivery(Delivery delivery) {
         this.deliveries.add(delivery);

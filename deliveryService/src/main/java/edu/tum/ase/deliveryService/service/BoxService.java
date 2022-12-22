@@ -3,10 +3,14 @@ package edu.tum.ase.deliveryService.service;
 import edu.tum.ase.deliveryService.exceptions.BoxAlreadyExistsException;
 import edu.tum.ase.deliveryService.exceptions.BoxNotFoundException;
 import edu.tum.ase.deliveryService.model.Box;
+import edu.tum.ase.deliveryService.model.Delivery;
 import edu.tum.ase.deliveryService.repository.BoxRepository;
+import edu.tum.ase.deliveryService.repository.DeliveryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 @Service
@@ -15,6 +19,9 @@ public class BoxService {
     @Autowired
     private BoxRepository boxRepository;
 
+    @Autowired
+    private DeliveryRepository deliveryRepository;
+
     //##################################################################################################################
     // Create
 
@@ -22,6 +29,12 @@ public class BoxService {
         if (boxRepository.findByName(box.getName()).isPresent()) {
             throw new BoxAlreadyExistsException();
         }
+
+        Collection<Delivery> deliveries = box.getDeliveries();
+        for (Delivery delivery : deliveries) {
+            deliveryRepository.save(delivery);
+        }
+
         return boxRepository.save(box);
     }
 
@@ -43,11 +56,18 @@ public class BoxService {
     //##################################################################################################################
     // Update
 
-    // TODO: do we need this at all?
+    public Box updateBox(Box box) {
+
+    //            oldBox.setAddress(newBox.getAddress());
+    //            oldBox.setName(newBox.getName());
+    //            oldBox.setRasPiId(newBox.getRasPiId());
+    //            oldBox.setDeliveries(newBox.getDeliveries());
+
+        return boxRepository.save(box);
+    }
 
     //##################################################################################################################
     // Delete
-
     public void delete(Box box) {
         boxRepository.delete(box);
     }
