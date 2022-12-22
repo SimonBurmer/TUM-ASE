@@ -17,15 +17,17 @@ import java.util.List;
 
 public class CustomWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000")); // TODO: set correct value here
-        configuration.setAllowedMethods(List.of("*"));
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
+    // This should be fine, since CORS is done in the gateway
+    //@Bean
+    //CorsConfigurationSource corsConfigurationSource() {
+    //    CorsConfiguration configuration = new CorsConfiguration();
+    //    configuration.setAllowedOrigins(List.of("http://localhost:3000")); // TODO: set correct value here
+    //    configuration.setAllowedMethods(List.of("*"));
+    //    configuration.setAllowedHeaders(List.of("*"));
+    //    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    //    source.registerCorsConfiguration("/**", configuration);
+    //    return source;
+    //}
 
     @Autowired
     JwtUtil jwtUtil;
@@ -33,8 +35,8 @@ public class CustomWebSecurityConfigurerAdapter extends WebSecurityConfigurerAda
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.cors()
-                .and().csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+        http.cors().disable() // This should be fine, since CORS is done by the gateway
+                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .and().addFilterBefore(new AuthRequestFilter(jwtUtil), AnonymousAuthenticationFilter.class);
 
         http.authorizeRequests()

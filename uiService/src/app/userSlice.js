@@ -60,7 +60,7 @@ export const postUserAsync = createAsyncThunk(
                     return password
 
                 });
-        const response = await api.post('/auth', {email: payload.email, password_enc: encryptedPassword})
+        const response = await api.post('/auth', {email: payload.email, password_enc: encryptedPassword}, {headers: {"X-XSRF-Token" : "5690f1cf-7013-405d-b59f-c52dafdf4c61"}})
         console.log("Login successful" + response.data)
         return response.data.content
 

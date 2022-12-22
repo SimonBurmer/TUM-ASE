@@ -30,7 +30,7 @@ public class AuthService {
 
 
     public ResponseEntity<String> authenticateUser(String email, String password_enc, boolean remember, HttpServletResponse response) {
-        String password = (String) jwtUtil.decryptJwe(password_enc).get("password");
+        String password = jwtUtil.decryptJwe(password_enc);
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
@@ -117,9 +117,5 @@ public class AuthService {
         pKeyResponse.put("n", modulusByteStr.toString());
         pKeyResponse.put("e", String.valueOf(rsaPubKey.getPublicExponent())); // DONE: Get public exponent);
         return pKeyResponse;
-    }
-
-    public String decryptPassword(String token) {
-        return (String) jwtUtil.decryptJwe(token).get("password");
     }
 }

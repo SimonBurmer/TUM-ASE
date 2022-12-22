@@ -65,13 +65,13 @@ public class JwtUtil {
         return loadJwtParser().isSigned(token) && !isTokenExpired(token);
     }
 
-    public Map<String, Object> decryptJwe(String input) {
+    public String decryptJwe(String input) {
         RSADecrypter decrypter = new RSADecrypter((RSAPrivateKey) keyStoreManager.getPrivateKey());
         try {
             EncryptedJWT encryptedJWT = EncryptedJWT.parse(input);
 
             encryptedJWT.decrypt(decrypter);
-            return encryptedJWT.getJWTClaimsSet().getClaims();
+            return encryptedJWT.getPayload().toString();
 
         } catch (JOSEException | ParseException e) {
             throw new JWEDecryptException();

@@ -13,3 +13,12 @@ spring:
       host: 172.17.0.2
       port: 27017
       database: delivery
+
+      # Configure credential
+      username: aseAdmin
+      password: ase
+      authentication-database: admin
+
+      # Configure Database Operation,
+      # allow creating index automatically from the code
+      auto-index-creation: true
