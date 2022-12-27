@@ -9,6 +9,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 
 @Document(collection = "boxes")
 @Data
@@ -30,23 +32,15 @@ public class Box {
     @NonNull
     private String rasPiId;
 
-    @DBRef(db = "deliveries")
-    private Collection<Delivery> deliveries;
-
-
-    public Box() {
-        name = "";
-        address = "";
-        rasPiId = "";
-        this.deliveries = new HashSet<>();
-    }
+    @DBRef() //db = "deliveries"
+    private List<Delivery> deliveries;
 
     public Box(String name, String address, String rasPiId)
     {
         this.name = name;
         this.address = address;
         this.rasPiId = rasPiId;
-        this.deliveries = new HashSet<>();
+        this.deliveries = new LinkedList<>();
     }
 
 

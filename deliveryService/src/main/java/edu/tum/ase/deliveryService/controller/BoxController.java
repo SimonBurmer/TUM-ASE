@@ -50,18 +50,19 @@ public class BoxController {
     // PUT mappings
     @PutMapping("{id}")
     @PreAuthorize("hasRole('DISPATCHER')")
-    public Box updateBox(@RequestBody Box newBox, @PathVariable String id) {
+    public Box updateBox(@RequestBody Box newBox, @PathVariable String id) { // Not for adding/altering delivery's!!!
         Box box = boxService.findById(id);
 
         // Check for not yet delivered "deliveries"
         Collection<Delivery> deliveries = box.getDeliveries();
         for (Delivery delivery : deliveries) {
-            if (!delivery.getStatus().equals(DeliveryStatus.DELIVERED)){
+            if (delivery.getStatus().equals(DeliveryStatus.DELIVERED)){
                 throw new BoxHasDeliveredDeliveriesException();
             }
         }
 
         newBox.setId(id);
+        newBox.setDeliveries(box.getDeliveries());
         return boxService.updateBox(newBox);
     }
 

@@ -57,12 +57,10 @@ public class BoxService {
     // Update
 
     public Box updateBox(Box box) {
-
-    //            oldBox.setAddress(newBox.getAddress());
-    //            oldBox.setName(newBox.getName());
-    //            oldBox.setRasPiId(newBox.getRasPiId());
-    //            oldBox.setDeliveries(newBox.getDeliveries());
-
+        Collection<Delivery> deliveries = box.getDeliveries();
+        for (Delivery delivery : deliveries) {
+            deliveryRepository.save(delivery);
+        }
         return boxRepository.save(box);
     }
 

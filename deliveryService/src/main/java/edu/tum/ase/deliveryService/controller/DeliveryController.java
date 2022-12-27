@@ -50,28 +50,39 @@ public class DeliveryController {
     @PutMapping("{id}")
     @PreAuthorize("hasRole('DISPATCHER')")
     public Delivery updateDelivery(@RequestBody Delivery newdelivery, @PathVariable String id) {
-
         newdelivery.setId(id);
         return deliveryService.updateDelivery(newdelivery);
     }
 
-    @DeleteMapping("{boxId}/{id}")
+    @PutMapping("{boxId}/{id}")
     @PreAuthorize("hasRole('DISPATCHER')")
-    public HttpStatus deleteDeliveryFromBox(@PathVariable String boxId, @PathVariable String id) {
+    public Box removeDeliveryFromBox(@PathVariable String boxId, @PathVariable String id) {
         Box box = boxService.findById(boxId);
         Delivery delivery = deliveryService.findById(id);
 
         Collection<Delivery> deliveries = box.getDeliveries();
         for (Delivery iterDelivery : deliveries) {
             if (iterDelivery.getId().equals(id)){
-                deliveryService.deleteDelivery(delivery);
-                return HttpStatus.OK;
+                box.removeDelivery(delivery);
+                //deliveryService.deleteDelivery(delivery);
+
+                return boxService.updateBox(box);
             }
         }
         throw new DeliveryNotPartOfBoxException();
     }
 
+    @DeleteMapping("{id}")
+    @PreAuthorize("hasRole('DISPATCHER')")
+    public HttpStatus deleteDelivery(@PathVariable String id) {
+        Delivery delivery = deliveryService.findById(id);
+
+        //TODO: Check if delivery is still used in Box --> if yes, delete is not allowed!
+
+        deliveryService.deleteDelivery(delivery);
+        return HttpStatus.OK;
+    }
+
 
     // TODO: Maybe GET BOX of delivery?
-    // TODO: Maybe delete delivery?
 }

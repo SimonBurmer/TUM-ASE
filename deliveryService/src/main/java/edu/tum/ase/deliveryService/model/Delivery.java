@@ -9,7 +9,7 @@ import static java.util.UUID.randomUUID;
 
 
 @Data
-@Document(collection = "deliveries")
+@Document()
 public class Delivery {
 
     //##################################################################################################################
