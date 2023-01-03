@@ -35,7 +35,7 @@ export const postUserAsync = createAsyncThunk(
 
         await console.log(`Attempting login with email: ${payload.email} and ${payload.password}`)
 
-        const api = axios.create({baseURL: 'http://127.0.0.1:10789'}) //TODO move to specific file for constants
+        const api = axios.create({baseURL: 'http://localhost:10789', withCredentials: true}) //TODO move to specific file for constants
 
 
         const publicKey = api.get('/auth/pkey')
@@ -60,7 +60,7 @@ export const postUserAsync = createAsyncThunk(
                     return password
 
                 });
-        const response = await api.post('/auth', {email: payload.email, password_enc: encryptedPassword}, {headers: {"X-XSRF-Token" : "TODO: Add Token from Cookie here"}})
+        const response = await api.post('/auth', {email: payload.email, password_enc: encryptedPassword})
         console.log("Login successful" + response.data)
         return response.data.content
 
