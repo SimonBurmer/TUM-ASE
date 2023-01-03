@@ -2,6 +2,8 @@ import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
 import {Jose} from 'jose-jwe-jws';
 
+let reqConfig = {}
+
 //TODO den default auf null setzten und bei login auf die rolle des angemeldeten users setzten
 const initialState = {
     userRole: "Dispatcher",
@@ -35,7 +37,7 @@ export const postUserAsync = createAsyncThunk(
 
         await console.log(`Attempting login with email: ${payload.email} and ${payload.password}`)
 
-        const api = axios.create({baseURL: 'http://127.0.0.1:10789'}) //TODO move to specific file for constants
+        const api = axios.create({baseURL: 'http://127.0.0.1:10789', withCredentials: true}) //TODO move to specific file for constants
 
 
         const publicKey = api.get('/auth/pkey')
@@ -54,13 +56,16 @@ export const postUserAsync = createAsyncThunk(
                     let encrypter = await new Jose.JoseJWE.Encrypter(cryptographer, rsaKey);
 
                     let password = encrypter.encrypt(payload.password)
-                    // TODO: Replace encryptAct with a command to encrypt a password written in JSON (i.e., {" password": password}) pw = await encryptAct
-
                     await console.log(`encrypted pw: ${password}`);
                     return password
 
                 });
-        const response = await api.post('/auth', {email: payload.email, password_enc: encryptedPassword}, {headers: {"X-XSRF-Token" : "TODO: Add Token from Cookie here"}})
+        console.log(document.cookie)
+        reqConfig.headers = {"X-XSRF-Token": document.cookie.split("XSRF-TOKEN=")?.[1]}
+        const response = await api.post('/auth', {
+            email: payload.email,
+            password_enc: encryptedPassword
+        }, reqConfig)
         console.log("Login successful" + response.data)
         return response.data.content
 
