@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BoxService {
@@ -58,10 +59,17 @@ public class BoxService {
 
     public Box updateBox(Box box) {
         Collection<Delivery> deliveries = box.getDeliveries();
-        for (Delivery delivery : deliveries) {
-            deliveryRepository.save(delivery);
-        }
+        deliveryRepository.saveAll(deliveries);
         return boxRepository.save(box);
+    }
+
+    public void clearDeliveryAssignment(Delivery delivery) {
+        Optional<Box> maybeBox = boxRepository.findBoxForDelivery(delivery.getId());
+        if (maybeBox.isPresent()) {
+            Box box = maybeBox.get();
+            box.removeDelivery(delivery);
+            this.updateBox(box);
+        }
     }
 
     //##################################################################################################################
