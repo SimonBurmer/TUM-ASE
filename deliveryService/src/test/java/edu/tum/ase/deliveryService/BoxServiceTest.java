@@ -102,7 +102,7 @@ public class BoxServiceTest {
         Box box1 = new Box("Garching", "Garching", "123");
 
         //When
-        boxService.delete(box1);
+        boxService.deleteBox(box1);
 
         //Then
         verify(boxRepository).delete(box1);

@@ -1,9 +1,10 @@
 package edu.tum.ase.deliveryService.controller;
 
+import edu.tum.ase.deliveryService.exceptions.BoxHasPendingDeliveriesException;
 import edu.tum.ase.deliveryService.model.Box;
+import edu.tum.ase.deliveryService.request.BoxRequest;
 import edu.tum.ase.deliveryService.service.BoxService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -26,9 +27,9 @@ public class BoxController {
         return boxService.getAllBoxes();
     }
 
-    @GetMapping("{id}")
-    public Box getBox(@PathVariable String id) {
-        return boxService.findById(id);
+    @GetMapping("{boxId}")
+    public Box getBox(@PathVariable String boxId) {
+        return boxService.findById(boxId);
     }
 
     //##################################################################################################################
@@ -36,23 +37,44 @@ public class BoxController {
 
     @PostMapping("create")
     @PreAuthorize("hasRole('DISPATCHER')")
-    public Box createBox(@RequestBody Box box) {
+    public Box createBox(@Valid @RequestBody BoxRequest boxRequest) {
+        Box box = new Box();
+        boxRequest.apply(box);
         return boxService.createBox(box);
     }
+
 
     //##################################################################################################################
     // PUT mappings
 
+    @PutMapping("{boxId}")
+    @PreAuthorize("hasRole('DISPATCHER')")
+    public Box updateBox(@Valid @RequestBody BoxRequest boxRequest, @PathVariable String boxId) {
+        Box box = boxService.findById(boxId);
+
+        // Check for not yet delivered "deliveries"
+        if (box.hasPendingDeliveries()) {
+            throw new BoxHasPendingDeliveriesException();
+        }
+
+        boxRequest.apply(box);
+        return boxService.updateBox(box);
+    }
+
     //##################################################################################################################
     // DELETE mappings
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("{boxId}")
     @PreAuthorize("hasRole('DISPATCHER')")
-    public HttpStatus deleteBox(@PathVariable String id) {
-        Box box = boxService.findById(id);
-        boxService.delete(box);
+    public HttpStatus deleteBox(@PathVariable String boxId) {
+        Box box = boxService.findById(boxId);
 
+        // Check for not yet delivered "deliveries"
+        if (box.hasPendingDeliveries()) {
+            throw new BoxHasPendingDeliveriesException();
+        }
+
+        boxService.deleteBox(box);
         return HttpStatus.OK;
     }
-
 }
