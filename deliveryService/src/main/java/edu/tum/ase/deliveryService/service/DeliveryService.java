@@ -1,60 +1,47 @@
 package edu.tum.ase.deliveryService.service;
 
+import edu.tum.ase.deliveryService.exceptions.BoxAlreadyExistsException;
 import edu.tum.ase.deliveryService.exceptions.DeliveryNotFoundException;
-import edu.tum.ase.deliveryService.exceptions.SingleCustomerPerBoxViolationException;
 import edu.tum.ase.deliveryService.model.Box;
 import edu.tum.ase.deliveryService.model.Delivery;
-import edu.tum.ase.deliveryService.model.DeliveryStatus;
-import edu.tum.ase.deliveryService.repository.BoxRepository;
+import edu.tum.ase.deliveryService.repository.DeliveryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 
 @Service
 public class DeliveryService {
 
     @Autowired
-    private BoxRepository boxRepository;
+    private DeliveryRepository deliveryRepository;
 
     //##################################################################################################################
     // Create
 
-    public Delivery createDelivery(Box box, Delivery delivery) {
-        if (box.getDeliveries().stream().anyMatch(b -> !b.getCustomer().equals(delivery.getCustomer()))) {
-            throw new SingleCustomerPerBoxViolationException();
-        }
-        box.addDelivery(delivery);
-        boxRepository.save(box);
-        return delivery;
-    }
-
     //##################################################################################################################
     // Retrieve
 
-    public Delivery findDelivery(Box box, String id) {
-        return box.getDeliveries().stream()
-                .filter((d)->d.get_id().equals(id))
-                .findFirst()
-                .orElseThrow(DeliveryNotFoundException::new);
+    public List<Delivery> getAllDeliveries() {
+        return deliveryRepository.findAll();
     }
 
-    public Collection<Delivery> findDeliveriesForBox(Box box) {
-        return box.getDeliveries();
+    public Delivery findById(String id) {
+        return deliveryRepository.findById(id).orElseThrow(DeliveryNotFoundException::new);
     }
 
     //##################################################################################################################
     // Update
-    public void updateStatus(Box box, Delivery delivery, DeliveryStatus deliveryStatus) {
-        delivery.setStatus(deliveryStatus);
-        boxRepository.save(box);
+
+    public Delivery updateDelivery(Delivery delivery) {
+        return deliveryRepository.save(delivery);
     }
 
     //##################################################################################################################
     // Delete
 
-    public void delete(Box box, Delivery delivery) {
-        box.removeDelivery(delivery);
-        boxRepository.save(box);
+    public void deleteDelivery(Delivery delivery) {
+        deliveryRepository.delete(delivery);
     }
 }

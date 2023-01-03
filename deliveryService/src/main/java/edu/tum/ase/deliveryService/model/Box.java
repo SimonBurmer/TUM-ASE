@@ -1,14 +1,17 @@
 package edu.tum.ase.deliveryService.model;
 
 import com.mongodb.lang.NonNull;
+import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 
-@Document(collection = "boxes")
+@Document()
+@Data
 public class Box {
 
     //##################################################################################################################
@@ -27,16 +30,14 @@ public class Box {
     @NonNull
     private String rasPiId;
 
-    private Collection<Delivery> deliveries;
-
-    //##################################################################################################################
-    // Constructors
+    @DBRef() //db = "deliveries"
+    private List<Delivery> deliveries;
 
     public Box() {
-        name = "";
-        address = "";
-        rasPiId = "";
-        this.deliveries = new HashSet<>();
+        this.name = "";
+        this.address = "";
+        this.rasPiId = "";
+        this.deliveries = new LinkedList<>();
     }
 
     public Box(String name, String address, String rasPiId)
@@ -44,50 +45,9 @@ public class Box {
         this.name = name;
         this.address = address;
         this.rasPiId = rasPiId;
-        this.deliveries = new HashSet<>();
+        this.deliveries = new LinkedList<>();
     }
 
-    //##################################################################################################################
-    // Getters and Setters
-
-    public String getId() {
-        return id;
-    }
-
-    @NonNull
-    public String getName() {
-        return name;
-    }
-
-    public void setName(@NonNull String name) {
-        this.name = name;
-    }
-
-    @NonNull
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(@NonNull String address) {
-        this.address = address;
-    }
-
-    @NonNull
-    public String getRasPiId() {
-        return rasPiId;
-    }
-
-    public void setRasPiId(@NonNull String rasPiId) {
-        this.rasPiId = rasPiId;
-    }
-
-    public Collection<Delivery> getDeliveries() {
-        return deliveries;
-    }
-
-    public void setDeliveries(Collection<Delivery> deliveries) {
-        this.deliveries = deliveries;
-    }
 
     public void addDelivery(Delivery delivery) {
         this.deliveries.add(delivery);
@@ -95,5 +55,9 @@ public class Box {
 
     public void removeDelivery(Delivery delivery) {
         this.deliveries.remove(delivery);
+    }
+
+    public boolean hasPendingDeliveries() {
+        return !this.deliveries.isEmpty();
     }
 }

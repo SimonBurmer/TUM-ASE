@@ -3,17 +3,25 @@ package edu.tum.ase.deliveryService.service;
 import edu.tum.ase.deliveryService.exceptions.BoxAlreadyExistsException;
 import edu.tum.ase.deliveryService.exceptions.BoxNotFoundException;
 import edu.tum.ase.deliveryService.model.Box;
+import edu.tum.ase.deliveryService.model.Delivery;
 import edu.tum.ase.deliveryService.repository.BoxRepository;
+import edu.tum.ase.deliveryService.repository.DeliveryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BoxService {
 
     @Autowired
     private BoxRepository boxRepository;
+
+    @Autowired
+    private DeliveryRepository deliveryRepository;
 
     //##################################################################################################################
     // Create
@@ -22,6 +30,12 @@ public class BoxService {
         if (boxRepository.findByName(box.getName()).isPresent()) {
             throw new BoxAlreadyExistsException();
         }
+
+        Collection<Delivery> deliveries = box.getDeliveries();
+        for (Delivery delivery : deliveries) {
+            deliveryRepository.save(delivery);
+        }
+
         return boxRepository.save(box);
     }
 
@@ -43,12 +57,24 @@ public class BoxService {
     //##################################################################################################################
     // Update
 
-    // TODO: do we need this at all?
+    public Box updateBox(Box box) {
+        Collection<Delivery> deliveries = box.getDeliveries();
+        deliveryRepository.saveAll(deliveries);
+        return boxRepository.save(box);
+    }
+
+    public void clearDeliveryAssignment(Delivery delivery) {
+        Optional<Box> maybeBox = boxRepository.findBoxForDelivery(delivery.getId());
+        if (maybeBox.isPresent()) {
+            Box box = maybeBox.get();
+            box.removeDelivery(delivery);
+            this.updateBox(box);
+        }
+    }
 
     //##################################################################################################################
     // Delete
-
-    public void delete(Box box) {
+    public void deleteBox(Box box) {
         boxRepository.delete(box);
     }
 }
