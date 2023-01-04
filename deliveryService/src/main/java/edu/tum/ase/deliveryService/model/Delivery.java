@@ -1,10 +1,8 @@
 package edu.tum.ase.deliveryService.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.*;
 import com.mongodb.lang.NonNull;
+import com.nimbusds.jose.shaded.json.annotate.JsonIgnore;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -34,7 +32,7 @@ public class Delivery {
 
     @NonNull
     @DBRef()
-    @JsonBackReference
+    @JsonManagedReference
     private Box box;
 
     public Delivery() {

@@ -1,7 +1,29 @@
+# Data Model
+
+## AseUser
+```json
+{
+  "id": "...",
+  "email": "...",
+  "password" : "...",
+  "role": "...",
+  "rfid": "..."
+}
+```
+- `password` is not serialized
+- `rfid` only required if role is DELIVERER or CUSTOMER
+
 # API Endpoints
 
-| endpoint | Methods | input                                                              | output                              | description                                          |
-|----------|---------|--------------------------------------------------------------------|-------------------------------------|------------------------------------------------------|
-| /auth/pkey | GET   |                                                                    | `{ "e": ..., "key": ..., "n": ...}` | Used to fetch the public key for encrypting password |
-| /auth    | POST | `{ "email": "...", "password_enc": "...", "remember":true/false }` | jwt auth token (as HttpOnly Cookie) | Used to authenticate users, "remember" is optional   |
+| endpoint   | Methods | body                                     | output                              | comment                                             |
+|------------|---------|------------------------------------------|-------------------------------------|-----------------------------------------------------|
+| /auth/pkey | GET     |                                          | `{ "e": ..., "key": ..., "n": ...}` | Used to fetch the public key for encrypting password |
+| /auth      | POST    | email, password_enc, remember (optional) | jwt auth token (as HttpOnly Cookie) | Used to authenticate users                          |
 
+
+| endpoint             | Methods             | body                                   | output                                     | comment |
+|----------------------|---------------------|----------------------------------------|--------------------------------------------|---------|
+| /user                | GET (DISPATCHER)    |                                        | list of all users                          |         |
+| /user/current        | GET                 |                                        | information about currently logged-in user |         |
+| /user/create         | POST (DISPATCHER)   | email, password, role, rfid (optional) | user (created)                             |         |  
+| /user/{email}/delete | DELETE (DISPATCHER) |                                        |                                            |         | 

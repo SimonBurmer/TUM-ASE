@@ -137,26 +137,37 @@ public class DeliveryController {
         return delivery;
     }
 
-    @PutMapping("{boxId}/status/{status}")
-    @PreAuthorize("hasAnyRole('BOX', 'DELIVERER')")
-    public List<Delivery> updateDeliveryStatus(@PathVariable String boxId, @PathVariable DeliveryStatus status) {
-        if (!status.canBeAssignedByBox()) {
-            throw new UnauthorizedException();
-        }
-
+    @PutMapping("{boxId}/place")
+    @PreAuthorize("hasAnyRole('BOX')")
+    public List<Delivery> placeDeliveries(@PathVariable String boxId) {
         Box box = boxService.findById(boxId);
         List<Delivery> deliveries = box.getDeliveries();
 
         for (Delivery delivery : deliveries) {
-            delivery.setStatus(status);
+            if (delivery.getStatus().equals(DeliveryStatus.PICKED_UP)) {
+                delivery.setStatus(DeliveryStatus.IN_TARGET_BOX);
+            }
         }
 
         boxService.updateBox(box);
+        return deliveries;
+    }
 
-        if (status == DeliveryStatus.DELIVERED) {
-            box.getDeliveries().clear();
-            boxService.updateBox(box);
+    @PutMapping("{boxId}/retrieve")
+    @PreAuthorize("hasAnyRole('BOX')")
+    public List<Delivery> retrieveDeliveries(@PathVariable String boxId) {
+        Box box = boxService.findById(boxId);
+        List<Delivery> deliveries = box.getDeliveries();
+
+        for (Delivery delivery : deliveries) {
+            if (delivery.getStatus().equals(DeliveryStatus.IN_TARGET_BOX)) {
+                delivery.setStatus(DeliveryStatus.DELIVERED);
+                box.removeDelivery(delivery);
+                deliveryService.updateDelivery(delivery);
+            }
         }
+
+        boxService.updateBox(box);
         return deliveries;
     }
 

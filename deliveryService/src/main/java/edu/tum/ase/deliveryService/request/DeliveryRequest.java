@@ -1,5 +1,6 @@
 package edu.tum.ase.deliveryService.request;
 
+import edu.tum.ase.backendCommon.request.Request;
 import edu.tum.ase.deliveryService.model.Delivery;
 import edu.tum.ase.deliveryService.rules.CustomerValidationRule;
 import edu.tum.ase.deliveryService.rules.DelivererValidationRule;
@@ -10,12 +11,12 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class DeliveryRequest implements Request<Delivery> {
 
-    @NotBlank
-    @CustomerValidationRule
+    @NotBlank(message = "customer is require")
+    @CustomerValidationRule(message = "customer needs to be a valid customer")
     private String customer;
 
-    @NotBlank
-    @DelivererValidationRule
+    @NotBlank(message = "deliverer is required")
+    @DelivererValidationRule(message = "deliverer needs to be a valid deliverer")
     private String deliverer;
 
     @Override

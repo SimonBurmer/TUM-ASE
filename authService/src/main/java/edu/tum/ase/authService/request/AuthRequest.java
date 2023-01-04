@@ -1,19 +1,21 @@
 package edu.tum.ase.authService.request;
 
 import com.mongodb.lang.NonNull;
+import lombok.Data;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 
+@Data
 public class AuthRequest {
 
 
-    @Email
-    @NonNull
+    @Email(message = "email should be a valid email address")
+    @NotEmpty(message = "email is required")
     private final String email;
 
-    @NonNull
-    @NotEmpty
+    @NotEmpty(message = "password_enc is required")
     private final String password_enc;
 
     private boolean remember = false;
@@ -22,17 +24,5 @@ public class AuthRequest {
         this.email = email;
         this.password_enc = password_enc;
         this.remember = remember;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword_enc() {
-        return password_enc;
-    }
-
-    public boolean getRemember() {
-        return remember;
     }
 }

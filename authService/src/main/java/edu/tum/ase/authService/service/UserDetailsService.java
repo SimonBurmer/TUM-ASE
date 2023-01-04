@@ -1,11 +1,10 @@
 package edu.tum.ase.authService.service;
 
-import edu.tum.ase.backendCommon.roles.UserRole;
 import edu.tum.ase.authService.model.AseUser;
+import edu.tum.ase.backendCommon.roles.UserRole;
 import edu.tum.ase.authService.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
@@ -28,14 +27,15 @@ public class UserDetailsService implements org.springframework.security.core.use
             AseUser aseUser = maybeUser.get();
             // DONE: return a Spring AseUser with the
             // email, password and authority that we retrieved above
-            return new User(aseUser.getEmail(),
+            return new org.springframework.security.core.userdetails.User(aseUser.getEmail(),
                     aseUser.getPassword(),
                     true,
                     true,
                     true,
                     true,
-                    List.of(new SimpleGrantedAuthority(UserRole.getCompleteRole(aseUser.getRoles())))
+                    List.of(new SimpleGrantedAuthority(UserRole.getCompleteRole(aseUser.getRole())))
             );
         }
     }
+
 }

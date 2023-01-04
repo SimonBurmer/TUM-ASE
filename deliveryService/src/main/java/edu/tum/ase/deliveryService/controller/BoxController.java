@@ -3,7 +3,6 @@ package edu.tum.ase.deliveryService.controller;
 import edu.tum.ase.deliveryService.exceptions.BoxHasPendingDeliveriesException;
 import edu.tum.ase.deliveryService.model.Box;
 import edu.tum.ase.deliveryService.model.Delivery;
-import edu.tum.ase.deliveryService.model.DeliveryStatus;
 import edu.tum.ase.deliveryService.request.BoxRequest;
 import edu.tum.ase.deliveryService.service.BoxService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +32,11 @@ public class BoxController {
     @GetMapping("{boxId}")
     public Box getBox(@PathVariable String boxId) {
         return boxService.findById(boxId);
+    }
+
+    @GetMapping("{boxId}/deliveries")
+    public List<Delivery> getDeliveriesForBox(@PathVariable String boxId) {
+        return boxService.findById(boxId).getDeliveries();
     }
 
     //##################################################################################################################

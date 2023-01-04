@@ -1,5 +1,6 @@
 package edu.tum.ase.deliveryService.request;
 
+import edu.tum.ase.backendCommon.request.Request;
 import edu.tum.ase.deliveryService.model.Box;
 import lombok.Data;
 
@@ -8,13 +9,13 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class BoxRequest implements Request<Box> {
 
-    @NotBlank
+    @NotBlank(message = "name is required")
     private String name;
 
-    @NotBlank
+    @NotBlank(message = "address is required")
     private String address;
 
-    @NotBlank
+    @NotBlank(message = "rasPiId is required")
     private String rasPiId;
 
     @Override
