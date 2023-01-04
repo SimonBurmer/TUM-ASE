@@ -1,5 +1,6 @@
 package edu.tum.ase.deliveryService.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mongodb.lang.NonNull;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -27,6 +28,7 @@ public class Box {
     @NonNull
     private String address;
 
+    @Indexed(unique = true)
     @NonNull
     private String rasPiId;
 
@@ -50,6 +52,7 @@ public class Box {
 
 
     public void addDelivery(Delivery delivery) {
+        delivery.setBox(this);
         this.deliveries.add(delivery);
     }
 

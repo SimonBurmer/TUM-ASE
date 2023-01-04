@@ -1,29 +1,26 @@
 package edu.tum.ase.deliveryService.request;
 
 import edu.tum.ase.deliveryService.model.Delivery;
-import edu.tum.ase.deliveryService.model.DeliveryStatus;
 import edu.tum.ase.deliveryService.rules.CustomerValidationRule;
 import edu.tum.ase.deliveryService.rules.DelivererValidationRule;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+
 @Data
-public class DeliveryRequest implements Request<Delivery>{
+public class DeliveryRequest implements Request<Delivery> {
 
-    private DeliveryStatus status;
-
+    @NotBlank
     @CustomerValidationRule
     private String customer;
 
+    @NotBlank
     @DelivererValidationRule
     private String deliverer;
 
     @Override
     public void apply(Delivery delivery) {
-        if (this.status != null)
-            delivery.setStatus(this.status);
-        if (this.customer != null)
-            delivery.setCustomer(this.customer);
-        if (this.deliverer != null)
-            delivery.setDeliverer(this.deliverer);
+        delivery.setCustomer(this.customer);
+        delivery.setDeliverer(this.deliverer);
     }
 }

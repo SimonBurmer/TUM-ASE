@@ -2,6 +2,8 @@ package edu.tum.ase.deliveryService.controller;
 
 import edu.tum.ase.deliveryService.exceptions.BoxHasPendingDeliveriesException;
 import edu.tum.ase.deliveryService.model.Box;
+import edu.tum.ase.deliveryService.model.Delivery;
+import edu.tum.ase.deliveryService.model.DeliveryStatus;
 import edu.tum.ase.deliveryService.request.BoxRequest;
 import edu.tum.ase.deliveryService.service.BoxService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,7 @@ public class BoxController {
     // GET mappings
 
     @GetMapping("")
+    @PreAuthorize("hasRole('DISPATCHER')")
     public List<Box> getAllBoxes() {
         return boxService.getAllBoxes();
     }

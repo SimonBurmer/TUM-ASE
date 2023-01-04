@@ -31,6 +31,14 @@ public class DeliveryService {
         return deliveryRepository.findById(id).orElseThrow(DeliveryNotFoundException::new);
     }
 
+    public List<Delivery> getDeliveriesForDeliverer(String deliverer) {
+        return deliveryRepository.findDeliveriesForDeliverer(deliverer);
+    }
+
+    public List<Delivery> getDeliveriesForCustomer(String customer) {
+        return deliveryRepository.findDeliveriesForCustomer(customer);
+    }
+
     //##################################################################################################################
     // Update
 
