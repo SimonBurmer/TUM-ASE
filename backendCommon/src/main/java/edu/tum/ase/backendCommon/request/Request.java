@@ -1,4 +1,4 @@
-package edu.tum.ase.deliveryService.request;
+package edu.tum.ase.backendCommon.request;
 
 public interface Request<T> {
 

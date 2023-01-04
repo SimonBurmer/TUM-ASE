@@ -13,7 +13,8 @@ public interface BoxRepository extends MongoRepository<Box, String> {
     Optional<Box> findByName(String name);
 
     // Optional<Box> findByAddress(String location);
-    // Optional<Box> findByRasPiId(String rasPiId);
+
+    Optional<Box> findByRasPiId(String rasPiId);
 
     @Query("{'deliveries.id': ?0}")
     Optional<Box> findBoxForDelivery(String deliveryId);

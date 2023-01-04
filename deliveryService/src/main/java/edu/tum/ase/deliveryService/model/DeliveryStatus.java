@@ -14,4 +14,8 @@ public enum DeliveryStatus {
     public boolean canBeRemoved() {
         return this != PICKED_UP && this != IN_TARGET_BOX;
     }
+
+    public boolean canBeAssignedByBox() {
+        return this == IN_TARGET_BOX || this == DELIVERED;
+    }
 }

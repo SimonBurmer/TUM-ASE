@@ -1,62 +1,53 @@
 package edu.tum.ase.authService.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.mongodb.lang.NonNull;
+import com.mongodb.lang.Nullable;
+import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+@Data
 @Document(collection = "users")
 public class AseUser {
 
     @Id
+    @NonNull
     protected String id;
 
-    protected String email;
+    @NonNull
+    private String email;
 
-    protected String password;
+    @NonNull
+    @JsonIgnore
+    private String password;
 
-    private String roles;
+    @NonNull
+    private String role;
+
+    @Nullable
+    private String rfid;
 
     public AseUser() {
-        id = null;
         email = "";
         password = "";
-        roles = "";
+        role = "";
+        rfid = "";
     }
 
-    public AseUser(String email, String password, String roles) {
+    public AseUser(String email, String password, String role) {
         this.email = email;
         this.password = password;
-        this.roles = roles;
+        this.role = role;
+        rfid = null;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
+    public AseUser(String email, String password, String role, String rfid) {
         this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
         this.password = password;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getRoles() {
-        return roles;
-    }
-
-    public void setRoles(String roles) {
-        this.roles = roles;
+        this.role = role;
+        this.rfid = rfid;
     }
 }

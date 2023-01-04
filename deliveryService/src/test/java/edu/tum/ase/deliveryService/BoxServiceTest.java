@@ -4,6 +4,7 @@ import edu.tum.ase.deliveryService.exceptions.BoxAlreadyExistsException;
 import edu.tum.ase.deliveryService.exceptions.BoxNotFoundException;
 import edu.tum.ase.deliveryService.model.Box;
 import edu.tum.ase.deliveryService.repository.BoxRepository;
+import edu.tum.ase.deliveryService.repository.DeliveryRepository;
 import edu.tum.ase.deliveryService.service.BoxService;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -23,6 +24,9 @@ public class BoxServiceTest {
 
     @Mock
     private BoxRepository boxRepository;
+
+    @Mock
+    private DeliveryRepository deliveryRepository;
 
     @InjectMocks
     private BoxService boxService;

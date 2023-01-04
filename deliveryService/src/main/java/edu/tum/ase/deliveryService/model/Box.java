@@ -1,6 +1,9 @@
 package edu.tum.ase.deliveryService.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.mongodb.lang.NonNull;
+import com.nimbusds.jose.shaded.json.annotate.JsonIgnore;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -27,10 +30,12 @@ public class Box {
     @NonNull
     private String address;
 
+    @Indexed(unique = true)
     @NonNull
     private String rasPiId;
 
     @DBRef() //db = "deliveries"
+    @JsonBackReference
     private List<Delivery> deliveries;
 
     public Box() {
@@ -50,6 +55,11 @@ public class Box {
 
 
     public void addDelivery(Delivery delivery) {
+        if (delivery.getBox() != null) {
+            delivery.getBox().removeDelivery(delivery);
+        }
+
+        delivery.setBox(this);
         this.deliveries.add(delivery);
     }
 
