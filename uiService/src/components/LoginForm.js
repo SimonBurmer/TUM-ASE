@@ -18,6 +18,7 @@ import {Icon} from "@iconify/react";
 import {motion} from "framer-motion";
 import {postUserAsync, selectLoginState, selectUserRole} from "../app/userSlice";
 import {useDispatch, useSelector} from "react-redux";
+import {getBoxesAsync} from "../app/boxSlice";
 
 let easing = [0.6, -0.05, 0.01, 0.99];
 const animate = {
@@ -68,7 +69,8 @@ const LoginForm = () => {
         switch (selectorLoginState) {
             case "loggedIn": {
                 switch (selectorUserRole) {
-                    case "ROLE_DISPATCHER": {
+                    case "DISPATCHER": {
+                        dispatch(getBoxesAsync())
                         navigate("/mainPage/boxManagement");
                         break;
                     }

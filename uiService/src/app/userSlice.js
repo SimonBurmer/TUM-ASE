@@ -27,7 +27,7 @@ export const userSlice = createSlice({
             .addCase(postUserAsync.fulfilled, (state, action) => {
                 //hier im store speichern
                 console.log(action.payload)
-                state.userRole = action.payload.substring(1, action.payload.length - 1)
+                state.userRole = action.payload
                 if (state.loginState !== "loggedIn") {
                     state.loginState = "loggedIn"
                 }
@@ -74,7 +74,8 @@ export const postUserAsync = createAsyncThunk(
 
                 });
         const response = await api.post('/auth', {email: payload.email, password_enc: encryptedPassword})
-        return response.data
+        const userInfo = await api.get('user/current')
+        return userInfo.data.role
     }
 );
 

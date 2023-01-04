@@ -18,7 +18,7 @@ import {selectBoxes} from "../../app/boxSlice";
 
 //TODO statt dem Icon Button den Bearbeiten Dialog hinterlegen
 function generate(boxes) {
-    return boxes.map((value) => (
+    return boxes.map((box) => (
             <ListItem
                 divider
                 secondaryAction={
@@ -38,8 +38,8 @@ function generate(boxes) {
                     </Avatar>
                 </ListItemAvatar>
                 <ListItemText
-                    primary={value}
-                    secondary={'RaspiID als UUID'}
+                    primary={box.name}
+                    secondary={box.address}
                 />
             </ListItem>
         )

@@ -15,11 +15,11 @@ function MainPage() {
         <div>
             <ResponsiveAppBar/>
             <Routes>
-                {userRole === "ROLE_DISPATCHER" ?
+                {userRole === "DISPATCHER" ?
                     <Route path={"/userManagement"} element={<UserManagementOverview/>}/> : ""}
-                {userRole === "ROLE_DISPATCHER" ?
+                {userRole === "DISPATCHER" ?
                     <Route path={"/boxManagement"} element={<BoxManagementOverview/>}/> : ""}
-                {userRole === "ROLE_DISPATCHER" || "ROLE_DELIVERER" || "ROLE_CUSTOMER" ?
+                {userRole === "DISPATCHER" || "DELIVERER" || "CUSTOMER" ?
                     <Route path={"/DeliveryManagement"} element={<DeliveryManagementOverview/>}/> : ""}
             </Routes>
         </div>
