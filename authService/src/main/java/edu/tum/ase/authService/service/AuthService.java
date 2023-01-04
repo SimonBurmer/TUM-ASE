@@ -43,7 +43,7 @@ public class AuthService {
             jwtCookie.setPath("/");
             response.addCookie(jwtCookie);
 
-            return new ResponseEntity<>(userDetails.getAuthorities().toString(), HttpStatus.OK);
+            return new ResponseEntity<>(null, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(
                     "Username or password is incorrect",
