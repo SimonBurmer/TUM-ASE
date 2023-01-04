@@ -20,8 +20,8 @@
   "deliverer" : "..."
 }
 ```
-Hidden: box where it is delivered to (TODO: find a way to include information about box without stackoverflow)
-Status: ORDERED, PICKED_UP, IN_TARGET_BOX, DELIVERED
+- Hidden: box where it is delivered to (TODO: find a way to include information about box without stackoverflow)
+- possible status: ORDERED, PICKED_UP, IN_TARGET_BOX, DELIVERED
 
 ## Additional Notes
 - A box only contains deliveries that are not yet delivered
