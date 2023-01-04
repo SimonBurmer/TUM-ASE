@@ -172,6 +172,10 @@ public class DeliveryController {
             throw new DeliveryStatusException();
         }
 
+        Box box = delivery.getBox();
+        box.removeDelivery(delivery);
+        boxService.updateBox(box);
+
         deliveryService.deleteDelivery(delivery);
         return HttpStatus.OK;
     }
