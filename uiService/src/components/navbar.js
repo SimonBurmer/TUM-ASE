@@ -25,7 +25,7 @@ function ResponsiveAppBar() {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     const selectorUser = useSelector(selectUserRole);
-    const pages = selectorUser === "Dispatcher" ? pagesDispatcher : pagesUserDeliverer
+    const pages = selectorUser === "ROLE_DISPATCHER" ? pagesDispatcher : pagesUserDeliverer
     const dispatch = useDispatch();
 
 

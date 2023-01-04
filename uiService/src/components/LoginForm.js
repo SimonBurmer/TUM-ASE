@@ -1,14 +1,23 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {Form, FormikProvider, useFormik} from "formik";
 import * as Yup from "yup";
 
-import {Box, Checkbox, FormControlLabel, IconButton, InputAdornment, Stack, TextField,} from "@mui/material";
+import {
+    Box,
+    Checkbox,
+    FormControlLabel,
+    IconButton,
+    InputAdornment,
+    Stack,
+    TextField,
+    Typography,
+} from "@mui/material";
 import {LoadingButton} from "@mui/lab";
 import {Icon} from "@iconify/react";
 import {motion} from "framer-motion";
-import {postUserAsync} from "../app/userSlice";
-import {useDispatch} from "react-redux";
+import {postUserAsync, selectLoginState, selectUserRole} from "../app/userSlice";
+import {useDispatch, useSelector} from "react-redux";
 
 let easing = [0.6, -0.05, 0.01, 0.99];
 const animate = {
@@ -26,6 +35,8 @@ const LoginForm = () => {
     const dispatch = useDispatch();
 
     const [showPassword, setShowPassword] = useState(false);
+    const [loginError, setLoginError] = useState("")
+    const [isSubmittingState, setIsSubmitting] = useState(false)
 
     const LoginSchema = Yup.object().shape({
         email: Yup.string()
@@ -42,18 +53,39 @@ const LoginForm = () => {
         },
         validationSchema: LoginSchema,
         onSubmit: () => {
+            setIsSubmitting(true)
             console.log("submitting...");
-            dispatch(postUserAsync({ email: formik.values.email, password: formik.values.password }))
-            setTimeout(() => {
-                console.log("submited!!");
-                navigate("/mainPage/");
-            }, 200);
+            dispatch(postUserAsync({email: formik.values.email, password: formik.values.password}))
         },
     });
 
     const {errors, touched, values, isSubmitting, handleSubmit, getFieldProps} =
         formik;
+    const selectorLoginState = useSelector(selectLoginState)
+    const selectorUserRole = useSelector(selectUserRole)
 
+    useEffect(() => {
+        switch (selectorLoginState) {
+            case "loggedIn": {
+                switch (selectorUserRole) {
+                    case "ROLE_DISPATCHER": {
+                        navigate("/mainPage/boxManagement");
+                        break;
+                    }
+                    default:
+                        navigate("/mainPage/deliveryManagement")
+                }
+                break;
+            }
+            case "failed": {
+                if (loginError !== "Wrong password or email!") {
+                    setLoginError("Wrong password or email!");
+                    setIsSubmitting(false);
+                }
+                break;
+            }
+        }
+    }, [selectorLoginState])
     return (
         <FormikProvider value={formik}>
             <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
@@ -138,11 +170,14 @@ const LoginForm = () => {
                             size="large"
                             type="submit"
                             variant="contained"
-                            loading={isSubmitting}
+                            loading={isSubmittingState}
                         >
-                            {isSubmitting ? "loading..." : "Login"}
+                            {isSubmittingState ? "loading..." : "Login"}
                         </LoadingButton>
                     </Box>
+                    <Typography sx={{color: "red", mb: 5}}>
+                        {loginError}
+                    </Typography>
                 </Box>
             </Form>
         </FormikProvider>

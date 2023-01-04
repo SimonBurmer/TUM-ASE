@@ -4,10 +4,12 @@ import {Jose} from 'jose-jwe-jws';
 
 //TODO den default auf null setzten und bei login auf die rolle des angemeldeten users setzten
 const initialState = {
-    userRole: "Dispatcher",
-    isLoggedIn: false,
-    apiToken: "",
+    userRole: "",
+    loginState: "logout",
 }
+
+const api = axios.create({baseURL: 'http://localhost:10789', withCredentials: true}) //TODO move to specific file for constants
+
 
 export const userSlice = createSlice({
     name: 'role',
@@ -15,8 +17,7 @@ export const userSlice = createSlice({
 
     reducers: {
         logout: (state) => {
-            state.isLoggedIn = false;
-            state.apiToken = "";
+            state.loginState = "logout";
             state.userRole = "";
         },
 
@@ -25,6 +26,22 @@ export const userSlice = createSlice({
         builder
             .addCase(postUserAsync.fulfilled, (state, action) => {
                 //hier im store speichern
+                console.log(action.payload)
+                state.userRole = action.payload.substring(1, action.payload.length - 1)
+                if (state.loginState !== "loggedIn") {
+                    state.loginState = "loggedIn"
+                }
+            })
+            .addCase(postUserAsync.rejected, (state) => {
+                console.log("login Failed");
+                if (state.loginState !== "failed") {
+                    state.loginState = "failed";
+                }
+            })
+            .addCase(postUserAsync.pending, (state) => {
+                if (state.loginState !== "pending") {
+                    state.loginState = "pending";
+                }
             });
     },
 })
@@ -34,9 +51,6 @@ export const postUserAsync = createAsyncThunk(
     async (payload) => {
 
         await console.log(`Attempting login with email: ${payload.email} and ${payload.password}`)
-
-        const api = axios.create({baseURL: 'http://localhost:10789', withCredentials: true}) //TODO move to specific file for constants
-
 
         const publicKey = api.get('/auth/pkey')
         let encryptedPassword =
@@ -54,21 +68,18 @@ export const postUserAsync = createAsyncThunk(
                     let encrypter = await new Jose.JoseJWE.Encrypter(cryptographer, rsaKey);
 
                     let password = encrypter.encrypt(payload.password)
-                    // TODO: Replace encryptAct with a command to encrypt a password written in JSON (i.e., {" password": password}) pw = await encryptAct
 
                     await console.log(`encrypted pw: ${password}`);
                     return password
 
                 });
         const response = await api.post('/auth', {email: payload.email, password_enc: encryptedPassword})
-        console.log("Login successful" + response.data)
-        return response.data.content
-
+        return response.data
     }
 );
 
 export default userSlice.reducer
 export const selectUserRole = (state) => state.role.userRole;
-export const selectIsLoggedIn = (state) => state.role.isLoggedIn;
+export const selectLoginState = (state) => state.role.loginState;
 export const {logout} = userSlice.actions;
 

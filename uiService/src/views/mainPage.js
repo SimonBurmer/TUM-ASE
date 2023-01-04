@@ -2,26 +2,27 @@ import React from "react";
 import UserManagementOverview from "../managementViews/userManagement/userManagementOverview";
 import BoxManagementOverview from "../managementViews/boxManagement/boxManagementOverview";
 import DeliveryManagementOverview from "../managementViews/deliveryManagement/deliveryManagementOverview";
-import {Routes, Route} from "react-router-dom";
+import {Route, Routes} from "react-router-dom";
 import ResponsiveAppBar from "../components/navbar";
 import {useSelector} from "react-redux";
-
-
+import {selectUserRole} from "../app/userSlice";
 
 
 function MainPage() {
 
-    const userRole= useSelector(state => state.role.userRole)
-
+    const userRole = useSelector(selectUserRole)
     return (
-            <div>
-                <ResponsiveAppBar />
-                <Routes>
-                    {userRole === "Dispatcher" ? <Route path={"/userManagement"} element={<UserManagementOverview />} />: ""}
-                    {userRole === "Dispatcher" ? <Route path={"/boxManagement"} element={<BoxManagementOverview />} />: ""}
-                    {userRole === "Dispatcher"||"Deliverer"||"Customer" ? <Route path={"/DeliveryManagement"} element={<DeliveryManagementOverview />} />: ""}
-                </Routes>
-            </div>
+        <div>
+            <ResponsiveAppBar/>
+            <Routes>
+                {userRole === "ROLE_DISPATCHER" ?
+                    <Route path={"/userManagement"} element={<UserManagementOverview/>}/> : ""}
+                {userRole === "ROLE_DISPATCHER" ?
+                    <Route path={"/boxManagement"} element={<BoxManagementOverview/>}/> : ""}
+                {userRole === "ROLE_DISPATCHER" || "ROLE_DELIVERER" || "ROLE_CUSTOMER" ?
+                    <Route path={"/DeliveryManagement"} element={<DeliveryManagementOverview/>}/> : ""}
+            </Routes>
+        </div>
     )
 }
 
