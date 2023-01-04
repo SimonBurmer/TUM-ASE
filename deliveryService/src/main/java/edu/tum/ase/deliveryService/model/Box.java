@@ -55,6 +55,10 @@ public class Box {
 
 
     public void addDelivery(Delivery delivery) {
+        if (delivery.getBox() != null) {
+            delivery.getBox().removeDelivery(delivery);
+        }
+
         delivery.setBox(this);
         this.deliveries.add(delivery);
     }

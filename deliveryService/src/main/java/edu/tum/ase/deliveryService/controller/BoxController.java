@@ -58,12 +58,6 @@ public class BoxController {
     @PreAuthorize("hasRole('DISPATCHER')")
     public Box updateBox(@Valid @RequestBody BoxRequest boxRequest, @PathVariable String boxId) {
         Box box = boxService.findById(boxId);
-
-        // Check for not yet delivered "deliveries"
-        if (box.hasPendingDeliveries()) {
-            throw new BoxHasPendingDeliveriesException();
-        }
-
         boxRequest.apply(box);
         return boxService.updateBox(box);
     }
@@ -75,12 +69,6 @@ public class BoxController {
     @PreAuthorize("hasRole('DISPATCHER')")
     public HttpStatus deleteBox(@PathVariable String boxId) {
         Box box = boxService.findById(boxId);
-
-        // Check for not yet delivered "deliveries"
-        if (box.hasPendingDeliveries()) {
-            throw new BoxHasPendingDeliveriesException();
-        }
-
         boxService.deleteBox(box);
         return HttpStatus.OK;
     }

@@ -1,8 +1,6 @@
 package edu.tum.ase.deliveryService.controller;
 
 import edu.tum.ase.deliveryService.Util;
-import edu.tum.ase.deliveryService.exceptions.DeliveryStatusException;
-import edu.tum.ase.deliveryService.exceptions.SingleCustomerPerBoxViolationException;
 import edu.tum.ase.deliveryService.exceptions.UnauthorizedException;
 import edu.tum.ase.deliveryService.model.Box;
 import edu.tum.ase.deliveryService.model.Delivery;
@@ -49,7 +47,7 @@ public class DeliveryController {
             return deliveryService.getDeliveriesForCustomer(userDetails.getUsername());
         }
 
-        throw new UnsupportedOperationException(); // TODO
+        throw new UnauthorizedException();
     }
 
     @GetMapping("all")
@@ -82,16 +80,8 @@ public class DeliveryController {
     public Delivery createAndAddDelivery(@Valid @RequestBody DeliveryRequest deliveryRequest, @PathVariable String boxId) {
         Delivery delivery = new Delivery();
         deliveryRequest.apply(delivery);
-
         Box box = boxService.findById(boxId);
-
-        if (!(box.getDeliveries().isEmpty() || box.getDeliveries().get(0).getCustomer().equals(delivery.getCustomer()))) {
-            throw new SingleCustomerPerBoxViolationException();
-        }
-
-        box.addDelivery(delivery);
-        boxService.updateBox(box);
-
+        boxService.assignDelivery(box, delivery);
         return delivery; // delivery is persisted in line above
     }
 
@@ -103,7 +93,6 @@ public class DeliveryController {
     public Delivery updateDelivery(@Valid @RequestBody DeliveryRequest deliveryRequest, @PathVariable String deliveryId) {
         Delivery delivery = deliveryService.findById(deliveryId);
         deliveryRequest.apply(delivery);
-
         return deliveryService.updateDelivery(delivery);
     }
 
@@ -112,19 +101,7 @@ public class DeliveryController {
     public Delivery assignDelivery(@PathVariable String deliveryId, @PathVariable String boxId) {
         Delivery delivery = deliveryService.findById(deliveryId);
         Box box = boxService.findById(boxId);
-
-        if (!delivery.getStatus().canBeReassigned()) {
-            throw new DeliveryStatusException();
-        }
-
-        if (!(box.getDeliveries().isEmpty() || box.getDeliveries().get(0).getCustomer().equals(delivery.getCustomer()))) {
-            throw new SingleCustomerPerBoxViolationException();
-        }
-
-        boxService.clearDeliveryAssignment(delivery);
-        box.addDelivery(delivery);
-
-        boxService.updateBox(box);
+        boxService.assignDelivery(box, delivery);
         return delivery; // delivery is persisted in line above
     }
 
@@ -141,34 +118,16 @@ public class DeliveryController {
     @PreAuthorize("hasAnyRole('BOX')")
     public List<Delivery> placeDeliveries(@PathVariable String boxId) {
         Box box = boxService.findById(boxId);
-        List<Delivery> deliveries = box.getDeliveries();
-
-        for (Delivery delivery : deliveries) {
-            if (delivery.getStatus().equals(DeliveryStatus.PICKED_UP)) {
-                delivery.setStatus(DeliveryStatus.IN_TARGET_BOX);
-            }
-        }
-
-        boxService.updateBox(box);
-        return deliveries;
+        box = boxService.placeDeliveries(box);
+        return box.getDeliveries();
     }
 
     @PutMapping("{boxId}/retrieve")
     @PreAuthorize("hasAnyRole('BOX')")
     public List<Delivery> retrieveDeliveries(@PathVariable String boxId) {
         Box box = boxService.findById(boxId);
-        List<Delivery> deliveries = box.getDeliveries();
-
-        for (Delivery delivery : deliveries) {
-            if (delivery.getStatus().equals(DeliveryStatus.IN_TARGET_BOX)) {
-                delivery.setStatus(DeliveryStatus.DELIVERED);
-                box.removeDelivery(delivery);
-                deliveryService.updateDelivery(delivery);
-            }
-        }
-
-        boxService.updateBox(box);
-        return deliveries;
+        box = boxService.retrieveDeliveries(box);
+        return box.getDeliveries();
     }
 
     //##################################################################################################################
@@ -178,15 +137,6 @@ public class DeliveryController {
     @PreAuthorize("hasRole('DISPATCHER')")
     public HttpStatus deleteDelivery(@PathVariable String id) {
         Delivery delivery = deliveryService.findById(id);
-
-        if (!delivery.getStatus().canBeRemoved()) {
-            throw new DeliveryStatusException();
-        }
-
-        Box box = delivery.getBox();
-        box.removeDelivery(delivery);
-        boxService.updateBox(box);
-
         deliveryService.deleteDelivery(delivery);
         return HttpStatus.OK;
     }

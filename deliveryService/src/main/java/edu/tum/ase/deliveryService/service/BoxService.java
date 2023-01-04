@@ -1,11 +1,14 @@
 package edu.tum.ase.deliveryService.service;
 
-import edu.tum.ase.deliveryService.exceptions.BoxAlreadyExistsException;
-import edu.tum.ase.deliveryService.exceptions.BoxNotFoundException;
+import edu.tum.ase.deliveryService.DeliveryServiceApplication;
+import edu.tum.ase.deliveryService.exceptions.*;
 import edu.tum.ase.deliveryService.model.Box;
 import edu.tum.ase.deliveryService.model.Delivery;
+import edu.tum.ase.deliveryService.model.DeliveryStatus;
 import edu.tum.ase.deliveryService.repository.BoxRepository;
 import edu.tum.ase.deliveryService.repository.DeliveryRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +19,8 @@ import java.util.Optional;
 
 @Service
 public class BoxService {
+
+    private static final Logger log = LoggerFactory.getLogger(DeliveryServiceApplication.class);
 
     @Autowired
     private BoxRepository boxRepository;
@@ -32,10 +37,9 @@ public class BoxService {
         }
 
         Collection<Delivery> deliveries = box.getDeliveries();
-        for (Delivery delivery : deliveries) {
-            deliveryRepository.save(delivery);
-        }
+        deliveryRepository.saveAll(deliveries);
 
+        log.info("Creating box " + box);
         return boxRepository.save(box);
     }
 
@@ -58,23 +62,69 @@ public class BoxService {
     // Update
 
     public Box updateBox(Box box) {
+
+        // Check for not yet delivered "deliveries"
+        if (box.hasPendingDeliveries()) {
+            throw new BoxHasPendingDeliveriesException();
+        }
+
         Collection<Delivery> deliveries = box.getDeliveries();
         deliveryRepository.saveAll(deliveries);
+        log.info("Updating box " + box);
         return boxRepository.save(box);
     }
 
-    public void clearDeliveryAssignment(Delivery delivery) {
-        Optional<Box> maybeBox = boxRepository.findBoxForDelivery(delivery.getId());
-        if (maybeBox.isPresent()) {
-            Box box = maybeBox.get();
-            box.removeDelivery(delivery);
-            this.updateBox(box);
+    public Box assignDelivery(Box box, Delivery delivery) {
+        if (!delivery.getStatus().canBeReassigned()) {
+            throw new DeliveryStatusException();
         }
+
+        if (!(box.getDeliveries().isEmpty() || box.getDeliveries().get(0).getCustomer().equals(delivery.getCustomer()))) {
+            throw new SingleCustomerPerBoxViolationException();
+        }
+
+        box.addDelivery(delivery);
+        log.info("Assigning delivery " + delivery + " to box "+ box);
+        deliveryRepository.save(delivery);
+        return boxRepository.save(box);
+    }
+
+    public Box placeDeliveries(Box box) {
+        List<Delivery> deliveries = box.getDeliveries();
+
+        for (Delivery delivery : deliveries) {
+            if (delivery.getStatus().equals(DeliveryStatus.PICKED_UP)) {
+                delivery.setStatus(DeliveryStatus.IN_TARGET_BOX);
+            }
+        }
+
+        return this.updateBox(box);
+    }
+
+
+    public Box retrieveDeliveries(Box box) {
+        List<Delivery> deliveries = box.getDeliveries();
+
+        for (Delivery delivery : deliveries) {
+            if (delivery.getStatus().equals(DeliveryStatus.IN_TARGET_BOX)) {
+                delivery.setStatus(DeliveryStatus.DELIVERED);
+                box.removeDelivery(delivery);
+                deliveryRepository.save(delivery);
+            }
+        }
+
+        return this.updateBox(box);
     }
 
     //##################################################################################################################
     // Delete
     public void deleteBox(Box box) {
+        // Check for not yet delivered "deliveries"
+        if (box.hasPendingDeliveries()) {
+            throw new BoxHasPendingDeliveriesException();
+        }
+
+        log.info("Deleting box " + box);
         boxRepository.delete(box);
     }
 }
