@@ -13,18 +13,19 @@ import MenuItem from '@mui/material/MenuItem';
 import {Link} from "react-router-dom"
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import PersonIcon from "@mui/icons-material/Person";
-import {logout, selectUserRole} from "../app/userSlice";
+import {logout, selectUserMail, selectUserRole} from "../app/currUserSlice";
 import {useDispatch, useSelector} from "react-redux";
+import {getBoxesAsync} from "../app/boxSlice";
 
 const pagesDispatcher = ['userManagement', 'boxManagement', 'deliveryManagement'];
 const pagesUserDeliverer = ['deliveryManagement']
-const settings = ['Logout'];
 
 function ResponsiveAppBar() {
 
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     const selectorUser = useSelector(selectUserRole);
+    const selectorMail = useSelector(selectUserMail)
     const pages = selectorUser === "DISPATCHER" ? pagesDispatcher : pagesUserDeliverer
     const dispatch = useDispatch();
 
@@ -40,9 +41,23 @@ function ResponsiveAppBar() {
         setAnchorElNav(null);
     };
 
+    const handleLinkClick = (page) => {
+        setAnchorElNav(null);
+        switch (page) {
+            case "boxManagement":
+                dispatch(getBoxesAsync())
+                break;
+            case "userManagement":
+                // TODO
+                break;
+            case "deliveryManagement":
+                //TODO
+                break;
+        }
+    };
+
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
-        console.log("close handle triggered");
     };
 
     return (
@@ -98,7 +113,7 @@ function ResponsiveAppBar() {
                             }}
                         >
                             {pages.map((page) => (
-                                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                                <MenuItem key={page} onClick={() => handleLinkClick(page)}>
                                     <Typography textAlign="center">
                                         <Link to={`/mainPage/${page}`}>{page}</Link>
                                     </Typography>
@@ -127,12 +142,12 @@ function ResponsiveAppBar() {
                     <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex'}}}>
                         {pages.map((page) => (
                             <Button
-                                key={page}
-                                onClick={handleCloseNavMenu}
+                                key={page.toUpperCase()}
+                                onClick={() => handleLinkClick(page)}
                                 sx={{my: 2, color: 'white', display: 'block'}}
                             >
                                 <Link style={{textDecoration: "none", color: "white"}}
-                                      to={`/mainPage/${page}`}>{page}</Link>
+                                      to={`/mainPage/${page}`}>{page.toUpperCase()}</Link>
                             </Button>
                         ))}
                     </Box>
@@ -141,6 +156,9 @@ function ResponsiveAppBar() {
                         <Tooltip title="Open settings">
                             <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
                                 <PersonIcon/>
+                                <Typography textAlign="center" color={'white'}>
+                                    {selectorMail + " "}
+                                </Typography>
                             </IconButton>
                         </Tooltip>
                         <Menu
@@ -159,16 +177,16 @@ function ResponsiveAppBar() {
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}
                         >
-                            {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={() => {
-                                    dispatch(logout());
-                                }}>
-                                    <Typography textAlign="center">
-                                        <Link style={{textDecoration: "none", color: "black"}}
-                                              to={`/`}>{setting}</Link>
-                                    </Typography>
-                                </MenuItem>
-                            ))}
+
+                            <MenuItem key={'Logout'} onClick={() => {
+                                dispatch(logout());
+                            }}>
+                                <Typography textAlign="center">
+                                    <Link style={{textDecoration: "none", color: "black"}}
+                                          to={`/`}>{'Logout'}</Link>
+                                </Typography>
+                            </MenuItem>
+
                         </Menu>
                     </Box>
                 </Toolbar>

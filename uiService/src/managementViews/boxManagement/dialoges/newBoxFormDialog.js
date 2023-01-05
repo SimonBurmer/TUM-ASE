@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useState} from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -6,9 +7,16 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import {useDispatch} from "react-redux";
+import {createBoxAsync} from "../../../app/boxSlice";
 
 export default function NewBoxFormDialog() {
     const [open, setOpen] = React.useState(false);
+    const [newName, setNewName] = useState("");
+    const [newAddress, setNewAddress] = useState("")
+    const [newRasPiId, setNewRasPiId] = useState("")
+
+    const dispatch = useDispatch()
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -17,6 +25,14 @@ export default function NewBoxFormDialog() {
     const handleClose = () => {
         setOpen(false);
     };
+
+    const handleAdd = () => {
+        if (newName !== "" && newAddress !== "" && newRasPiId !== "") {
+            setOpen(false);
+            console.log(newName, newRasPiId, newAddress)
+            dispatch(createBoxAsync({boxName: newName, boxRasPiId: newRasPiId, boxAddress: newAddress}))
+        }
+    }
     //TODO handleAdd hinzufügen bei der eine Request an den Server geschickt wird
 
     return (
@@ -33,11 +49,26 @@ export default function NewBoxFormDialog() {
                     <TextField
                         autoFocus
                         margin="dense"
+                        id="Name"
+                        label="Name"
+                        type="Name"
+                        fullWidth
+                        variant="standard"
+                        onChange={(e) => {
+                            setNewName(e.target.value)
+                        }}
+                    />
+                    <TextField
+                        autoFocus
+                        margin="dense"
                         id="Raspi ID"
                         label="Raspi ID"
                         type="Raspi ID"
                         fullWidth
                         variant="standard"
+                        onChange={(e) => {
+                            setNewRasPiId(e.target.value)
+                        }}
                     />
                     <TextField
                         autoFocus
@@ -47,11 +78,14 @@ export default function NewBoxFormDialog() {
                         type="Street Address"
                         fullWidth
                         variant="standard"
+                        onChange={(e) => {
+                            setNewAddress(e.target.value)
+                        }}
                     />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
-                    <Button onClick={handleClose}>Add</Button>
+                    <Button onClick={handleAdd}>Add</Button>
                 </DialogActions>
             </Dialog>
         </div>

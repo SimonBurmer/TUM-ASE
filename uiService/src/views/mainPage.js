@@ -5,7 +5,7 @@ import DeliveryManagementOverview from "../managementViews/deliveryManagement/de
 import {Route, Routes} from "react-router-dom";
 import ResponsiveAppBar from "../components/navbar";
 import {useSelector} from "react-redux";
-import {selectUserRole} from "../app/userSlice";
+import {selectUserRole} from "../app/currUserSlice";
 
 
 function MainPage() {

@@ -7,10 +7,12 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
+import {useDispatch} from "react-redux";
+import {deleteBoxAsync} from "../../../app/boxSlice";
 
-export default function DeleteBoxAlertDialog() {
+export default function DeleteBoxAlertDialog({boxId}) {
     const [open, setOpen] = React.useState(false);
-
+    const dispatch = useDispatch();
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -19,11 +21,16 @@ export default function DeleteBoxAlertDialog() {
         setOpen(false);
     };
 
+    const handleDelete = () => {
+        dispatch(deleteBoxAsync({boxId}))
+        setOpen(false);
+    };
+
     //TODO Buttons im diaolg müssen noch mit funktion versehen werden.
     //TODO der User sollte eine Nachricht bekommen ob der User gelöscht wurde
     return (
         <div>
-            <IconButton  edge="end" aria-label="delete" onClick={handleClickOpen}>
+            <IconButton edge="end" aria-label="delete" onClick={handleClickOpen}>
                 <DeleteIcon/>
             </IconButton>
             <Dialog
@@ -37,12 +44,13 @@ export default function DeleteBoxAlertDialog() {
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
-                        If you delete this box you will not be able to restore it. Note: You can only delete a box if it is not assigned to a delivery.
+                        If you delete this box you will not be able to restore it. Note: You can only delete a box if it
+                        is not assigned to a delivery.
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Do not delete box</Button>
-                    <Button onClick={handleClose} autoFocus>
+                    <Button onClick={handleDelete} autoFocus>
                         Delete box
                     </Button>
                 </DialogActions>

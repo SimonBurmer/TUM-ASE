@@ -16,7 +16,7 @@ import {
 import {LoadingButton} from "@mui/lab";
 import {Icon} from "@iconify/react";
 import {motion} from "framer-motion";
-import {postUserAsync, selectLoginState, selectUserRole} from "../app/userSlice";
+import {postUserAsync, selectLoginState, selectUserRole} from "../app/currUserSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {getBoxesAsync} from "../app/boxSlice";
 

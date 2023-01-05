@@ -20,14 +20,18 @@ import {selectBoxes} from "../../app/boxSlice";
 function generate(boxes) {
     return boxes.map((box) => (
             <ListItem
+                key={box.id}
                 divider
                 secondaryAction={
                     <Grid container spacing={0}>
                         <Grid item xs={8}>
-                            <ChangeBoxFormDialog/>
+                            <ChangeBoxFormDialog boxId={box.id}
+                                                 boxName={box.name}
+                                                 boxAddress={box.address}
+                                                 boxRaspId={box.rasPiId}/>
                         </Grid>
                         <Grid item xs={4}>
-                            <DeleteBoxAlertDialog/>
+                            <DeleteBoxAlertDialog boxId={box.id}/>
                         </Grid>
                     </Grid>
                 }
@@ -37,10 +41,20 @@ function generate(boxes) {
                         <PersonIcon/>
                     </Avatar>
                 </ListItemAvatar>
-                <ListItemText
-                    primary={box.name}
-                    secondary={box.address}
-                />
+                <Typography component={'div'}>
+                    <ListItemText
+                        primary={box.name + " | Address: " + box.address}
+                        secondary={"RaspPiID: " + box.rasPiId + " | BoxID: " + box.id}
+                        // secondary={<List>
+                        //     <ListItemText>
+                        //         {box.address}
+                        //     </ListItemText>
+                        //     <ListItemText>
+                        //         {box.rasPiId} || {box.id}
+                        //     </ListItemText>
+                        // </List>}
+                    />
+                </Typography>
             </ListItem>
         )
     );
