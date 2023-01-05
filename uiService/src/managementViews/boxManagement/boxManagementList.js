@@ -15,6 +15,7 @@ import ChangeBoxFormDialog from "./dialoges/changeBoxFormDialog";
 import NewBoxFormDialog from "./dialoges/newBoxFormDialog";
 import {useSelector} from "react-redux";
 import {selectBoxes} from "../../app/boxSlice";
+import NewRequestErrorDialog from "../requestErrorDialog";
 
 //TODO statt dem Icon Button den Bearbeiten Dialog hinterlegen
 function generate(boxes) {
@@ -72,6 +73,7 @@ export default function BoxManagementList() {
 
     return (
         <Container>
+            <NewRequestErrorDialog/>
             <Grid container spacing={2}>
                 <Grid item xs={10}>
                     <Typography sx={{mt: 3, mb: 2, ml: 3}} variant="h6" component="div">
