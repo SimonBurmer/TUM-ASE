@@ -32,7 +32,7 @@ function generate(users) {
                                                   userRfid={user.rfid}/>
                         </Grid>
                         <Grid item xs={4}>
-                            <DeleteUserAlertDialog userId={user.id}/>
+                            <DeleteUserAlertDialog userEmail={user.email}/>
                         </Grid>
                     </Grid>
                 }

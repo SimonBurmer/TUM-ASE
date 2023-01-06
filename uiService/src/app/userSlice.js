@@ -64,9 +64,9 @@ export const getUsersAsync = createAsyncThunk(
 
 export const deleteUserAsync = createAsyncThunk(
     'user/deleteUser',
-    async ({userMail}, {rejectWithValue}) => {
+    async (userMail, {rejectWithValue}) => {
         try {
-            await api.delete('/user/' + userMail + '/delete')
+            await api.delete('/user/' + userMail)
             return userMail
         } catch (err) {
             return rejectWithValue({delUserId: userMail, errMsg: err.response.data.message})
