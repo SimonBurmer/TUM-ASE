@@ -62,7 +62,8 @@ public class JwtUtil {
     }
 
     private boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
+        Date expirationDate = extractExpiration(token);
+        return expirationDate != null && expirationDate.before(new Date());
     }
 
     // Check if the JWT is signed by us, and is not expired

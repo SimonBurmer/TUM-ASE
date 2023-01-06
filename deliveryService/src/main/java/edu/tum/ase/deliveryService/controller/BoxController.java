@@ -1,8 +1,7 @@
 package edu.tum.ase.deliveryService.controller;
 
-import edu.tum.ase.deliveryService.exceptions.BoxHasPendingDeliveriesException;
-import edu.tum.ase.deliveryService.model.Box;
-import edu.tum.ase.deliveryService.model.Delivery;
+import edu.tum.ase.backendCommon.model.Box;
+import edu.tum.ase.backendCommon.model.Delivery;
 import edu.tum.ase.deliveryService.request.BoxRequest;
 import edu.tum.ase.deliveryService.service.BoxService;
 import org.springframework.beans.factory.annotation.Autowired;

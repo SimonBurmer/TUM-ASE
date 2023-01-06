@@ -1,14 +1,13 @@
-package edu.tum.ase.deliveryService.model;
+package edu.tum.ase.backendCommon.model;
 
 import com.fasterxml.jackson.annotation.*;
 import com.mongodb.lang.NonNull;
-import com.nimbusds.jose.shaded.json.annotate.JsonIgnore;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import static edu.tum.ase.deliveryService.model.DeliveryStatus.ORDERED;
+import static edu.tum.ase.backendCommon.model.DeliveryStatus.ORDERED;
 
 
 @Data
@@ -32,7 +31,7 @@ public class Delivery {
 
     @NonNull
     @DBRef()
-    @JsonManagedReference
+    @JsonIgnore
     private Box box;
 
     public Delivery() {

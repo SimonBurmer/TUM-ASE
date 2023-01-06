@@ -44,13 +44,13 @@ public class AuthRequestFilter extends OncePerRequestFilter {
 
         Cookie[] cookies = request.getCookies();
         if (cookies == null) {
-            response.sendError(HttpStatus.UNAUTHORIZED.value(), "no cookies found");
+            filterChain.doFilter(request, response);
             return;
         }
 
         Optional<Cookie> maybeJwt = Arrays.stream(cookies).filter(c -> c.getName().equals("jwt")).findFirst();
         if (maybeJwt.isEmpty()) {
-            response.sendError(HttpStatus.UNAUTHORIZED.value(), "no jwt cookie found");
+            filterChain.doFilter(request, response);
             return;
         }
 
@@ -58,7 +58,7 @@ public class AuthRequestFilter extends OncePerRequestFilter {
         String jwt = jwtCookie.getValue();
 
         if (!jwtUtil.verifyJwtSignature(jwt)) {
-            response.sendError(HttpStatus.UNAUTHORIZED.value(), "jwt is not valid");
+            filterChain.doFilter(request, response);
             return;
         }
 

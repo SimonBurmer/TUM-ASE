@@ -27,3 +27,7 @@
 | /user/current        | GET                 |                                        | information about currently logged-in user |         |
 | /user/create         | POST (DISPATCHER)   | email, password, role, rfid (optional) | user (created)                             |         |  
 | /user/{email}/delete | DELETE (DISPATCHER) |                                        |                                            |         | 
+
+| endpoint     | Methods     | body | output                    | comment |
+|--------------|-------------|------|---------------------------|---------|
+| /rfid/{rfid} | GET (RASPI) |      | "CUSTOMER" or "DELIVERER" |         |

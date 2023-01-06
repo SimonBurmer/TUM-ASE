@@ -2,9 +2,9 @@ package edu.tum.ase.deliveryService.controller;
 
 import edu.tum.ase.deliveryService.Util;
 import edu.tum.ase.deliveryService.exceptions.UnauthorizedException;
-import edu.tum.ase.deliveryService.model.Box;
-import edu.tum.ase.deliveryService.model.Delivery;
-import edu.tum.ase.deliveryService.model.DeliveryStatus;
+import edu.tum.ase.backendCommon.model.Box;
+import edu.tum.ase.backendCommon.model.Delivery;
+import edu.tum.ase.backendCommon.model.DeliveryStatus;
 import edu.tum.ase.deliveryService.request.DeliveryRequest;
 import edu.tum.ase.deliveryService.service.BoxService;
 import edu.tum.ase.deliveryService.service.DeliveryService;
@@ -70,6 +70,22 @@ public class DeliveryController {
         }
 
         return delivery;
+    }
+
+    @GetMapping("{deliveryId}/box")
+    public Box getDeliveriesForBox(@PathVariable String deliveryId) {
+        Delivery delivery = deliveryService.findById(deliveryId);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = ((UserDetails) authentication.getPrincipal());
+
+        if ((Util.isCustomer(authentication) && !delivery.getCustomer().equals(userDetails.getUsername()))
+                || (Util.isDeliverer(authentication) && !delivery.getDeliverer().equals(userDetails.getUsername()))
+        ) {
+            throw new UnauthorizedException();
+        }
+        
+        return delivery.getBox();
     }
 
     //##################################################################################################################

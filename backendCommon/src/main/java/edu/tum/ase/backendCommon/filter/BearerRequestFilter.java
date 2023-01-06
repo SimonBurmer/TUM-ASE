@@ -20,7 +20,7 @@ public class BearerRequestFilter extends OncePerRequestFilter {
 
     private static final String HEADER_START = "Bearer ";
 
-    private static final List<String> INCLUDED_URLS = List.of("/box/**", "/delivery/**");
+    private static final List<String> INCLUDED_URLS = List.of("/box/**", "/delivery/**", "/rfid/**");
 
     public BearerRequestFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
@@ -37,19 +37,22 @@ public class BearerRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (authorizationHeader == null || authorizationHeader.isEmpty()) {
-            response.sendError(HttpStatus.UNAUTHORIZED.value(), "no authorization information in header");
+            //response.sendError(HttpStatus.UNAUTHORIZED.value(), "no authorization information in header");
+            filterChain.doFilter(request, response);
             return;
         }
 
         if (!authorizationHeader.startsWith(HEADER_START)) {
-            response.sendError(HttpStatus.UNAUTHORIZED.value(), "no bearer information in header");
+            //response.sendError(HttpStatus.UNAUTHORIZED.value(), "no bearer information in header");
+            filterChain.doFilter(request, response);
             return;
         }
 
         String jwt = authorizationHeader.substring(HEADER_START.length() - 1);
 
         if (!jwtUtil.verifyJwtSignature(jwt)) {
-            response.sendError(HttpStatus.UNAUTHORIZED.value(), "jwt is not valid");
+            //response.sendError(HttpStatus.UNAUTHORIZED.value(), "jwt is not valid");
+            filterChain.doFilter(request, response);
             return;
         }
 
