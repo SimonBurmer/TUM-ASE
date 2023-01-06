@@ -9,6 +9,7 @@ import edu.tum.ase.backendCommon.roles.UserRole;
 import lombok.Data;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import javax.validation.ValidationException;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -29,7 +30,6 @@ public class UserRequest implements Request<AseUser> {
     @NotBlank(message = "password_enc is required and should be encrypted as JWE")
     private String password_enc;
 
-    @NotBlank(message = "role is required")
     @Pattern(regexp = UserRole.DELIVERER + "|" + UserRole.CUSTOMER + "|" + UserRole.DISPATCHER, message = "Role should be either DISPATCHER, DELIVERER or CUSTOMER")
     private String role;
 
@@ -37,7 +37,14 @@ public class UserRequest implements Request<AseUser> {
 
     @Override
     public void apply(AseUser other) {
-        if ((role.equals(UserRole.CUSTOMER) || role.equals(UserRole.DELIVERER)) && rfid == null)
+        if (other.getRole() == null || other.getRole().equals("")) {
+            if (role == null)
+                throw new ValidationException("role is required");
+            else
+                other.setRole(role);
+        }
+
+        if ((other.getRole().equals(UserRole.CUSTOMER) || other.getRole().equals(UserRole.DELIVERER)) && rfid == null)
             throw new MissingRfidException();
 
         if (jwtUtil != null) {
@@ -46,9 +53,8 @@ public class UserRequest implements Request<AseUser> {
         }
 
         other.setEmail(email);
-        other.setRole(role);
 
-        if ((role.equals(UserRole.CUSTOMER) || role.equals(UserRole.DELIVERER)))
-            other.setRole(rfid);
+        if ((other.getRole().equals(UserRole.CUSTOMER) || other.getRole().equals(UserRole.DELIVERER)))
+            other.setRfid(rfid);
     }
 }
