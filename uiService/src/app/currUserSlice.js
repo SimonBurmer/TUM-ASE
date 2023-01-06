@@ -26,7 +26,7 @@ export const currUserSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(postUserAsync.fulfilled, (state, action) => {
+            .addCase(authUserAsync.fulfilled, (state, action) => {
                 //hier im store speichern
                 console.log(action.payload)
                 state.userRole = action.payload.role
@@ -36,13 +36,13 @@ export const currUserSlice = createSlice({
                     state.loginState = "loggedIn"
                 }
             })
-            .addCase(postUserAsync.rejected, (state) => {
+            .addCase(authUserAsync.rejected, (state) => {
                 console.log("login Failed");
                 if (state.loginState !== "failed") {
                     state.loginState = "failed";
                 }
             })
-            .addCase(postUserAsync.pending, (state) => {
+            .addCase(authUserAsync.pending, (state) => {
                 if (state.loginState !== "pending") {
                     state.loginState = "pending";
                 }
@@ -50,7 +50,7 @@ export const currUserSlice = createSlice({
     },
 })
 
-export const postUserAsync = createAsyncThunk(
+export const authUserAsync = createAsyncThunk(
     'user/postUser',
     async (payload) => {
 

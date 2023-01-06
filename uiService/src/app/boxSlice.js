@@ -103,5 +103,5 @@ export const updateBoxAsync = createAsyncThunk(
 
 export default boxSlice.reducer
 export const selectBoxes = (state) => state.box.boxes;
-export const selectRequestError = (state) => state.box.requestError;
+export const selectBoxRequestError = (state) => state.box.requestError;
 

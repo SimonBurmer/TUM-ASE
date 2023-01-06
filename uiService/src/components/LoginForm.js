@@ -16,7 +16,7 @@ import {
 import {LoadingButton} from "@mui/lab";
 import {Icon} from "@iconify/react";
 import {motion} from "framer-motion";
-import {postUserAsync, selectLoginState, selectUserRole} from "../app/currUserSlice";
+import {authUserAsync, selectLoginState, selectUserRole} from "../app/currUserSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {getBoxesAsync} from "../app/boxSlice";
 
@@ -56,7 +56,7 @@ const LoginForm = () => {
         onSubmit: () => {
             setIsSubmitting(true)
             console.log("submitting...");
-            dispatch(postUserAsync({email: formik.values.email, password: formik.values.password}))
+            dispatch(authUserAsync({email: formik.values.email, password: formik.values.password}))
         },
     });
 

@@ -7,17 +7,28 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogActions from "@mui/material/DialogActions";
 import {useSelector} from "react-redux";
-import {selectRequestError} from "../app/boxSlice";
+import {selectBoxRequestError} from "../app/boxSlice";
+import {selectUserRequestError} from "../app/userSlice";
 
 export default function NewRequestErrorDialog() {
     const [open, setOpen] = useState(false);
-    const requestError = useSelector(selectRequestError)
+    const boxRequestError = useSelector(selectBoxRequestError)
+    const userRequestError = useSelector(selectUserRequestError)
+    const [errorMsg, setErrorMsg] = useState("")
 
     useEffect(() => {
-        if (requestError !== "") {
+        if (boxRequestError !== "") {
+            setErrorMsg(boxRequestError)
             setOpen(true)
         }
-    }, [requestError])
+    }, [boxRequestError])
+
+    useEffect(() => {
+        if (userRequestError !== "") {
+            setErrorMsg(userRequestError)
+            setOpen(true)
+        }
+    }, [userRequestError])
 
     const handleClose = () => {
         setOpen(false);
@@ -30,7 +41,7 @@ export default function NewRequestErrorDialog() {
                 <DialogTitle>Request Error</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        {requestError}
+                        {errorMsg}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>

@@ -16,6 +16,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import {logout, selectUserMail, selectUserRole} from "../app/currUserSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {getBoxesAsync} from "../app/boxSlice";
+import {getUsersAsync} from "../app/userSlice";
 
 const pagesDispatcher = ['userManagement', 'boxManagement', 'deliveryManagement'];
 const pagesUserDeliverer = ['deliveryManagement']
@@ -48,10 +49,10 @@ function ResponsiveAppBar() {
                 dispatch(getBoxesAsync())
                 break;
             case "userManagement":
-                // TODO
+                dispatch(getUsersAsync())
                 break;
             case "deliveryManagement":
-                //TODO
+                //TODO dispatch call when implemented
                 break;
         }
     };
