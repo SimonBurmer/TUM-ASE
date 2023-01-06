@@ -10,10 +10,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+
+import static edu.tum.ase.backendCommon.rules.ValidationUtil.*;
 
 @RestController
 @RequestMapping("/user")
@@ -49,7 +52,7 @@ public class UserController {
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('DISPATCHER')")
-    public AseUser createUser(@Valid @RequestBody UserRequest userRequest) {
+    public AseUser createUser(@Valid @Validated(OnCreation.class) @RequestBody UserRequest userRequest) {
         AseUser user = new AseUser();
 
         userRequest.setJwtUtil(jwtUtil);
@@ -65,7 +68,7 @@ public class UserController {
 
     @PutMapping("{email}")
     @PreAuthorize("hasRole('DISPATCHER')")
-    public AseUser updateUser(@Valid @RequestBody UserRequest userRequest, @PathVariable String email) {
+    public AseUser updateUser(@Valid @Validated(OnUpdate.class) @RequestBody UserRequest userRequest, @PathVariable String email) {
         AseUser user = userService.findByEmail(email);
 
         userRequest.setJwtUtil(jwtUtil);

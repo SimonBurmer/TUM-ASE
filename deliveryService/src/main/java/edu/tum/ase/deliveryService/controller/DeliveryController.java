@@ -1,5 +1,6 @@
 package edu.tum.ase.deliveryService.controller;
 
+import edu.tum.ase.backendCommon.rules.ValidationUtil;
 import edu.tum.ase.deliveryService.Util;
 import edu.tum.ase.deliveryService.exceptions.UnauthorizedException;
 import edu.tum.ase.backendCommon.model.Box;
@@ -14,10 +15,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+
+import static edu.tum.ase.backendCommon.rules.ValidationUtil.*;
 
 @RestController
 @RequestMapping("/delivery")
@@ -84,7 +88,7 @@ public class DeliveryController {
         ) {
             throw new UnauthorizedException();
         }
-        
+
         return delivery.getBox();
     }
 
@@ -93,7 +97,7 @@ public class DeliveryController {
 
     @PostMapping("{boxId}")
     @PreAuthorize("hasRole('DISPATCHER')")
-    public Delivery createAndAddDelivery(@Valid @RequestBody DeliveryRequest deliveryRequest, @PathVariable String boxId) {
+    public Delivery createAndAddDelivery(@Validated(OnCreation.class)@RequestBody DeliveryRequest deliveryRequest, @PathVariable String boxId) {
         Delivery delivery = new Delivery();
         deliveryRequest.apply(delivery);
         Box box = boxService.findById(boxId);
@@ -106,7 +110,7 @@ public class DeliveryController {
 
     @PutMapping("{deliveryId}")
     @PreAuthorize("hasRole('DISPATCHER')")
-    public Delivery updateDelivery(@Valid @RequestBody DeliveryRequest deliveryRequest, @PathVariable String deliveryId) {
+    public Delivery updateDelivery(@Validated(OnUpdate.class) @RequestBody DeliveryRequest deliveryRequest, @PathVariable String deliveryId) {
         Delivery delivery = deliveryService.findById(deliveryId);
         deliveryRequest.apply(delivery);
         return deliveryService.updateDelivery(delivery);
