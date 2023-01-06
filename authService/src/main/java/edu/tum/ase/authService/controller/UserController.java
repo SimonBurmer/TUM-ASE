@@ -49,7 +49,7 @@ public class UserController {
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('DISPATCHER')")
-    public HttpStatus createUser(@Valid @RequestBody UserRequest userRequest) {
+    public AseUser createUser(@Valid @RequestBody UserRequest userRequest) {
         AseUser user = new AseUser();
 
         userRequest.setJwtUtil(jwtUtil);
@@ -57,13 +57,25 @@ public class UserController {
 
         userRequest.apply(user);
         userService.createUser(user);
-        return HttpStatus.OK;
+        return user;
     }
 
     //##################################################################################################################
     // PUT mappings
 
+    @PutMapping("{email}")
+    @PreAuthorize("hasRole('DISPATCHER')")
+    public AseUser updateUser(@Valid @RequestBody UserRequest userRequest, @PathVariable String email) {
+        AseUser user = userService.findByEmail(email);
 
+        userRequest.setJwtUtil(jwtUtil);
+        userRequest.setBCryptPasswordEncoder(bCryptPasswordEncoder);
+
+        userRequest.apply(user);
+        userService.updateUser(user);
+
+        return user;
+    }
 
     //##################################################################################################################
     // DELETE mappings
