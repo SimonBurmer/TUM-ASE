@@ -22,8 +22,6 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
-    @Autowired
-    private RestTemplate restTemplate;
 
     @PostMapping("")
     public ResponseEntity<String> authenticateUser(@Valid @RequestBody AuthRequest authRequest, HttpServletResponse response) {
@@ -39,20 +37,7 @@ public class AuthController {
     @PreAuthorize("hasRole('DISPATCHER')")
     @PostMapping("bearer")
     public ResponseEntity<CreateBearerResponse> generateBoxBearerToken(@RequestHeader(HttpHeaders.COOKIE) String cookie, @Valid @RequestBody CreateBearerRequest request) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set(HttpHeaders.COOKIE, cookie);
-        HttpEntity<String> entity = new HttpEntity(headers);
-
-        try {
-            ResponseEntity<Object> response = restTemplate.exchange("http://delivery-service/box/" + request.getId(), HttpMethod.GET, entity, Object.class);
-            if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
-                return authService.createBearerToken(request);
-            } else {
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-            }
-        } catch (HttpClientErrorException e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
+        return authService.createBearerToken(request);
     }
 
     @GetMapping("/pkey")

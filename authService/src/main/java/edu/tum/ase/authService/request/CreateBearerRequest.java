@@ -1,5 +1,6 @@
 package edu.tum.ase.authService.request;
 
+import edu.tum.ase.authService.rules.BoxValidationRule;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
@@ -8,6 +9,7 @@ import javax.validation.constraints.NotEmpty;
 public class CreateBearerRequest {
 
     @NotEmpty(message = "id is required")
+    @BoxValidationRule
     private final String id;
 
     public CreateBearerRequest() {
