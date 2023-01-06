@@ -45,12 +45,7 @@ export default function ChangeBoxFormDialog({boxId, boxName, boxRaspId, boxAddre
                 <DialogTitle>Editing the box profile of {boxId}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Here you can change the properties of your box. Only enter the information you would like
-                        to change.
-                        BoxID: {boxId}
-                        BoxRaspID: {boxRaspId}
-                        BoxName: {boxName}
-                        BoxAddress: {boxAddress}
+                        Here you can edit the properties of your box you want to change.
 
                     </DialogContentText>
                     <TextField
@@ -59,6 +54,7 @@ export default function ChangeBoxFormDialog({boxId, boxName, boxRaspId, boxAddre
                         id="Name"
                         label="Name"
                         type="Name"
+                        defaultValue={boxName}
                         fullWidth
                         variant="standard"
                         onChange={(e) => {
@@ -72,6 +68,7 @@ export default function ChangeBoxFormDialog({boxId, boxName, boxRaspId, boxAddre
                         label="Raspi ID"
                         type="Raspi ID"
                         fullWidth
+                        defaultValue={boxRaspId}
                         variant="standard"
                         onChange={(e) => {
                             setNewRasPiId(e.target.value)
@@ -83,6 +80,7 @@ export default function ChangeBoxFormDialog({boxId, boxName, boxRaspId, boxAddre
                         id="Street Address"
                         label="Street Address"
                         type="Street Address"
+                        defaultValue={boxAddress}
                         fullWidth
                         variant="standard"
                         onChange={(e) => {

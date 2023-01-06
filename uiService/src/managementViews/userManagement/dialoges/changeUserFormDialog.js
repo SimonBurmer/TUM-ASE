@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useState} from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -6,12 +7,27 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import {useDispatch} from "react-redux";
+import {updateUserAsync} from "../../../app/userSlice";
+import {FormControl, InputLabel, Select} from "@mui/material";
+import MenuItem from "@mui/material/MenuItem";
 import EditIcon from "@mui/icons-material/Edit";
 import IconButton from "@mui/material/IconButton";
 
-export default function ChangeUserFormDialog() {
-    let user= ["Max", "Mustermann", "maxmustermann@gmail.com", "Dispatcher", "123456" ]
+export default function ChangeUserFormDialog({
+                                                 userId,
+                                                 userMail,
+                                                 userRole,
+                                                 userRfid
+                                             }) {
     const [open, setOpen] = React.useState(false);
+    const [newRole, setNewRole] = useState("")
+    const [newRfid, setNewRfid] = useState("")
+    const [newPassword, setNewPassword] = useState("")
+    const [newEmail, setNewEmail] = useState("");
+
+
+    const dispatch = useDispatch()
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -21,57 +37,90 @@ export default function ChangeUserFormDialog() {
         setOpen(false);
     };
 
+    const handleChange = () => {
+        if (newEmail !== "" && newRole !== "" && newRfid !== "") {
+            setOpen(false);
+            console.log(newEmail, newRfid, newRole, newPassword)
+            dispatch(updateUserAsync({
+                email: newEmail,
+                password: newPassword,
+                role: newRole,
+                rfid: newRfid,
+            }))
+        }
+    }
+
     return (
         <div>
-            <IconButton  edge="end" aria-label="delete" onClick={handleClickOpen}>
+            <IconButton edge="end" aria-label="edit" onClick={handleClickOpen}>
                 <EditIcon/>
             </IconButton>
             <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>Editing the user profile of {user[0]} {user[1]}</DialogTitle>
+                <DialogTitle>Edit User</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Here you can change the properties of your user. Only enter the information you would like to change.
+                        Please edit the information you want to change.
                     </DialogContentText>
                     <TextField
                         autoFocus
                         margin="dense"
-                        id="First Name"
-                        label="First Name"
-                        type="First Name"
+                        id="E-Mail"
+                        label="E-Mail"
+                        type="E-Mail"
                         fullWidth
+                        defaultValue={userMail}
                         variant="standard"
+                        onChange={(e) => {
+                            setNewEmail(e.target.value)
+                        }}
                     />
                     <TextField
                         autoFocus
                         margin="dense"
-                        id="Last name"
-                        label="Last name"
-                        type="Last name"
+                        id="Rfid"
+                        label="Rfid"
+                        type="Rfid"
                         fullWidth
+                        defaultValue={userRfid}
                         variant="standard"
+                        onChange={(e) => {
+                            setNewRfid(e.target.value)
+                        }}
                     />
                     <TextField
                         autoFocus
                         margin="dense"
-                        id="role"
-                        label="role"
-                        type="role"
+                        id="Password"
+                        label="Password"
+                        type="Password"
                         fullWidth
                         variant="standard"
+                        onChange={(e) => {
+                            setNewPassword(e.target.value)
+                        }}
                     />
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="RFID"
-                        label="RFID"
-                        type="RFID"
-                        fullWidth
-                        variant="standard"
-                    />
+
+                    <FormControl fullWidth>
+                        <InputLabel id="Role Selection">Role</InputLabel>
+                        <Select
+                            labelId="Role Selection"
+                            id="role"
+                            value={userRole}
+                            label="Role"
+                            onChange={(e) => {
+                                setNewRole(e.target.value)
+                            }}
+                        >
+                            <MenuItem value={"CUSTOMER"}>Customer</MenuItem>
+                            <MenuItem value={"DELIVERER"}>Deliverer</MenuItem>
+                            <MenuItem value={"DISPATCHER"}>Dispatcher</MenuItem>
+                        </Select>
+                    </FormControl>
+
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
-                    <Button onClick={handleClose}>Change</Button>
+                    <Button onClick={handleChange}>Change</Button>
                 </DialogActions>
             </Dialog>
         </div>

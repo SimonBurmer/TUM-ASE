@@ -119,16 +119,38 @@ export const updateUserAsync = createAsyncThunk(
     'user/updateUser',
     async (updateUser, {rejectWithValue}) => {
         const {userMail, userPassword, userRole, userRfid} = updateUser
+
+        const publicKey = api.get('/auth/pkey')
+        let encryptedPassword =
+            await publicKey.then((response) => {
+                let rsaKey = Jose.Utils.importRsaPublicKey({
+                    "e": parseInt(response.data.e),
+                    "n": response.data.n
+                }, "RSA-OAEP");
+                return rsaKey;
+            })
+                .then(async (rsaKey) => {
+
+                    let cryptographer = await new Jose.WebCryptographer();
+                    let encrypter = await new Jose.JoseJWE.Encrypter(cryptographer, rsaKey);
+
+                    let password_enc = encrypter.encrypt(userPassword)
+
+                    await console.log(`encrypted pw: ${password_enc}`);
+                    return password_enc
+
+                });
+
         try {
             const updatedUser = await api.post('/user/' + userMail, {
                 email: userMail,
-                password_enc: userPassword,
+                password_enc: encryptedPassword,
                 role: userRole,
                 rfid: userRfid
             })
             return updatedUser.data
         } catch (err) {
-            return rejectWithValue({createUserId: userMail, errMsg: err.response.data.message})
+            return rejectWithValue({updateUserId: userMail, errMsg: err.response.data.message})
         }
     }
 );
