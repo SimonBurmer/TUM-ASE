@@ -1,19 +1,14 @@
 package edu.tum.ase.backendCommon.config;
 
 import edu.tum.ase.backendCommon.filter.AuthRequestFilter;
+import edu.tum.ase.backendCommon.filter.BearerRequestFilter;
 import edu.tum.ase.backendCommon.jwt.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.List;
 
 public class CustomWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 
@@ -37,9 +32,11 @@ public class CustomWebSecurityConfigurerAdapter extends WebSecurityConfigurerAda
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.cors().disable() // This should be fine, since CORS is done by the gateway
                 .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .and().addFilterBefore(new AuthRequestFilter(jwtUtil), AnonymousAuthenticationFilter.class);
+                .and().addFilterBefore(new AuthRequestFilter(jwtUtil), AnonymousAuthenticationFilter.class)
+                .addFilterAfter(new BearerRequestFilter(jwtUtil), AuthRequestFilter.class);
 
         http.authorizeRequests()
+                .antMatchers("/auth/bearer").authenticated()
                 .antMatchers("/auth/**").permitAll(); // Used to acquire jwt auth token
 
         http.authorizeRequests()

@@ -1,7 +1,7 @@
 package edu.tum.ase.deliveryService.request;
 
 import edu.tum.ase.backendCommon.request.Request;
-import edu.tum.ase.deliveryService.model.Delivery;
+import edu.tum.ase.backendCommon.model.Delivery;
 import edu.tum.ase.deliveryService.rules.CustomerValidationRule;
 import edu.tum.ase.deliveryService.rules.DelivererValidationRule;
 import lombok.Data;

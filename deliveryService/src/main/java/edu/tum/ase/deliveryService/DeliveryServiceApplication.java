@@ -1,14 +1,11 @@
 package edu.tum.ase.deliveryService;
 
 import com.mongodb.client.MongoClient;
-import edu.tum.ase.backendCommon.roles.UserRole;
-import edu.tum.ase.deliveryService.model.Box;
-import edu.tum.ase.deliveryService.model.Delivery;
-import edu.tum.ase.deliveryService.model.DeliveryStatus;
+import edu.tum.ase.backendCommon.model.Box;
+import edu.tum.ase.backendCommon.model.Delivery;
+import edu.tum.ase.backendCommon.model.DeliveryStatus;
 import edu.tum.ase.deliveryService.repository.BoxRepository;
 import edu.tum.ase.deliveryService.repository.DeliveryRepository;
-import edu.tum.ase.deliveryService.request.DeliveryRequest;
-import edu.tum.ase.deliveryService.service.DeliveryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

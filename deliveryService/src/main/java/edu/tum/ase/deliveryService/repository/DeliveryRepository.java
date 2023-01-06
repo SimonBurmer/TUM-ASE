@@ -1,7 +1,6 @@
 package edu.tum.ase.deliveryService.repository;
 
-import edu.tum.ase.deliveryService.model.Box;
-import edu.tum.ase.deliveryService.model.Delivery;
+import edu.tum.ase.backendCommon.model.Delivery;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 

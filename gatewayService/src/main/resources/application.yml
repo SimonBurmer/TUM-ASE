@@ -18,7 +18,7 @@ spring:
         - id: cas-service
           uri: lb://AUTH-SERVICE
           predicates:
-            - Path=/auth/**,/user/**
+            - Path=/auth/**,/user/**, /rfid/**
         - id: delivery-service
           uri: lb://DELIVERY-SERVICE
           predicates:

@@ -1,7 +1,7 @@
 package edu.tum.ase.deliveryService.request;
 
 import edu.tum.ase.backendCommon.request.Request;
-import edu.tum.ase.deliveryService.model.Box;
+import edu.tum.ase.backendCommon.model.Box;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;

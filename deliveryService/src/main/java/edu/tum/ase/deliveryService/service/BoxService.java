@@ -2,9 +2,9 @@ package edu.tum.ase.deliveryService.service;
 
 import edu.tum.ase.deliveryService.DeliveryServiceApplication;
 import edu.tum.ase.deliveryService.exceptions.*;
-import edu.tum.ase.deliveryService.model.Box;
-import edu.tum.ase.deliveryService.model.Delivery;
-import edu.tum.ase.deliveryService.model.DeliveryStatus;
+import edu.tum.ase.backendCommon.model.Box;
+import edu.tum.ase.backendCommon.model.Delivery;
+import edu.tum.ase.backendCommon.model.DeliveryStatus;
 import edu.tum.ase.deliveryService.repository.BoxRepository;
 import edu.tum.ase.deliveryService.repository.DeliveryRepository;
 import org.slf4j.Logger;
@@ -13,9 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class BoxService {

@@ -6,6 +6,7 @@ import com.mongodb.lang.NonNull;
 import com.mongodb.lang.Nullable;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -18,6 +19,7 @@ public class AseUser {
     protected String id;
 
     @NonNull
+    @Indexed(unique = true)
     private String email;
 
     @NonNull

@@ -1,6 +1,7 @@
 package edu.tum.ase.backendCommon.filter;
 
 import edu.tum.ase.backendCommon.jwt.JwtUtil;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.util.AntPathMatcher;
@@ -8,56 +9,49 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
-public class AuthRequestFilter extends OncePerRequestFilter {
+public class BearerRequestFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
 
-    public AuthRequestFilter(JwtUtil jwtUtil) {
+    private static final String HEADER_START = "Bearer ";
+
+    private static final List<String> INCLUDED_URLS = List.of("/box/**", "/delivery/**", "/rfid/**");
+
+    public BearerRequestFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
     }
-
-    private static final List<String> excluded_urls = List.of("/auth/**");
-    private static final List<String> explicitly_included_urls = List.of("/auth/bearer");
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         AntPathMatcher antPathMatcher = new AntPathMatcher();
         String url = request.getRequestURI();
-        if (explicitly_included_urls.stream().noneMatch(e -> antPathMatcher.match(e, url))) {
-            return excluded_urls.stream().anyMatch(x -> antPathMatcher.match(x, url));
-        } else {
-            return false;
-        }
+        return INCLUDED_URLS.stream().noneMatch(e -> antPathMatcher.match(e, url));
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
-
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (authorizationHeader == null || authorizationHeader.isEmpty()) {
+            //response.sendError(HttpStatus.UNAUTHORIZED.value(), "no authorization information in header");
             filterChain.doFilter(request, response);
             return;
         }
 
-        Optional<Cookie> maybeJwt = Arrays.stream(cookies).filter(c -> c.getName().equals("jwt")).findFirst();
-        if (maybeJwt.isEmpty()) {
+        if (!authorizationHeader.startsWith(HEADER_START)) {
+            //response.sendError(HttpStatus.UNAUTHORIZED.value(), "no bearer information in header");
             filterChain.doFilter(request, response);
             return;
         }
 
-        Cookie jwtCookie = maybeJwt.get();
-        String jwt = jwtCookie.getValue();
+        String jwt = authorizationHeader.substring(HEADER_START.length() - 1);
 
         if (!jwtUtil.verifyJwtSignature(jwt)) {
+            //response.sendError(HttpStatus.UNAUTHORIZED.value(), "jwt is not valid");
             filterChain.doFilter(request, response);
             return;
         }
