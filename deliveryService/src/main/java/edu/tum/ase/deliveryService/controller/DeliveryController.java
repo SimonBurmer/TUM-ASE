@@ -115,16 +115,18 @@ public class DeliveryController {
     }
 
     @PutMapping("{boxId}/place")
-    @PreAuthorize("hasAnyRole('BOX')")
-    public List<Delivery> placeDeliveries(@PathVariable String boxId) {
+    @PreAuthorize("hasAnyRole('RASPI')")
+    public List<Delivery> placeDeliveries() {
+        String boxId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         Box box = boxService.findById(boxId);
         box = boxService.placeDeliveries(box);
         return box.getDeliveries();
     }
 
     @PutMapping("{boxId}/retrieve")
-    @PreAuthorize("hasAnyRole('BOX')")
-    public List<Delivery> retrieveDeliveries(@PathVariable String boxId) {
+    @PreAuthorize("hasAnyRole('RASPI')")
+    public List<Delivery> retrieveDeliveries() {
+        String boxId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         Box box = boxService.findById(boxId);
         box = boxService.retrieveDeliveries(box);
         return box.getDeliveries();
