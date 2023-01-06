@@ -31,11 +31,17 @@ public class AuthRequestFilter extends OncePerRequestFilter {
     }
 
     private static final List<String> excluded_urls = List.of("/auth/**");
+    private static final List<String> explicitly_included_urls = List.of("/auth/bearer");
+
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         AntPathMatcher antPathMatcher = new AntPathMatcher();
         String url = request.getRequestURI();
-        return excluded_urls.stream().anyMatch(x -> antPathMatcher.match(x, url));
+        if (explicitly_included_urls.stream().noneMatch(e -> antPathMatcher.match(e, url))) {
+            return excluded_urls.stream().anyMatch(x -> antPathMatcher.match(x, url));
+        } else {
+            return false;
+        }
     }
 
     @Override

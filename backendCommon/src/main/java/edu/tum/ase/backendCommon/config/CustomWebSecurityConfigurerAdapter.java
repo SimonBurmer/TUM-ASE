@@ -40,6 +40,7 @@ public class CustomWebSecurityConfigurerAdapter extends WebSecurityConfigurerAda
                 .and().addFilterBefore(new AuthRequestFilter(jwtUtil), AnonymousAuthenticationFilter.class);
 
         http.authorizeRequests()
+                .antMatchers("/auth/bearer").authenticated()
                 .antMatchers("/auth/**").permitAll(); // Used to acquire jwt auth token
 
         http.authorizeRequests()
