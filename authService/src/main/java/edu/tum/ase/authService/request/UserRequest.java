@@ -41,12 +41,12 @@ public class UserRequest implements Request<AseUser> {
         if (other.getRole() == null || other.getRole().equals("")) {
             if (role == null)
                 throw new ValidationException("role is required");
-            else
+            else {
                 other.setRole(role);
+                if ((role.equals(UserRole.CUSTOMER) || role.equals(UserRole.DELIVERER)) && rfid == null)
+                    throw new ValidationException("Such a user requires a rfid token");
+            }
         }
-
-        if ((role.equals(UserRole.CUSTOMER) || role.equals(UserRole.DELIVERER)) && rfid == null)
-            throw new ValidationException("Such a user requires a rfid token");
 
         if (password_enc != null && !password_enc.equals("")) {
             if (jwtUtil != null) {
