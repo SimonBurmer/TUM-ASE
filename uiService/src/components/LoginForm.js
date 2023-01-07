@@ -18,7 +18,6 @@ import {Icon} from "@iconify/react";
 import {motion} from "framer-motion";
 import {authUserAsync, selectLoginState, selectUserRole} from "../app/currUserSlice";
 import {useDispatch, useSelector} from "react-redux";
-import {getBoxesAsync} from "../app/boxSlice";
 
 let easing = [0.6, -0.05, 0.01, 0.99];
 const animate = {
@@ -70,7 +69,6 @@ const LoginForm = () => {
             case "loggedIn": {
                 switch (selectorUserRole) {
                     case "DISPATCHER": {
-                        dispatch(getBoxesAsync())
                         navigate("/mainPage/boxManagement");
                         break;
                     }
@@ -80,10 +78,10 @@ const LoginForm = () => {
                 break;
             }
             case "failed": {
-                if (loginError !== "Wrong password or email!") {
-                    setLoginError("Wrong password or email!");
-                    setIsSubmitting(false);
-                }
+
+                setLoginError("Wrong password or email!");
+                setIsSubmitting(false);
+
                 break;
             }
         }
