@@ -21,10 +21,10 @@ export default function ChangeUserFormDialog({
                                                  userRfid
                                              }) {
     const [open, setOpen] = React.useState(false);
-    const [newRole, setNewRole] = useState("")
-    const [newRfid, setNewRfid] = useState("")
+    const [newRole, setNewRole] = useState(userRole)
+    const [newRfid, setNewRfid] = useState(userRfid)
     const [newPassword, setNewPassword] = useState("")
-    const [newEmail, setNewEmail] = useState("");
+    const [newEmail, setNewEmail] = useState(userMail);
 
 
     const dispatch = useDispatch()
@@ -40,7 +40,6 @@ export default function ChangeUserFormDialog({
     const handleChange = () => {
         if (newEmail !== "" && newRole !== "" && newRfid !== "") {
             setOpen(false);
-            console.log(newEmail, newRfid, newRole, newPassword)
             dispatch(updateUserAsync({
                 email: newEmail,
                 password: newPassword,
@@ -59,7 +58,8 @@ export default function ChangeUserFormDialog({
                 <DialogTitle>Edit User</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Please edit the information you want to change.
+                        Please edit the information you want to change. If you enter no new password it will stay the
+                        same.
                     </DialogContentText>
                     <TextField
                         autoFocus
@@ -91,7 +91,7 @@ export default function ChangeUserFormDialog({
                         autoFocus
                         margin="dense"
                         id="Password"
-                        label="Password"
+                        label="New Password"
                         type="Password"
                         fullWidth
                         variant="standard"
