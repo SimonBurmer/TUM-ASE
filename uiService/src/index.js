@@ -6,7 +6,16 @@ import reportWebVitals from './reportWebVitals';
 import {Provider} from 'react-redux';
 import {store} from "./app/store";
 import {BrowserRouter} from "react-router-dom";
+import {saveState} from "./localStorage";
 
+store.subscribe(() => {
+    saveState({
+        box: store.getState().box,
+        user: store.getState().user,
+        role: store.getState().role,
+        //TODO deliveries
+    })
+})
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

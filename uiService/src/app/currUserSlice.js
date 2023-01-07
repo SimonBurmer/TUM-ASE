@@ -28,7 +28,6 @@ export const currUserSlice = createSlice({
         builder
             .addCase(authUserAsync.fulfilled, (state, action) => {
                 //hier im store speichern
-                console.log(action.payload)
                 state.userRole = action.payload.role
                 state.mailAddress = action.payload.email
 
@@ -77,7 +76,7 @@ export const authUserAsync = createAsyncThunk(
                     return password
 
                 });
-        const response = await api.post('/auth', {email: payload.email, password_enc: encryptedPassword})
+        await api.post('/auth', {email: payload.email, password_enc: encryptedPassword});
         const userInfo = await api.get('user/current')
         return userInfo.data
     }

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useEffect, useState} from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -10,26 +11,33 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import {Link} from "react-router-dom"
+import {Link, useNavigate} from "react-router-dom"
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import PersonIcon from "@mui/icons-material/Person";
-import {logout, selectUserMail, selectUserRole} from "../app/currUserSlice";
+import {logout, selectLoginState, selectUserMail, selectUserRole} from "../app/currUserSlice";
 import {useDispatch, useSelector} from "react-redux";
-import {getBoxesAsync} from "../app/boxSlice";
 import {getUsersAsync} from "../app/userSlice";
+import {getBoxesAsync} from "../app/boxSlice";
 
 const pagesDispatcher = ['userManagement', 'boxManagement', 'deliveryManagement'];
 const pagesUserDeliverer = ['deliveryManagement']
 
 function ResponsiveAppBar() {
 
-    const [anchorElNav, setAnchorElNav] = React.useState(null);
-    const [anchorElUser, setAnchorElUser] = React.useState(null);
+    const [anchorElNav, setAnchorElNav] = useState(null);
+    const [anchorElUser, setAnchorElUser] = useState(null);
     const selectorUser = useSelector(selectUserRole);
     const selectorMail = useSelector(selectUserMail)
     const pages = selectorUser === "DISPATCHER" ? pagesDispatcher : pagesUserDeliverer
     const dispatch = useDispatch();
+    const navigate = useNavigate()
+    const selectorLoginStatus = useSelector(selectLoginState)
 
+    useEffect(() => {
+        if (selectorLoginStatus === "logout") {
+            navigate("/")
+        }
+    }, [selectorLoginStatus])
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -116,7 +124,7 @@ function ResponsiveAppBar() {
                             {pages.map((page) => (
                                 <MenuItem key={page} onClick={() => handleLinkClick(page)}>
                                     <Typography textAlign="center">
-                                        <Link to={`/mainPage/${page}`}>{page}</Link>
+                                        <Link to={`/mainPage/${page}`}>{page.toUpperCase()}</Link>
                                     </Typography>
                                 </MenuItem>
                             ))}

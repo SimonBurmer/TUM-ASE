@@ -118,39 +118,38 @@ export const createUserAsync = createAsyncThunk(
 export const updateUserAsync = createAsyncThunk(
     'user/updateUser',
     async (updateUser, {rejectWithValue}) => {
-        const {userMail, userPassword, userRole, userRfid} = updateUser
+        const {email, password, rfid, role} = updateUser
+        let encryptedPassword = ""
+        if (password !== "") {
+            const publicKey = api.get('/auth/pkey')
+            encryptedPassword =
+                await publicKey.then((response) => {
+                    return Jose.Utils.importRsaPublicKey({
+                        "e": parseInt(response.data.e),
+                        "n": response.data.n
+                    }, "RSA-OAEP");
+                })
+                    .then(async (rsaKey) => {
 
-        const publicKey = api.get('/auth/pkey')
-        let encryptedPassword =
-            await publicKey.then((response) => {
-                let rsaKey = Jose.Utils.importRsaPublicKey({
-                    "e": parseInt(response.data.e),
-                    "n": response.data.n
-                }, "RSA-OAEP");
-                return rsaKey;
-            })
-                .then(async (rsaKey) => {
+                        let cryptographer = await new Jose.WebCryptographer();
+                        let encrypter = await new Jose.JoseJWE.Encrypter(cryptographer, rsaKey);
 
-                    let cryptographer = await new Jose.WebCryptographer();
-                    let encrypter = await new Jose.JoseJWE.Encrypter(cryptographer, rsaKey);
+                        return encrypter.encrypt(password)
 
-                    let password_enc = encrypter.encrypt(userPassword)
+                    });
 
-                    await console.log(`encrypted pw: ${password_enc}`);
-                    return password_enc
-
-                });
+        }
 
         try {
-            const updatedUser = await api.post('/user/' + userMail, {
-                email: userMail,
+            const updatedUser = await api.put('/user/' + email, {
+                email: email,
                 password_enc: encryptedPassword,
-                role: userRole,
-                rfid: userRfid
+                role: role,
+                rfid: rfid
             })
             return updatedUser.data
         } catch (err) {
-            return rejectWithValue({updateUserId: userMail, errMsg: err.response.data.message})
+            return rejectWithValue({updateUserId: email, errMsg: err.response.data.message})
         }
     }
 );
