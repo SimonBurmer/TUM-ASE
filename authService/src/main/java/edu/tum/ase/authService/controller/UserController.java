@@ -42,6 +42,7 @@ public class UserController {
 
 
     @GetMapping("current")
+    @PreAuthorize("hasAnyRole('DISPATCHER', 'DELIVERER', 'CUSTOMER')")
     public AseUser getCurrentUsers() {
         String email = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         return userService.findByEmail(email);

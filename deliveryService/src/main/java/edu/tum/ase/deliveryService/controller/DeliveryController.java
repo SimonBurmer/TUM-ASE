@@ -1,5 +1,6 @@
 package edu.tum.ase.deliveryService.controller;
 
+import edu.tum.ase.backendCommon.roles.UserRole;
 import edu.tum.ase.backendCommon.rules.ValidationUtil;
 import edu.tum.ase.deliveryService.Util;
 import edu.tum.ase.deliveryService.exceptions.UnauthorizedException;
@@ -43,11 +44,11 @@ public class DeliveryController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails = ((UserDetails) authentication.getPrincipal());
 
-        if (authentication.getAuthorities().stream().anyMatch((a) -> a.getAuthority().equals("ROLE_DELIVERER"))) {
+        if (Util.isDeliverer(authentication)) {
             return deliveryService.getDeliveriesForDeliverer(userDetails.getUsername());
         }
 
-        if (authentication.getAuthorities().stream().anyMatch((a) -> a.getAuthority().equals("ROLE_CUSTOMER"))) {
+        if (Util.isCustomer(authentication)) {
             return deliveryService.getDeliveriesForCustomer(userDetails.getUsername());
         }
 
@@ -61,6 +62,7 @@ public class DeliveryController {
     }
 
     @GetMapping("{deliveryId}")
+    @PreAuthorize("hasAnyRole('DISPATCHER', 'DELIVERER', 'CUSTOMER')")
     public Delivery getDelivery(@PathVariable String deliveryId) {
         Delivery delivery = deliveryService.findById(deliveryId);
 
@@ -77,6 +79,7 @@ public class DeliveryController {
     }
 
     @GetMapping("{deliveryId}/box")
+    @PreAuthorize("hasAnyRole('DISPATCHER', 'DELIVERER', 'CUSTOMER')")
     public Box getDeliveriesForBox(@PathVariable String deliveryId) {
         Delivery delivery = deliveryService.findById(deliveryId);
 
@@ -135,7 +138,7 @@ public class DeliveryController {
     }
 
     @PutMapping("{boxId}/place")
-    @PreAuthorize("hasAnyRole('RASPI')")
+    @PreAuthorize("hasRole('RASPI')")
     public List<Delivery> placeDeliveries() {
         String boxId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         Box box = boxService.findById(boxId);
@@ -144,7 +147,7 @@ public class DeliveryController {
     }
 
     @PutMapping("{boxId}/retrieve")
-    @PreAuthorize("hasAnyRole('RASPI')")
+    @PreAuthorize("hasRole('RASPI')")
     public List<Delivery> retrieveDeliveries() {
         String boxId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         Box box = boxService.findById(boxId);

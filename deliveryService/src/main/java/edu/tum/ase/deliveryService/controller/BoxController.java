@@ -3,11 +3,16 @@ package edu.tum.ase.deliveryService.controller;
 import edu.tum.ase.backendCommon.model.Box;
 import edu.tum.ase.backendCommon.model.Delivery;
 import edu.tum.ase.backendCommon.rules.ValidationUtil;
+import edu.tum.ase.deliveryService.Util;
+import edu.tum.ase.deliveryService.exceptions.UnauthorizedException;
 import edu.tum.ase.deliveryService.request.BoxRequest;
 import edu.tum.ase.deliveryService.service.BoxService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,12 +38,19 @@ public class BoxController {
     }
 
     @GetMapping("{boxId}")
+    @PreAuthorize("hasAnyRole('DISPATCHER', 'DELIVERER', 'CUSTOMER')")
     public Box getBox(@PathVariable String boxId) {
         return boxService.findById(boxId);
     }
 
     @GetMapping("{boxId}/deliveries")
+    @PreAuthorize("hasAnyRole('DISPATCHER', 'RASPI')")
     public List<Delivery> getDeliveriesForBox(@PathVariable String boxId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (Util.isRasPi(authentication) && !((UserDetails) authentication.getPrincipal()).getUsername().equals(boxId)) {
+            throw new UnauthorizedException();
+        }
+
         return boxService.findById(boxId).getDeliveries();
     }
 
