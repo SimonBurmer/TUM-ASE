@@ -139,20 +139,20 @@ public class DeliveryController {
 
     @PutMapping("place")
     @PreAuthorize("hasRole('RASPI')")
-    public List<Delivery> placeDeliveries() {
+    public HttpStatus placeDeliveries() {
         String boxId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         Box box = boxService.findById(boxId);
         box = boxService.placeDeliveries(box);
-        return box.getDeliveries();
+        return HttpStatus.OK;
     }
 
     @PutMapping("retrieve")
     @PreAuthorize("hasRole('RASPI')")
-    public List<Delivery> retrieveDeliveries() {
+    public HttpStatus retrieveDeliveries() {
         String boxId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         Box box = boxService.findById(boxId);
         box = boxService.retrieveDeliveries(box);
-        return box.getDeliveries();
+        return HttpStatus.OK;
     }
 
     //##################################################################################################################

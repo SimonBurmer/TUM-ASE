@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -103,15 +104,21 @@ public class BoxService {
     public Box retrieveDeliveries(Box box) {
         List<Delivery> deliveries = box.getDeliveries();
 
+        List<Delivery> shouldBeRemoved = new ArrayList<>();
+
         for (Delivery delivery : deliveries) {
             if (delivery.getStatus().equals(DeliveryStatus.IN_TARGET_BOX)) {
                 delivery.setStatus(DeliveryStatus.DELIVERED);
-                box.removeDelivery(delivery);
+                shouldBeRemoved.add(delivery);
                 deliveryRepository.save(delivery);
             }
         }
 
-        return this.updateBox(box);
+        for (Delivery delivery : shouldBeRemoved) {
+            box.removeDelivery(delivery);
+        }
+
+        return boxRepository.save(box);
     }
 
     //##################################################################################################################
