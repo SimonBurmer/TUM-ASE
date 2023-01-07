@@ -1,17 +1,25 @@
 package edu.tum.ase.deliveryService.controller;
 
-import edu.tum.ase.deliveryService.exceptions.BoxHasPendingDeliveriesException;
-import edu.tum.ase.deliveryService.model.Box;
-import edu.tum.ase.deliveryService.model.Delivery;
+import edu.tum.ase.backendCommon.model.Box;
+import edu.tum.ase.backendCommon.model.Delivery;
+import edu.tum.ase.backendCommon.rules.ValidationUtil;
+import edu.tum.ase.deliveryService.Util;
+import edu.tum.ase.deliveryService.exceptions.UnauthorizedException;
 import edu.tum.ase.deliveryService.request.BoxRequest;
 import edu.tum.ase.deliveryService.service.BoxService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+
+import static edu.tum.ase.backendCommon.rules.ValidationUtil.*;
 
 @RestController
 @RequestMapping("/box")
@@ -30,12 +38,19 @@ public class BoxController {
     }
 
     @GetMapping("{boxId}")
+    @PreAuthorize("hasAnyRole('DISPATCHER', 'DELIVERER', 'CUSTOMER')")
     public Box getBox(@PathVariable String boxId) {
         return boxService.findById(boxId);
     }
 
     @GetMapping("{boxId}/deliveries")
+    @PreAuthorize("hasAnyRole('DISPATCHER', 'RASPI')")
     public List<Delivery> getDeliveriesForBox(@PathVariable String boxId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (Util.isRasPi(authentication) && !((UserDetails) authentication.getPrincipal()).getUsername().equals(boxId)) {
+            throw new UnauthorizedException();
+        }
+
         return boxService.findById(boxId).getDeliveries();
     }
 
@@ -44,7 +59,7 @@ public class BoxController {
 
     @PostMapping("create")
     @PreAuthorize("hasRole('DISPATCHER')")
-    public Box createBox(@Valid @RequestBody BoxRequest boxRequest) {
+    public Box createBox(@Valid @Validated(OnCreation.class) @RequestBody BoxRequest boxRequest) {
         Box box = new Box();
         boxRequest.apply(box);
         return boxService.createBox(box);
@@ -56,7 +71,7 @@ public class BoxController {
 
     @PutMapping("{boxId}")
     @PreAuthorize("hasRole('DISPATCHER')")
-    public Box updateBox(@Valid @RequestBody BoxRequest boxRequest, @PathVariable String boxId) {
+    public Box updateBox(@Valid @Validated(OnUpdate.class) @RequestBody BoxRequest boxRequest, @PathVariable String boxId) {
         Box box = boxService.findById(boxId);
         boxRequest.apply(box);
         return boxService.updateBox(box);

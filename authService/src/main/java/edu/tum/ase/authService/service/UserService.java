@@ -37,6 +37,10 @@ public class UserService {
         return userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
     }
 
+    public AseUser findByRfid(String rfid) {
+        return userRepository.findByRfid(rfid).orElseThrow(UserNotFoundException::new);
+    }
+
     public List<AseUser> getAllUsers() {
         return userRepository.findAll();
     }

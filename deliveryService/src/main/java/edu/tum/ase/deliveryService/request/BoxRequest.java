@@ -1,27 +1,32 @@
 package edu.tum.ase.deliveryService.request;
 
+import edu.tum.ase.backendCommon.model.Box;
 import edu.tum.ase.backendCommon.request.Request;
-import edu.tum.ase.deliveryService.model.Box;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 
+import static edu.tum.ase.backendCommon.rules.ValidationUtil.OnCreation;
+
 @Data
 public class BoxRequest implements Request<Box> {
 
-    @NotBlank(message = "name is required")
+    @NotBlank(message = "name is required", groups = {OnCreation.class})
     private String name;
 
-    @NotBlank(message = "address is required")
+    @NotBlank(message = "address is required", groups = {OnCreation.class})
     private String address;
 
-    @NotBlank(message = "rasPiId is required")
+    @NotBlank(message = "rasPiId is required", groups = {OnCreation.class})
     private String rasPiId;
 
     @Override
     public void apply(Box box) {
-        box.setName(this.name);
-        box.setAddress(this.address);
-        box.setRasPiId(this.rasPiId);
+        if (name != null && !name.equals(""))
+            box.setName(name);
+        if (address != null && !address.equals(""))
+            box.setAddress(address);
+        if (rasPiId != null && !rasPiId.equals(""))
+            box.setRasPiId(rasPiId);
     }
 }

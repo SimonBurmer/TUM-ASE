@@ -1,6 +1,7 @@
 package edu.tum.ase.authService.request;
 
 import com.mongodb.lang.NonNull;
+import edu.tum.ase.backendCommon.rules.ValidationUtil;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
@@ -11,8 +12,8 @@ import javax.validation.constraints.NotEmpty;
 public class AuthRequest {
 
 
-    @Email(message = "email should be a valid email address")
     @NotEmpty(message = "email is required")
+    @Email(message = "email should be a valid email address")
     private final String email;
 
     @NotEmpty(message = "password_enc is required")

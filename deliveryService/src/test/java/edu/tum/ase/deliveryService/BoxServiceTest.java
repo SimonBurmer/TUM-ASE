@@ -2,7 +2,7 @@ package edu.tum.ase.deliveryService;
 
 import edu.tum.ase.deliveryService.exceptions.BoxAlreadyExistsException;
 import edu.tum.ase.deliveryService.exceptions.BoxNotFoundException;
-import edu.tum.ase.deliveryService.model.Box;
+import edu.tum.ase.backendCommon.model.Box;
 import edu.tum.ase.deliveryService.repository.BoxRepository;
 import edu.tum.ase.deliveryService.repository.DeliveryRepository;
 import edu.tum.ase.deliveryService.service.BoxService;

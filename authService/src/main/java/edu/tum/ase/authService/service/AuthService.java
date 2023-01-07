@@ -1,19 +1,27 @@
 package edu.tum.ase.authService.service;
 
+import edu.tum.ase.authService.request.CreateBearerRequest;
+import edu.tum.ase.authService.response.CreateBearerResponse;
 import edu.tum.ase.backendCommon.jwt.KeyStoreManager;
 import edu.tum.ase.authService.jwt.ExtendedJwtUtil;
+import edu.tum.ase.backendCommon.roles.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 
 @Service
 public class AuthService {
@@ -89,6 +97,19 @@ public class AuthService {
                     HttpStatus.BAD_REQUEST
             );
         }
+    }
+
+    public ResponseEntity<CreateBearerResponse> createBearerToken(CreateBearerRequest request) {
+        UserDetails boxUser = new org.springframework.security.core.userdetails.User(request.getId(),
+                "",
+                true,
+                true,
+                true,
+                true,
+                List.of(new SimpleGrantedAuthority(UserRole.getCompleteRole(UserRole.RASPI))));
+        String token = jwtUtil.generateBearerToken(boxUser);
+        CreateBearerResponse response = new CreateBearerResponse(request.getId(), token);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @Autowired

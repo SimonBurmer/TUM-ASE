@@ -1,10 +1,12 @@
 package edu.tum.ase.deliveryService.controller;
 
+import edu.tum.ase.backendCommon.roles.UserRole;
+import edu.tum.ase.backendCommon.rules.ValidationUtil;
 import edu.tum.ase.deliveryService.Util;
 import edu.tum.ase.deliveryService.exceptions.UnauthorizedException;
-import edu.tum.ase.deliveryService.model.Box;
-import edu.tum.ase.deliveryService.model.Delivery;
-import edu.tum.ase.deliveryService.model.DeliveryStatus;
+import edu.tum.ase.backendCommon.model.Box;
+import edu.tum.ase.backendCommon.model.Delivery;
+import edu.tum.ase.backendCommon.model.DeliveryStatus;
 import edu.tum.ase.deliveryService.request.DeliveryRequest;
 import edu.tum.ase.deliveryService.service.BoxService;
 import edu.tum.ase.deliveryService.service.DeliveryService;
@@ -14,10 +16,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+
+import static edu.tum.ase.backendCommon.rules.ValidationUtil.*;
 
 @RestController
 @RequestMapping("/delivery")
@@ -39,11 +44,11 @@ public class DeliveryController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails = ((UserDetails) authentication.getPrincipal());
 
-        if (authentication.getAuthorities().stream().anyMatch((a) -> a.getAuthority().equals("ROLE_DELIVERER"))) {
+        if (Util.isDeliverer(authentication)) {
             return deliveryService.getDeliveriesForDeliverer(userDetails.getUsername());
         }
 
-        if (authentication.getAuthorities().stream().anyMatch((a) -> a.getAuthority().equals("ROLE_CUSTOMER"))) {
+        if (Util.isCustomer(authentication)) {
             return deliveryService.getDeliveriesForCustomer(userDetails.getUsername());
         }
 
@@ -57,6 +62,7 @@ public class DeliveryController {
     }
 
     @GetMapping("{deliveryId}")
+    @PreAuthorize("hasAnyRole('DISPATCHER', 'DELIVERER', 'CUSTOMER')")
     public Delivery getDelivery(@PathVariable String deliveryId) {
         Delivery delivery = deliveryService.findById(deliveryId);
 
@@ -72,12 +78,29 @@ public class DeliveryController {
         return delivery;
     }
 
+    @GetMapping("{deliveryId}/box")
+    @PreAuthorize("hasAnyRole('DISPATCHER', 'DELIVERER', 'CUSTOMER')")
+    public Box getDeliveriesForBox(@PathVariable String deliveryId) {
+        Delivery delivery = deliveryService.findById(deliveryId);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = ((UserDetails) authentication.getPrincipal());
+
+        if ((Util.isCustomer(authentication) && !delivery.getCustomer().equals(userDetails.getUsername()))
+                || (Util.isDeliverer(authentication) && !delivery.getDeliverer().equals(userDetails.getUsername()))
+        ) {
+            throw new UnauthorizedException();
+        }
+
+        return delivery.getBox();
+    }
+
     //##################################################################################################################
     // POST mappings
 
     @PostMapping("{boxId}")
     @PreAuthorize("hasRole('DISPATCHER')")
-    public Delivery createAndAddDelivery(@Valid @RequestBody DeliveryRequest deliveryRequest, @PathVariable String boxId) {
+    public Delivery createAndAddDelivery(@Validated(OnCreation.class)@RequestBody DeliveryRequest deliveryRequest, @PathVariable String boxId) {
         Delivery delivery = new Delivery();
         deliveryRequest.apply(delivery);
         Box box = boxService.findById(boxId);
@@ -90,7 +113,7 @@ public class DeliveryController {
 
     @PutMapping("{deliveryId}")
     @PreAuthorize("hasRole('DISPATCHER')")
-    public Delivery updateDelivery(@Valid @RequestBody DeliveryRequest deliveryRequest, @PathVariable String deliveryId) {
+    public Delivery updateDelivery(@Validated(OnUpdate.class) @RequestBody DeliveryRequest deliveryRequest, @PathVariable String deliveryId) {
         Delivery delivery = deliveryService.findById(deliveryId);
         deliveryRequest.apply(delivery);
         return deliveryService.updateDelivery(delivery);
@@ -115,16 +138,18 @@ public class DeliveryController {
     }
 
     @PutMapping("{boxId}/place")
-    @PreAuthorize("hasAnyRole('BOX')")
-    public List<Delivery> placeDeliveries(@PathVariable String boxId) {
+    @PreAuthorize("hasRole('RASPI')")
+    public List<Delivery> placeDeliveries() {
+        String boxId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         Box box = boxService.findById(boxId);
         box = boxService.placeDeliveries(box);
         return box.getDeliveries();
     }
 
     @PutMapping("{boxId}/retrieve")
-    @PreAuthorize("hasAnyRole('BOX')")
-    public List<Delivery> retrieveDeliveries(@PathVariable String boxId) {
+    @PreAuthorize("hasRole('RASPI')")
+    public List<Delivery> retrieveDeliveries() {
+        String boxId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         Box box = boxService.findById(boxId);
         box = boxService.retrieveDeliveries(box);
         return box.getDeliveries();
