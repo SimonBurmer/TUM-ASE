@@ -137,7 +137,7 @@ public class DeliveryController {
         return delivery;
     }
 
-    @PutMapping("{boxId}/place")
+    @PutMapping("place")
     @PreAuthorize("hasRole('RASPI')")
     public List<Delivery> placeDeliveries() {
         String boxId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
@@ -146,7 +146,7 @@ public class DeliveryController {
         return box.getDeliveries();
     }
 
-    @PutMapping("{boxId}/retrieve")
+    @PutMapping("retrieve")
     @PreAuthorize("hasRole('RASPI')")
     public List<Delivery> retrieveDeliveries() {
         String boxId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
