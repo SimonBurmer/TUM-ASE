@@ -1,71 +1,83 @@
-import json
+import requests.exceptions
+from dotenv import load_dotenv
+
+load_dotenv()
+
 import os
 from time import sleep
 
 import RPi.GPIO as GPIO
 from mfrc522 import SimpleMFRC522
 
-from src.request_util import getXSRFToken, httpRequest, xsrfHeader
+from src.request_util import getXSRFToken, httpRequest, xsrfHeader, bearerHeader
 from src.led import green, red, blink_red
 from src.sensor import is_closed
-
-from dotenv import load_dotenv
-
-load_dotenv()
 
 JWT = os.getenv("JWT")
 
 reader = SimpleMFRC522()
 
+
 def authenticate(rfid):
-    res = httpRequest(method="GET", endpoint="/rfid/" + rfid, auth="Bearer " + JWT)
+    print("Verifying rfid token: \"" + rfid + "\"")
+    res = httpRequest(method="GET", endpoint="/rfid/" + rfid, headers=bearerHeader(JWT))
     if res.status_code == 200:
-        return res.content
+        return str(res.content, 'UTF-8')
     else:
-        raise ConnectionError("Unable to verify rfid")
+        raise ConnectionError("Unable to verify rfid: " + str(res.text))
+
 
 def placeDeliveries():
     print("Deliverer placed deliveries")
     xsrf_token = getXSRFToken()
-    res = httpRequest(method="POST", endpoint="/delivery/place", headers=xsrfHeader(xsrf_token), auth="Bearer " + JWT)
+    res = httpRequest(method="PUT", endpoint="/delivery/place",
+                      headers=dict(xsrfHeader(xsrf_token), **bearerHeader(JWT)))
     if res.status_code != 200:
-        raise ConnectionError("Unable to place deliveries")
+        raise ConnectionError("Unable to place deliveries: " + str(res.text))
+
 
 def retrieveDeliveries():
     print("Customer retrieved deliveries")
     xsrf_token = getXSRFToken()
-    res = httpRequest(method="POST", endpoint="/delivery/retrieve", headers=xsrfHeader(xsrf_token), auth="Bearer " + JWT)
+    res = httpRequest(method="PUT", endpoint="/delivery/retrieve",
+                      headers=dict(xsrfHeader(xsrf_token), **bearerHeader(JWT)))
     if res.status_code != 200:
-        raise ConnectionError("Unable to retrieve deliveries")
+        raise ConnectionError("Unable to retrieve deliveries: " + str(res.text))
 
 
 try:
     while True:
-        _, text = reader.read()
-        rfid = json.loads(text)
-        authenticated = authenticate(rfid)
+        try:
+            _, rfid = reader.read()
+            authenticated = authenticate(rfid.strip())
 
-        if authenticated is not None:
+            if authenticated is not None:
 
-            # light led green
-            print("Successfully authenticated as " + authenticated)
-            green()
+                # light led green
+                print("Successfully authenticated as " + authenticated)
+                green()
 
-            # after 10s check if closed
-            sleep(10)
-            while not is_closed():
-                # if not blink red until it is closed
-                blink_red()
+                # after 10s check if closed
+                sleep(10)
+                while not is_closed():
+                    # if not blink red until it is closed
+                    blink_red()
+                print("Box has been closed")
 
-            if authenticated == "DELIVERER":
-                placeDeliveries()
+                if authenticated == "DELIVERER":
+                    placeDeliveries()
 
-            if authenticated == "CUSTOMER":
-                retrieveDeliveries()
+                if authenticated == "CUSTOMER":
+                    retrieveDeliveries()
 
-        else:
-            print("Unsuccessful authentication attempt")
-            red()
+            else:
+                print("Unsuccessful authentication attempt")
+                red()
+
+        except requests.exceptions.ConnectionError:
+            print("Remote host is not reachable")
+        except Exception as e:
+            print(e)
 
 except KeyboardInterrupt:
     GPIO.cleanup()

@@ -3,40 +3,35 @@ import os
 import requests
 
 hostname = os.getenv("REMOTE_HOST")
-port = 8080
+port = os.getenv("REMOTE_PORT")
 hostUrl = "http://" + hostname + ":" + str(port)
 
 
-def httpRequest(method, endpoint, headers=' ', content='', auth=''):
-    params = {
-        'mode': "cors",
-        "cache": "no−cache",
-        "credentials": "include",
-        "redirect": "follow",
-        "referrerPolicy": "origin−when−cross−origin"
-    }
-
-    if method == 'GET ':
-        res = requests.get(hostname + endpoint, params=params, auth=auth)
+def httpRequest(method, endpoint, headers=None, content=None):
+    if method == 'GET':
+        res = requests.get(hostUrl + endpoint,  headers=headers)
         return res
-    elif method == 'POST':
-        res = requests.post(hostname + endpoint, params=params, headers=headers, auth=auth, json=content)
+    elif method == 'PUT':
+        res = requests.put(hostUrl + endpoint, headers=headers, json=content)
         return res
     else:
         raise ValueError('Method Not Found')
 
 
+def bearerHeader(bearer_token):
+    return {
+        "Authorization": "Bearer " + bearer_token
+    }
+
 def xsrfHeader(xsrf_token):
     return {
-        "X−XSRF−TOKEN": xsrf_token,
+        "X-XSRF-Token": xsrf_token
     }
 
 
 def getXSRFToken():
-    r = httpRequest('GET', hostUrl + '/auth/pkey', params)
-    print(r.status_code)
-    # 1 . CHECK RESPONSE STATUS AND RETURN THE XSRF TOKEN OR THROW AN EXCEPTION
+    r = httpRequest('GET', '/auth/pkey')
     if r.status_code == 200:
-        return r.cookies.get("XSRF-Token")
+        return r.cookies.get("XSRF-TOKEN")
     else:
         raise ConnectionError("Unable to obtain XSRF-Token")
