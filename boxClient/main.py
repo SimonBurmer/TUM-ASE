@@ -23,6 +23,8 @@ def authenticate(rfid):
     res = httpRequest(method="GET", endpoint="/rfid/" + rfid, headers=bearerHeader(JWT))
     if res.status_code == 200:
         return str(res.content, 'UTF-8')
+    if res.status_code == 401:
+        return None
     else:
         raise ConnectionError("Unable to verify rfid: " + str(res.text))
 
@@ -49,6 +51,8 @@ try:
     while True:
         try:
             _, rfid = reader.read()
+            if rfid == "":
+                continue
             authenticated = authenticate(rfid.strip())
 
             if authenticated is not None:
