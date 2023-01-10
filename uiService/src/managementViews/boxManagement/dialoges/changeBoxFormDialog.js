@@ -13,10 +13,10 @@ import {useDispatch} from "react-redux";
 import {updateBoxAsync} from "../../../app/boxSlice";
 
 export default function ChangeBoxFormDialog({boxId, boxName, boxRaspId, boxAddress}) {
-    const [open, setOpen] = React.useState(false);
-    const [newName, setNewName] = useState("");
-    const [newAddress, setNewAddress] = useState("")
-    const [newRasPiId, setNewRasPiId] = useState("")
+    const [open, setOpen] = useState(false);
+    const [newName, setNewName] = useState(boxName);
+    const [newAddress, setNewAddress] = useState(boxAddress)
+    const [newRasPiId, setNewRasPiId] = useState(boxRaspId)
 
     const dispatch = useDispatch()
 
