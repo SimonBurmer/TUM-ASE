@@ -6,6 +6,7 @@ import edu.tum.ase.authService.service.UserService;
 import edu.tum.ase.backendCommon.jwt.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -90,5 +91,27 @@ public class UserController {
         AseUser user = userService.findById(userId);
         userService.deleteUser(user);
         return HttpStatus.OK;
+    }
+
+    //##################################################################################################################
+    // User Checks
+    @PreAuthorize("hasRole('DISPATCHER')")
+    @GetMapping("is_customer/{userId}")
+    public ResponseEntity<Boolean> userIsCustomer(@PathVariable String userId){
+        if (userService.findById(userId).getRole().equals("CUSTOMER")) {
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(false, HttpStatus.OK);
+        }
+    }
+
+    @PreAuthorize("hasRole('DISPATCHER')")
+    @GetMapping("is_deliverer/{userId}")
+    public ResponseEntity<Boolean> userIsDeliverer(@PathVariable String userId){
+        if (userService.findById(userId).getRole().equals("DELIVERER")) {
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(false, HttpStatus.OK);
+        }
     }
 }

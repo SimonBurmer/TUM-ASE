@@ -7,17 +7,21 @@ import edu.tum.ase.deliveryService.exceptions.UnauthorizedException;
 import edu.tum.ase.backendCommon.model.Box;
 import edu.tum.ase.backendCommon.model.Delivery;
 import edu.tum.ase.backendCommon.model.DeliveryStatus;
+import edu.tum.ase.deliveryService.exceptions.UserIsNoValidCustomer;
+import edu.tum.ase.deliveryService.exceptions.UserIsNoValidDeliverer;
 import edu.tum.ase.deliveryService.request.DeliveryRequest;
 import edu.tum.ase.deliveryService.service.BoxService;
 import edu.tum.ase.deliveryService.service.DeliveryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -34,6 +38,26 @@ public class DeliveryController {
     @Autowired
     BoxService boxService;
 
+    @Autowired
+    RestTemplate restTemplate;
+
+
+    public Boolean UserIsValid(String api , String username, String cookie) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.COOKIE, cookie);
+        HttpEntity<String> entity = new HttpEntity(headers);
+
+        try {
+            ResponseEntity<Object> response = restTemplate.exchange(api + username, HttpMethod.GET, entity, Object.class);
+            if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (HttpClientErrorException e) {
+            throw new UserIsNoValidCustomer();
+        }
+    }
 
     //##################################################################################################################
     // GET mappings
@@ -100,7 +124,15 @@ public class DeliveryController {
 
     @PostMapping("{boxId}")
     @PreAuthorize("hasRole('DISPATCHER')")
-    public Delivery createAndAddDelivery(@Validated(OnCreation.class)@RequestBody DeliveryRequest deliveryRequest, @PathVariable String boxId) {
+    public Delivery createAndAddDelivery(@RequestHeader(HttpHeaders.COOKIE) String cookie, @Validated(OnCreation.class)@RequestBody DeliveryRequest deliveryRequest, @PathVariable String boxId) {
+
+        if (!UserIsValid("lb://auth-service/user/is_customer/", deliveryRequest.getCustomer(), cookie)){
+            throw new UserIsNoValidCustomer();
+        }
+        if (!UserIsValid("lb://auth-service/user/is_deliverer/", deliveryRequest.getDeliverer(), cookie)){
+            throw new UserIsNoValidDeliverer();
+        }
+
         Delivery delivery = new Delivery();
         deliveryRequest.apply(delivery);
         Box box = boxService.findById(boxId);
@@ -113,7 +145,15 @@ public class DeliveryController {
 
     @PutMapping("{deliveryId}")
     @PreAuthorize("hasRole('DISPATCHER')")
-    public Delivery updateDelivery(@Validated(OnUpdate.class) @RequestBody DeliveryRequest deliveryRequest, @PathVariable String deliveryId) {
+    public Delivery updateDelivery(@RequestHeader(HttpHeaders.COOKIE) String cookie, @Validated(OnUpdate.class) @RequestBody DeliveryRequest deliveryRequest, @PathVariable String deliveryId) {
+
+        if (!UserIsValid("lb://auth-service/user/is_customer/", deliveryRequest.getCustomer(), cookie)){
+            throw new UserIsNoValidCustomer();
+        }
+        if (!UserIsValid("lb://auth-service/user/is_deliverer/", deliveryRequest.getDeliverer(), cookie)){
+            throw new UserIsNoValidDeliverer();
+        }
+
         Delivery delivery = deliveryService.findById(deliveryId);
         deliveryRequest.apply(delivery);
         return deliveryService.updateDelivery(delivery);
