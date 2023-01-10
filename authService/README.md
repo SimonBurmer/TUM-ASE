@@ -25,8 +25,8 @@
 | /user          | GET (DISPATCHER)    |                                        | list of all users                          |                             |
 | /user/current  | GET                 |                                        | information about currently logged-in user |                             |
 | /user/create   | POST (DISPATCHER)   | email, password, role, rfid (optional) | user (created)                             |                             | 
-| /user/{email}  | PUT (DISPATCHER)    | email, password, rfid (optional)       | user (updated)                             | not possible to update role |
-| /user/{email}  | DELETE (DISPATCHER) |                                        |                                            |                             |
+| /user/{userId} | PUT (DISPATCHER)    | email, password, rfid (optional)       | user (updated)                             | not possible to update role |
+| /user/{userId} | DELETE (DISPATCHER) |                                        |                                            |                             |
 
 | endpoint     | Methods     | body | output                    | comment |
 |--------------|-------------|------|---------------------------|---------|

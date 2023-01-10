@@ -57,6 +57,10 @@ public class AuthServiceApplication implements CommandLineRunner {
                 AseUser alice = new AseUser("alice@apd.de", bCryptPasswordEncoder.encode("test1234"), UserRole.DELIVERER, "deliverer001");
                 AseUser kate = new AseUser("kate@apd.de", bCryptPasswordEncoder.encode("xyz"), UserRole.DISPATCHER);
 
+                bob.setId("63bd7c881d73037a057a2d91");
+                alice.setId("63bd7c881d73037a057a2d92");
+                kate.setId("63bd7c881d73037a057a2d93");
+
                 userRepository.save(bob);
                 userRepository.save(alice);
                 userRepository.save(kate);

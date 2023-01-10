@@ -47,10 +47,11 @@ public class DeliveryServiceApplication implements CommandLineRunner {
             // Only create dummy boxes and deliveries when there is no other box in DB
             if (boxRepository.findAll().size() == 0) {
                 Box garching = new Box("Garching", "Bolzmannstr. 3, 85748 Garching", "1234");
+                garching.setId("63bd7e0e6a7619035ecf9b36");
                 boxRepository.save(garching);
 
-                Delivery delivery1 = new Delivery("bob@priv.de", "alice@apd.de", garching);
-                Delivery delivery2 = new Delivery("bob@priv.de", "alice@apd.de", garching);
+                Delivery delivery1 = new Delivery("63bd7c881d73037a057a2d91", "63bd7c881d73037a057a2d92", garching);
+                Delivery delivery2 = new Delivery("63bd7c881d73037a057a2d91", "63bd7c881d73037a057a2d92", garching);
 
                 garching.addDelivery(delivery1);
                 garching.addDelivery(delivery2);
@@ -62,8 +63,9 @@ public class DeliveryServiceApplication implements CommandLineRunner {
                 boxRepository.save(garching);
 
                 Box schwabing = new Box("Schwabing", "Ludwigstraße 28, 80539", "6789");
+                schwabing.setId("63bd7e0e6a7619035ecf9b39");
                 boxRepository.save(schwabing);
-                Delivery delivery3 = new Delivery("bob@priv.de", "alice@apd.de", schwabing);
+                Delivery delivery3 = new Delivery("63bd7c881d73037a057a2d91", "63bd7c881d73037a057a2d92", schwabing);
                 delivery3.setStatus(DeliveryStatus.DELIVERED);
                 deliveryRepository.save(delivery3);
             }

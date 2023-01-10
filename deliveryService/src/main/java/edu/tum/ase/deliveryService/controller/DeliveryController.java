@@ -133,26 +133,29 @@ public class DeliveryController {
     public Delivery pickUpDelivery(@PathVariable String deliveryId) {
         Delivery delivery = deliveryService.findById(deliveryId);
         delivery.setStatus(DeliveryStatus.PICKED_UP);
+
+        // TODO: send mail
+
         deliveryService.updateDelivery(delivery);
         return delivery;
     }
 
-    @PutMapping("{boxId}/place")
+    @PutMapping("place")
     @PreAuthorize("hasRole('RASPI')")
-    public List<Delivery> placeDeliveries() {
+    public HttpStatus placeDeliveries() {
         String boxId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         Box box = boxService.findById(boxId);
         box = boxService.placeDeliveries(box);
-        return box.getDeliveries();
+        return HttpStatus.OK;
     }
 
-    @PutMapping("{boxId}/retrieve")
+    @PutMapping("retrieve")
     @PreAuthorize("hasRole('RASPI')")
-    public List<Delivery> retrieveDeliveries() {
+    public HttpStatus retrieveDeliveries() {
         String boxId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         Box box = boxService.findById(boxId);
         box = boxService.retrieveDeliveries(box);
-        return box.getDeliveries();
+        return HttpStatus.OK;
     }
 
     //##################################################################################################################
