@@ -41,6 +41,7 @@ export default function ChangeUserFormDialog({
         if (newEmail !== "" && newRole !== "" && newRfid !== "") {
             setOpen(false);
             dispatch(updateUserAsync({
+                id: userId,
                 email: newEmail,
                 password: newPassword,
                 role: newRole,

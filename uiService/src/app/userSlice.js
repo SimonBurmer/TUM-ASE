@@ -26,7 +26,7 @@ export const userSlice = createSlice({
                 })
             })
             .addCase(deleteUserAsync.rejected, (state, action) => {
-                state.requestError = "Error while deleting user with E-Mail: " +
+                state.requestError = "Error while deleting user with Id: " +
                     action.payload.delUserId + ": " + action.payload.errMsg
             })
             .addCase(createUserAsync.fulfilled, (state, action) => {
@@ -64,12 +64,12 @@ export const getUsersAsync = createAsyncThunk(
 
 export const deleteUserAsync = createAsyncThunk(
     'user/deleteUser',
-    async (userMail, {rejectWithValue}) => {
+    async (userId, {rejectWithValue}) => {
         try {
-            await api.delete('/user/' + userMail)
-            return userMail
+            await api.delete('/user/' + userId)
+            return userId
         } catch (err) {
-            return rejectWithValue({delUserId: userMail, errMsg: err.response.data.message})
+            return rejectWithValue({delUserId: userId, errMsg: err.response.data.message})
         }
     }
 );
@@ -118,7 +118,7 @@ export const createUserAsync = createAsyncThunk(
 export const updateUserAsync = createAsyncThunk(
     'user/updateUser',
     async (updateUser, {rejectWithValue}) => {
-        const {email, password, rfid, role} = updateUser
+        const {id, email, password, rfid, role} = updateUser
         let encryptedPassword = ""
         if (password !== "") {
             const publicKey = api.get('/auth/pkey')
@@ -141,7 +141,7 @@ export const updateUserAsync = createAsyncThunk(
         }
 
         try {
-            const updatedUser = await api.put('/user/' + email, {
+            const updatedUser = await api.put('/user/' + id, {
                 email: email,
                 password_enc: encryptedPassword,
                 role: role,

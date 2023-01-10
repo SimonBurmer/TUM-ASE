@@ -11,7 +11,7 @@ import IconButton from "@mui/material/IconButton";
 import {useDispatch} from "react-redux";
 import {deleteUserAsync} from "../../../app/userSlice";
 
-export default function DeleteUserAlertDialog({userEmail}) {
+export default function DeleteUserAlertDialog({userId}) {
     const [open, setOpen] = useState(false);
     const dispatch = useDispatch();
 
@@ -25,7 +25,7 @@ export default function DeleteUserAlertDialog({userEmail}) {
     };
 
     const handleDelete = () => {
-        dispatch(deleteUserAsync(userEmail))
+        dispatch(deleteUserAsync(userId))
         setOpen(false);
     };
 
