@@ -83,6 +83,8 @@ public class BoxService {
         }
 
         box.addDelivery(delivery);
+
+        // TODO: send email
         log.info("Assigning delivery " + delivery + " to box "+ box);
         deliveryRepository.save(delivery);
         return boxRepository.save(box);
@@ -94,6 +96,9 @@ public class BoxService {
         for (Delivery delivery : deliveries) {
             if (delivery.getStatus().equals(DeliveryStatus.PICKED_UP)) {
                 delivery.setStatus(DeliveryStatus.IN_TARGET_BOX);
+
+                // TODO: send email
+
             }
         }
 
@@ -109,6 +114,9 @@ public class BoxService {
         for (Delivery delivery : deliveries) {
             if (delivery.getStatus().equals(DeliveryStatus.IN_TARGET_BOX)) {
                 delivery.setStatus(DeliveryStatus.DELIVERED);
+
+                // TODO: send email
+
                 shouldBeRemoved.add(delivery);
                 deliveryRepository.save(delivery);
             }

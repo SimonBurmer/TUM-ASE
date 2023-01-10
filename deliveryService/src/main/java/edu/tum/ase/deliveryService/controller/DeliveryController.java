@@ -133,6 +133,9 @@ public class DeliveryController {
     public Delivery pickUpDelivery(@PathVariable String deliveryId) {
         Delivery delivery = deliveryService.findById(deliveryId);
         delivery.setStatus(DeliveryStatus.PICKED_UP);
+
+        // TODO: send mail
+
         deliveryService.updateDelivery(delivery);
         return delivery;
     }

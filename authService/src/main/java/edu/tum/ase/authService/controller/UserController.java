@@ -67,10 +67,10 @@ public class UserController {
     //##################################################################################################################
     // PUT mappings
 
-    @PutMapping("{email}")
+    @PutMapping("{userId}")
     @PreAuthorize("hasRole('DISPATCHER')")
-    public AseUser updateUser(@Valid @Validated(OnUpdate.class) @RequestBody UserRequest userRequest, @PathVariable String email) {
-        AseUser user = userService.findByEmail(email);
+    public AseUser updateUser(@Valid @Validated(OnUpdate.class) @RequestBody UserRequest userRequest, @PathVariable String userId) {
+        AseUser user = userService.findById(userId);
 
         userRequest.setJwtUtil(jwtUtil);
         userRequest.setBCryptPasswordEncoder(bCryptPasswordEncoder);
@@ -84,10 +84,10 @@ public class UserController {
     //##################################################################################################################
     // DELETE mappings
 
-    @DeleteMapping("{email}")
+    @DeleteMapping("{userId}")
     @PreAuthorize("hasRole('DISPATCHER')")
-    public HttpStatus deleteUser(@PathVariable String email) {
-        AseUser user = userService.findByEmail(email);
+    public HttpStatus deleteUser(@PathVariable String userId) {
+        AseUser user = userService.findById(userId);
         userService.deleteUser(user);
         return HttpStatus.OK;
     }
