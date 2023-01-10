@@ -27,7 +27,7 @@ public class UserDetailsService implements org.springframework.security.core.use
             AseUser aseUser = maybeUser.get();
             // DONE: return a Spring AseUser with the
             // email, password and authority that we retrieved above
-            return new org.springframework.security.core.userdetails.User(aseUser.getEmail(),
+            return new org.springframework.security.core.userdetails.User(aseUser.getId(),
                     aseUser.getPassword(),
                     true,
                     true,
