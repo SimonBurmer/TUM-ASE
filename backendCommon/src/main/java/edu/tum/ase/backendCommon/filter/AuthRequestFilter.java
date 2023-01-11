@@ -58,7 +58,7 @@ public class AuthRequestFilter extends OncePerRequestFilter {
         String jwt = jwtCookie.getValue();
 
         if (!jwtUtil.verifyJwtSignature(jwt)) {
-            filterChain.doFilter(request, response);
+            response.sendError(HttpStatus.UNAUTHORIZED.value(), "jwt is not valid");
             return;
         }
 
