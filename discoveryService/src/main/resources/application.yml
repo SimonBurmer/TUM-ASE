@@ -6,6 +6,7 @@ server:
   port: 8761
   error:
     include-message: always
+    include-binding-errors: always
 
 eureka:
   instance:
