@@ -15,10 +15,11 @@
 
 # API Endpoints
 
-| endpoint   | Methods | body                                     | output                              | comment                                             |
-|------------|---------|------------------------------------------|-------------------------------------|-----------------------------------------------------|
-| /auth/pkey | GET     |                                          | `{ "e": ..., "key": ..., "n": ...}` | Used to fetch the public key for encrypting password |
-| /auth      | POST    | email, password_enc, remember (optional) | jwt auth token (as HttpOnly Cookie) | Used to authenticate users                          |
+| endpoint       | Methods | body                                     | output                              | comment                                              |
+|----------------|---------|------------------------------------------|-------------------------------------|------------------------------------------------------|
+| /auth/pkey     | GET     |                                          | `{ "e": ..., "key": ..., "n": ...}` | Used to fetch the public key for encrypting password |
+| /auth          | POST    | email, password_enc, remember (optional) | jwt auth token (as HttpOnly Cookie) | Used to authenticate users                           |
+| /auth/bearer   | POST    | id (of the respective box)               | `{"id": ..., "token": ...}`         |                                                      |
 
 | endpoint       | Methods             | body                                   | output                                     | comment                     |
 |----------------|---------------------|----------------------------------------|--------------------------------------------|-----------------------------|
