@@ -41,7 +41,6 @@ export default function NewUserFormDialog() {
             }))
         }
     }
-    //TODO handleAdd hinzufügen bei der eine Request an den Server geschickt wird
 
     return (
         <div>

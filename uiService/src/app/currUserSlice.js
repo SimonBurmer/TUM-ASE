@@ -1,26 +1,29 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
 import {Jose} from 'jose-jwe-jws';
+import {apiUrl} from "../constants";
 
-//TODO den default auf null setzten und bei login auf die rolle des angemeldeten users setzten
-const initialState = {
+export const initialStateCurrUser = {
     userRole: "",
     loginState: "logout",
     mailAddress: "",
 }
 
-const api = axios.create({baseURL: 'http://localhost:10789', withCredentials: true}) //TODO move to specific file for constants
+const api = axios.create({baseURL: apiUrl, withCredentials: true})
 
 
 export const currUserSlice = createSlice({
     name: 'role',
-    initialState,
+    initialState: initialStateCurrUser,
 
     reducers: {
-        logout: (state) => {
+        resetStateCurrUser: (state) => {
+
             state.loginState = "logout";
             state.userRole = "";
             state.mailAddress = "";
+
+
         },
 
     },
@@ -86,5 +89,5 @@ export default currUserSlice.reducer
 export const selectUserRole = (state) => state.role.userRole;
 export const selectLoginState = (state) => state.role.loginState;
 export const selectUserMail = (state) => state.role.mailAddress;
-export const {logout} = currUserSlice.actions;
+export const {resetStateCurrUser} = currUserSlice.actions;
 

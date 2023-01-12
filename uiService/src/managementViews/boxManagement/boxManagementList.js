@@ -8,7 +8,6 @@ import ListItemText from '@mui/material/ListItemText';
 import Avatar from '@mui/material/Avatar';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import PersonIcon from '@mui/icons-material/Person';
 import DeleteBoxAlertDialog from "./dialoges/deleteBoxAlertDialog";
 import {Container} from "@mui/material";
 import ChangeBoxFormDialog from "./dialoges/changeBoxFormDialog";
@@ -16,8 +15,9 @@ import NewBoxFormDialog from "./dialoges/newBoxFormDialog";
 import {useSelector} from "react-redux";
 import {selectBoxes} from "../../app/boxSlice";
 import NewRequestErrorDialog from "../requestErrorDialog";
+import GenerateTokenButton from "./dialoges/GenerateTokenButton";
+import MoveToInboxIcon from '@mui/icons-material/MoveToInbox';
 
-//TODO statt dem Icon Button den Bearbeiten Dialog hinterlegen
 function generate(boxes) {
     return boxes.map((box) => (
             <ListItem
@@ -25,13 +25,16 @@ function generate(boxes) {
                 divider
                 secondaryAction={
                     <Grid container spacing={0}>
-                        <Grid item xs={8}>
+                        <Grid item xs='auto'>
+                            <GenerateTokenButton boxId={box.id}/>
+                        </Grid>
+                        <Grid item xs='auto'>
                             <ChangeBoxFormDialog boxId={box.id}
                                                  boxName={box.name}
                                                  boxAddress={box.address}
                                                  boxRaspId={box.rasPiId}/>
                         </Grid>
-                        <Grid item xs={4}>
+                        <Grid item xs='auto'>
                             <DeleteBoxAlertDialog boxId={box.id}/>
                         </Grid>
                     </Grid>
@@ -39,7 +42,7 @@ function generate(boxes) {
             >
                 <ListItemAvatar>
                     <Avatar>
-                        <PersonIcon/>
+                        <MoveToInboxIcon/>
                     </Avatar>
                 </ListItemAvatar>
                 <Typography component={'div'}>
@@ -61,7 +64,6 @@ function generate(boxes) {
     );
 }
 
-//TODO Liste and Objekten an boxes übergeben und generate und IntercativeList entsprechend anpassen
 
 const Demo = styled('div')(({theme}) => ({
     backgroundColor: theme.palette.background.paper,

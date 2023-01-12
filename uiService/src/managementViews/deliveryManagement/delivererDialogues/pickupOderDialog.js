@@ -9,8 +9,9 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import {useDispatch} from "react-redux";
 import {createBoxAsync} from "../../../app/boxSlice";
+import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
 
-export default function NewBoxFormDialog() {
+export default function PickupOrderDialog() {
     const [open, setOpen] = React.useState(false);
     const [newName, setNewName] = useState("");
     const [newAddress, setNewAddress] = useState("")
@@ -36,8 +37,8 @@ export default function NewBoxFormDialog() {
 
     return (
         <div>
-            <Button sx={{ml: 3, mt: 3}} variant="outlined" onClick={handleClickOpen}>
-                Add new Box
+            <Button sx={{ml: 3, mt: 3}} variant="contained" onClick={handleClickOpen} startIcon={<QrCodeScannerIcon/>}>
+                Scan QR Code
             </Button>
             <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>Add Box</DialogTitle>

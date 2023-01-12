@@ -1,13 +1,23 @@
 import {useEffect} from "react";
-import UserManagementOverview from "../managementViews/userManagement/userManagementOverview";
-import BoxManagementOverview from "../managementViews/boxManagement/boxManagementOverview";
-import DeliveryManagementOverview from "../managementViews/deliveryManagement/deliveryManagementOverview";
 import {Route, Routes} from "react-router-dom";
 import ResponsiveAppBar from "../components/navbar";
 import {useDispatch, useSelector} from "react-redux";
 import {selectUserRole} from "../app/currUserSlice";
 import {getBoxesAsync} from "../app/boxSlice";
 import {getUsersAsync} from "../app/userSlice";
+import DeliveryManagementListDeliverer from "../managementViews/deliveryManagement/deliveryManagementListDeliverer";
+import UserManagementList from "../managementViews/userManagement/userManagementList";
+import BoxManagementList from "../managementViews/boxManagement/boxManagementList";
+import {getDeliveriesDelivererCustomerAsync} from "../app/deliverySlice";
+
+function GetDeliveryComponent(role) {
+    switch (role) {
+        case "DELIVERER":
+            return <Route path={"/DeliveryManagement"} element={<DeliveryManagementListDeliverer/>}/>
+        //TODO others
+    }
+    return ""
+}
 
 
 function MainPage() {
@@ -20,6 +30,9 @@ function MainPage() {
                 dispatch(getBoxesAsync())
                 dispatch(getUsersAsync())
                 break;
+            case "DELIVERER":
+                dispatch(getDeliveriesDelivererCustomerAsync())
+                break;
             //TODO others
         }
     }, [selectorUser])
@@ -29,11 +42,11 @@ function MainPage() {
             <ResponsiveAppBar/>
             <Routes>
                 {selectorUser === "DISPATCHER" ?
-                    <Route path={"/userManagement"} element={<UserManagementOverview/>}/> : ""}
+                    <Route path={"/userManagement"} element={<UserManagementList/>}/> : ""}
                 {selectorUser === "DISPATCHER" ?
-                    <Route path={"/boxManagement"} element={<BoxManagementOverview/>}/> : ""}
-                {selectorUser === "DISPATCHER" || selectorUser === "DELIVERER" || selectorUser === "CUSTOMER" ?
-                    <Route path={"/DeliveryManagement"} element={<DeliveryManagementOverview/>}/> : ""}
+                    <Route path={"/boxManagement"} element={<BoxManagementList/>}/> : ""}
+
+                {GetDeliveryComponent(selectorUser)}
             </Routes>
         </div>
     )

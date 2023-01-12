@@ -13,7 +13,7 @@ store.subscribe(() => {
         box: store.getState().box,
         user: store.getState().user,
         role: store.getState().role,
-        //TODO deliveries
+        delivery: store.getState().delivery,
     })
 })
 

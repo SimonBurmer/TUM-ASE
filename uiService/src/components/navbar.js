@@ -14,10 +14,11 @@ import MenuItem from '@mui/material/MenuItem';
 import {Link, useNavigate} from "react-router-dom"
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import PersonIcon from "@mui/icons-material/Person";
-import {logout, selectLoginState, selectUserMail, selectUserRole} from "../app/currUserSlice";
+import {resetStateCurrUser, selectLoginState, selectUserMail, selectUserRole} from "../app/currUserSlice";
 import {useDispatch, useSelector} from "react-redux";
-import {getUsersAsync} from "../app/userSlice";
-import {getBoxesAsync} from "../app/boxSlice";
+import {getUsersAsync, resetStateUsers} from "../app/userSlice";
+import {getBoxesAsync, resetStateBoxes} from "../app/boxSlice";
+import {getDeliveriesDelivererCustomerAsync, resetStateDeliveries} from "../app/deliverySlice";
 
 const pagesDispatcher = ['userManagement', 'boxManagement', 'deliveryManagement'];
 const pagesUserDeliverer = ['deliveryManagement']
@@ -60,7 +61,17 @@ function ResponsiveAppBar() {
                 dispatch(getUsersAsync())
                 break;
             case "deliveryManagement":
-                //TODO dispatch call when implemented
+                switch (selectorUser) {
+                    case "DISPATCHER":
+                        //todo
+                        break;
+                    case "DELIVERER":
+                        dispatch(getDeliveriesDelivererCustomerAsync())
+                        break;
+                    case "CUSTOMER":
+                        //todo
+                        break;
+                }
                 break;
         }
     };
@@ -188,7 +199,12 @@ function ResponsiveAppBar() {
                         >
 
                             <MenuItem key={'Logout'} onClick={() => {
-                                dispatch(logout());
+                                console.log("logout")
+                                dispatch(resetStateCurrUser());
+                                dispatch(resetStateBoxes())
+                                dispatch(resetStateDeliveries())
+                                dispatch(resetStateUsers())
+                                navigate("/")
                             }}>
                                 <Typography textAlign="center">
                                     <Link style={{textDecoration: "none", color: "black"}}

@@ -1,18 +1,29 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
+import {apiUrl} from "../constants";
 
 const initialState = {
     boxes: [],
-    requestError: ""
+    requestError: "",
+    bearerToken: ""
 }
 
-const api = axios.create({baseURL: 'http://localhost:10789', withCredentials: true}) //TODO move to specific file for constants
+const api = axios.create({baseURL: apiUrl, withCredentials: true})
 
 
 export const boxSlice = createSlice({
     name: 'box',
     initialState,
-    reducers: {},
+    reducers: {
+        resetStateBoxes: (state) => {
+            state.boxes = []
+            state.reducers = ""
+            state.bearerToken = ""
+        },
+        resetErrorBoxes: (state) => {
+            state.requestError = ""
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(getBoxesAsync.fulfilled, (state, action) => {
@@ -49,6 +60,14 @@ export const boxSlice = createSlice({
             .addCase(updateBoxAsync.rejected, (state, action) => {
                 state.requestError = "Error while updating box with ID: " +
                     action.payload.updateBoxId + ": " + action.payload.errMsg
+            })
+            .addCase(generateBearerToken.fulfilled, (state, action) => {
+                state.bearerToken = action.payload
+            })
+            .addCase(generateBearerToken.rejected, (state, action) => {
+                state.requestError = "Error while creating Token for Box with Id: " +
+                    action.payload.BoxId + ": " + action.payload.errMsg
+
             })
     }
 })
@@ -100,8 +119,28 @@ export const updateBoxAsync = createAsyncThunk(
     }
 );
 
+export const generateBearerToken = createAsyncThunk(
+    'box/token', //body is box id
+    async (BoxInfo, {rejectWithValue}) => {
+        const {boxId} = BoxInfo
+        try {
+            const newToken = await api.post('/auth/bearer', {id: boxId})
+            if (navigator?.clipboard) {
+                await navigator.clipboard.writeText(newToken.data.token)
+            }
+            console.log(newToken.data, "new Token")
+            return newToken.data.token
+        } catch (err) {
+            return rejectWithValue({BoxId: boxId, errMsg: err.response.data.message})
+        }
+    }
+);
+
 
 export default boxSlice.reducer
 export const selectBoxes = (state) => state.box.boxes;
 export const selectBoxRequestError = (state) => state.box.requestError;
+export const selectBearerToken = (state) => state.box.bearerToken;
+export const {resetStateBoxes, resetErrorBoxes} = boxSlice.actions;
+
 

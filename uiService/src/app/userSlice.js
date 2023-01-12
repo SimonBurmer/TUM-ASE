@@ -1,19 +1,28 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
 import {Jose} from "jose-jwe-jws";
+import {apiUrl} from "../constants";
 
 const initialState = {
     users: [],
     requestError: ""
 }
 
-const api = axios.create({baseURL: 'http://localhost:10789', withCredentials: true}) //TODO move to specific file for constants
+const api = axios.create({baseURL: apiUrl, withCredentials: true})
 
 
 export const userSlice = createSlice({
     name: 'user',
     initialState,
-    reducers: {},
+    reducers: {
+        resetStateUsers: (state) => {
+            state.users = []
+            state.requestError = ""
+        },
+        resetErrorUser: (state) => {
+            state.requestError = ""
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(getUsersAsync.fulfilled, (state, action) => {
@@ -158,4 +167,5 @@ export const updateUserAsync = createAsyncThunk(
 export default userSlice.reducer
 export const selectUsers = (state) => state.user.users;
 export const selectUserRequestError = (state) => state.user.requestError;
+export const {resetStateUsers, resetErrorUser} = userSlice.actions;
 
