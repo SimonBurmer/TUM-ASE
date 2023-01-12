@@ -51,7 +51,6 @@ const Demo = styled('div')(({theme}) => ({
 
 export default function DeliveryManagementListDeliverer() {
     const deliveries = useSelector(selectDeliveries)
-    console.log(deliveries)
     return (
         <Container>
             <NewRequestErrorDialog/>

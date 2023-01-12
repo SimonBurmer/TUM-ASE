@@ -62,8 +62,7 @@ export const getDeliveriesDelivererCustomerAsync = createAsyncThunk(
 
 export const pickupDelivery = createAsyncThunk(
     'delivery/pickupDelivery', //body is box id
-    async (deliveryInfo, {rejectWithValue}) => {
-        const {deliveryId} = deliveryInfo
+    async (deliveryId, {rejectWithValue}) => {
         try {
             await api.put('/delivery/' + deliveryId + '/pickup')
             return deliveryId
