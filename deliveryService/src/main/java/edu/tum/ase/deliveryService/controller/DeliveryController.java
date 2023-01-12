@@ -1,16 +1,15 @@
 package edu.tum.ase.deliveryService.controller;
 
-import edu.tum.ase.backendCommon.roles.UserRole;
-import edu.tum.ase.backendCommon.rules.ValidationUtil;
-import edu.tum.ase.deliveryService.Util;
-import edu.tum.ase.deliveryService.exceptions.UnauthorizedException;
 import edu.tum.ase.backendCommon.model.Box;
 import edu.tum.ase.backendCommon.model.Delivery;
 import edu.tum.ase.backendCommon.model.DeliveryStatus;
+import edu.tum.ase.deliveryService.Util;
+import edu.tum.ase.deliveryService.exceptions.UnauthorizedException;
 import edu.tum.ase.deliveryService.request.DeliveryRequest;
 import edu.tum.ase.deliveryService.service.BoxService;
 import edu.tum.ase.deliveryService.service.DeliveryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -22,7 +21,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-import static edu.tum.ase.backendCommon.rules.ValidationUtil.*;
+import static edu.tum.ase.backendCommon.rules.ValidationUtil.OnCreation;
+import static edu.tum.ase.backendCommon.rules.ValidationUtil.OnUpdate;
 
 @RestController
 @RequestMapping("/delivery")
@@ -33,7 +33,6 @@ public class DeliveryController {
 
     @Autowired
     BoxService boxService;
-
 
     //##################################################################################################################
     // GET mappings
@@ -100,7 +99,7 @@ public class DeliveryController {
 
     @PostMapping("{boxId}")
     @PreAuthorize("hasRole('DISPATCHER')")
-    public Delivery createAndAddDelivery(@Validated(OnCreation.class)@RequestBody DeliveryRequest deliveryRequest, @PathVariable String boxId) {
+    public Delivery createAndAddDelivery(@Valid @Validated(OnCreation.class) @RequestBody DeliveryRequest deliveryRequest, @PathVariable String boxId) {
         Delivery delivery = new Delivery();
         deliveryRequest.apply(delivery);
         Box box = boxService.findById(boxId);
@@ -113,7 +112,7 @@ public class DeliveryController {
 
     @PutMapping("{deliveryId}")
     @PreAuthorize("hasRole('DISPATCHER')")
-    public Delivery updateDelivery(@Validated(OnUpdate.class) @RequestBody DeliveryRequest deliveryRequest, @PathVariable String deliveryId) {
+    public Delivery updateDelivery(@Valid @Validated(OnUpdate.class) @RequestBody DeliveryRequest deliveryRequest, @PathVariable String deliveryId) {
         Delivery delivery = deliveryService.findById(deliveryId);
         deliveryRequest.apply(delivery);
         return deliveryService.updateDelivery(delivery);

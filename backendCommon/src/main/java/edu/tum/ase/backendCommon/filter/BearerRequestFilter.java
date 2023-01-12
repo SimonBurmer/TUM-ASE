@@ -51,8 +51,7 @@ public class BearerRequestFilter extends OncePerRequestFilter {
         String jwt = authorizationHeader.substring(HEADER_START.length() - 1);
 
         if (!jwtUtil.verifyJwtSignature(jwt)) {
-            //response.sendError(HttpStatus.UNAUTHORIZED.value(), "jwt is not valid");
-            filterChain.doFilter(request, response);
+            response.sendError(HttpStatus.UNAUTHORIZED.value(), "jwt is not valid");
             return;
         }
 

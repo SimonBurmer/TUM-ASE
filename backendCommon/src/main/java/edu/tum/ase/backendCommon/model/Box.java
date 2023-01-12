@@ -69,4 +69,14 @@ public class Box {
     public boolean hasPendingDeliveries() {
         return !this.deliveries.isEmpty();
     }
+
+    @Override
+    public String toString() {
+        return "Box{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", rasPiId='" + rasPiId + '\'' +
+                '}';
+    }
 }
