@@ -3,6 +3,7 @@ package edu.tum.ase.backendCommon.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mongodb.lang.NonNull;
+import edu.tum.ase.deliveryService.exceptions.SingleCustomerPerBoxViolationException;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -54,6 +55,10 @@ public class Box {
 
 
     public void addDelivery(Delivery delivery) {
+        if (!(getDeliveries().isEmpty() || getDeliveries().get(0).getCustomer().equals(delivery.getCustomer()))) {
+            throw new SingleCustomerPerBoxViolationException();
+        }
+
         if (delivery.getBox() != null) {
             delivery.getBox().removeDelivery(delivery);
         }

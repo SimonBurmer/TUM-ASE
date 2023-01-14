@@ -74,12 +74,8 @@ public class BoxService {
     }
 
     public Box assignDelivery(Box box, Delivery delivery) {
-        if (!delivery.getStatus().canBeReassigned()) {
+        if (!delivery.getStatus().canBeModified()) {
             throw new DeliveryStatusException();
-        }
-
-        if (!(box.getDeliveries().isEmpty() || box.getDeliveries().get(0).getCustomer().equals(delivery.getCustomer()))) {
-            throw new SingleCustomerPerBoxViolationException();
         }
 
         box.addDelivery(delivery);
@@ -90,19 +86,19 @@ public class BoxService {
         return boxRepository.save(box);
     }
 
-    public Box placeDeliveries(Box box) {
+    public Box placeDeliveries(Box box, String delivererId) {
         List<Delivery> deliveries = box.getDeliveries();
 
         for (Delivery delivery : deliveries) {
-            if (delivery.getStatus().equals(DeliveryStatus.PICKED_UP)) {
+            if (delivery.getDeliverer().equals(delivererId) && delivery.getStatus().equals(DeliveryStatus.PICKED_UP)) {
                 delivery.setStatus(DeliveryStatus.IN_TARGET_BOX);
+                deliveryRepository.save(delivery);
 
                 // TODO: send email
-
             }
         }
 
-        return this.updateBox(box);
+        return boxRepository.save(box);
     }
 
 

@@ -51,6 +51,10 @@ public class DeliveryService {
     // Update
 
     public Delivery updateDelivery(Delivery delivery) {
+        if (!delivery.getStatus().canBeModified()) {
+            throw new DeliveryStatusException();
+        }
+
         log.info("Updating delivery " + delivery);
         return deliveryRepository.save(delivery);
     }

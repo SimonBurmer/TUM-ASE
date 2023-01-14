@@ -5,6 +5,7 @@ import edu.tum.ase.backendCommon.model.Delivery;
 import edu.tum.ase.backendCommon.model.DeliveryStatus;
 import edu.tum.ase.deliveryService.Util;
 import edu.tum.ase.deliveryService.exceptions.UnauthorizedException;
+import edu.tum.ase.deliveryService.request.DeliveryPlacingRequest;
 import edu.tum.ase.deliveryService.request.DeliveryRequest;
 import edu.tum.ase.deliveryService.service.BoxService;
 import edu.tum.ase.deliveryService.service.DeliveryService;
@@ -141,10 +142,10 @@ public class DeliveryController {
 
     @PutMapping("place")
     @PreAuthorize("hasRole('RASPI')")
-    public HttpStatus placeDeliveries() {
+    public HttpStatus placeDeliveries(@RequestBody DeliveryPlacingRequest request) {
         String boxId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         Box box = boxService.findById(boxId);
-        box = boxService.placeDeliveries(box);
+        box = boxService.placeDeliveries(box, request.getDeliverer());
         return HttpStatus.OK;
     }
 

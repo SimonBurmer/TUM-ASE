@@ -1,12 +1,15 @@
 package edu.tum.ase.deliveryService;
 
-import edu.tum.ase.deliveryService.exceptions.BoxAlreadyExistsException;
-import edu.tum.ase.deliveryService.exceptions.BoxNotFoundException;
+import edu.tum.ase.backendCommon.model.Delivery;
+import edu.tum.ase.backendCommon.model.DeliveryStatus;
+import edu.tum.ase.deliveryService.exceptions.*;
 import edu.tum.ase.backendCommon.model.Box;
 import edu.tum.ase.deliveryService.repository.BoxRepository;
 import edu.tum.ase.deliveryService.repository.DeliveryRepository;
 import edu.tum.ase.deliveryService.service.BoxService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,8 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -101,6 +103,34 @@ public class BoxServiceTest {
     }
 
     @Test
+    public void testUpdate() {
+        // Given
+        Box box1 = new Box("Garching", "Garching", "123");
+
+        //When
+        box1.setName("Maxvorstadt");
+        box1.setAddress("Maxvorstadt");
+        boxService.updateBox(box1);
+
+        //Then
+        verify(boxRepository).save(box1);
+    }
+
+    @Test
+    public void testUpdateWhenHasPendingDeliveries() {
+        // Given
+        Box box1 = new Box("Ismaning", "Ismaning", "234");
+        Delivery delivery = new Delivery("customer", "deliverer", box1);
+
+        // When
+        box1.setName("Garching");
+        box1.setAddress("Garching");
+
+        // Then
+        assertThatThrownBy(() -> boxService.updateBox(box1)).isInstanceOf(BoxHasPendingDeliveriesException.class);
+    }
+
+    @Test
     public void testDelete() {
         // Given
         Box box1 = new Box("Garching", "Garching", "123");
@@ -110,5 +140,127 @@ public class BoxServiceTest {
 
         //Then
         verify(boxRepository).delete(box1);
+    }
+
+    @Test
+    public void testDeleteWhenHasPendingDeliveries() {
+        // Given
+        Box box1 = new Box("Ismaning", "Ismaning", "234");
+        Delivery delivery = new Delivery("customer", "deliverer", box1);
+
+        // When & Then
+        assertThatThrownBy(() -> boxService.deleteBox(box1)).isInstanceOf(BoxHasPendingDeliveriesException.class);
+
+    }
+
+    @Test
+    public void testAssignDeliverySuccessful() {
+        // Given
+        Box box1 = new Box("Garching", "Garching", "123");
+        Box box2 = new Box("Ismaning", "Ismaning", "234");
+
+        Delivery delivery1 = new Delivery("customer", "deliverer", box1);
+        Delivery delivery2 = new Delivery("customer", "deliverer", box2);
+
+        // When
+        boxService.assignDelivery(box1, delivery1);
+        boxService.assignDelivery(box2, delivery2);
+
+        // Then
+        verify(boxRepository).save(box1);
+        verify(boxRepository).save(box2);
+        verify(deliveryRepository).save(delivery1);
+        verify(deliveryRepository).save(delivery1);
+        assertThat(box1.getDeliveries()).contains(delivery1);
+        assertThat(box2.getDeliveries()).contains(delivery2);
+        assertThat(delivery1.getBox()).isEqualTo(box1);
+        assertThat(delivery2.getBox()).isEqualTo(box2);
+
+        // When
+        boxService.assignDelivery(box1, delivery2);
+
+        // Then
+        assertThat(delivery2.getBox()).isEqualTo(box1);
+        assertThat(box2.getDeliveries()).doesNotContain(delivery2);
+    }
+
+    @ParameterizedTest
+    @EnumSource(DeliveryStatus.class)
+    public void testAssignDeliveryStatusNotAllowed(DeliveryStatus status) {
+        // Given
+        Box box1 = new Box("Garching", "Garching", "123");
+        Box box2 = new Box("Ismaning", "Ismaning", "234");
+        Delivery delivery1 = new Delivery("customer", "deliverer", box1);
+        box1.addDelivery(delivery1);
+        delivery1.setStatus(status);
+
+        // When & Then
+        if (!status.canBeModified()) {
+            assertThatThrownBy(() -> boxService.assignDelivery(box2, delivery1)).isInstanceOf(DeliveryStatusException.class);
+        } else {
+            assertThatNoException().isThrownBy(() -> boxService.assignDelivery(box2, delivery1));
+        }
+    }
+
+    @Test
+    public void testAssignDeliverySingleCustomerViolation() {
+        // Given
+        Box box1 = new Box("Garching", "Garching", "123");
+        Delivery delivery1 = new Delivery("customer1", "deliverer", box1);
+
+        Delivery delivery2 = new Delivery();
+        delivery2.setCustomer("customer2");
+        delivery2.setDeliverer("deliverer");
+
+        box1.addDelivery(delivery1);
+
+        // When & Then
+        assertThatThrownBy(() -> new Delivery("customer2", "deliverer", box1)).isInstanceOf(SingleCustomerPerBoxViolationException.class);
+        assertThatThrownBy(() -> boxService.assignDelivery(box1, delivery2)).isInstanceOf(SingleCustomerPerBoxViolationException.class);
+    }
+
+    @Test
+    void testPlaceDeliveries() {
+        // Given
+        Box box1 = new Box("Garching", "Garching", "123");
+
+        Delivery delivery1 = new Delivery("customer1", "deliverer1", box1);
+        delivery1.setStatus(DeliveryStatus.PICKED_UP);
+        Delivery delivery2 = new Delivery("customer1", "deliverer1", box1);
+        delivery2.setStatus(DeliveryStatus.ORDERED);
+        Delivery delivery3 = new Delivery("customer1", "deliverer2", box1);
+        delivery3.setStatus(DeliveryStatus.PICKED_UP);
+
+        // When
+        boxService.placeDeliveries(box1, "deliverer1");
+
+        // Then
+        assertThat(delivery1.getStatus()).isEqualTo(DeliveryStatus.IN_TARGET_BOX); // Changed
+        assertThat(delivery2.getStatus()).isEqualTo(DeliveryStatus.ORDERED); // Unchanged because of wrong status
+        assertThat(delivery3.getStatus()).isEqualTo(DeliveryStatus.PICKED_UP); // Unchanged because of wrong deliverer
+
+        verify(deliveryRepository).save(delivery1);
+        verify(boxRepository).save(box1);
+    }
+
+    @Test
+    void testRetrieveDeliveries() {
+        // Given
+        Box box1 = new Box("Garching", "Garching", "123");
+
+        Delivery delivery1 = new Delivery("customer1", "deliverer1", box1);
+        delivery1.setStatus(DeliveryStatus.IN_TARGET_BOX);
+        Delivery delivery2 = new Delivery("customer1", "deliverer1", box1);
+        delivery2.setStatus(DeliveryStatus.PICKED_UP);
+
+        // When
+        boxService.retrieveDeliveries(box1);
+
+        // Then
+        assertThat(delivery1.getStatus()).isEqualTo(DeliveryStatus.DELIVERED); // Changed
+        assertThat(delivery2.getStatus()).isEqualTo(DeliveryStatus.PICKED_UP); // Unchanged because of wrong status
+
+        verify(deliveryRepository).save(delivery1);
+        verify(boxRepository).save(box1);
     }
 }

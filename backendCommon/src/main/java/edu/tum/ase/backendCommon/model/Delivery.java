@@ -44,7 +44,7 @@ public class Delivery {
         status = ORDERED;
         this.customer = customer;
         this.deliverer = deliverer;
-        this.box = box;
+        box.addDelivery(this);
     }
 
     @Override

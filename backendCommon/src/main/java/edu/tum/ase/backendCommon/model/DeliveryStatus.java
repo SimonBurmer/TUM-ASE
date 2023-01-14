@@ -7,15 +7,11 @@ public enum DeliveryStatus {
     IN_TARGET_BOX,
     DELIVERED;
 
-    public boolean canBeReassigned() {
+    public boolean canBeModified() {
         return this == ORDERED;
     }
 
     public boolean canBeRemoved() {
         return this != PICKED_UP && this != IN_TARGET_BOX;
-    }
-
-    public boolean canBeAssignedByBox() {
-        return this == IN_TARGET_BOX || this == DELIVERED;
     }
 }

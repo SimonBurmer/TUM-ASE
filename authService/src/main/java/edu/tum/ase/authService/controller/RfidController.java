@@ -26,15 +26,15 @@ public class RfidController {
 
     @GetMapping("{rfid}")
     @PreAuthorize("hasRole('RASPI')")
-    public String checkRfid(@PathVariable String rfid, HttpServletRequest request) {
+    public AseUser checkRfid(@PathVariable String rfid, HttpServletRequest request) {
         AseUser user = userService.findByRfid(rfid);
 
         if (user.getRole().equals(UserRole.CUSTOMER) && rfidService.checkCustomerAccess(request, user)) {
-            return "CUSTOMER";
+            return user;
         }
 
         if (user.getRole().equals(UserRole.DELIVERER) && rfidService.checkDelivererAccess(request, user)) {
-            return "CUSTOMER";
+            return user;
         }
         throw new BoxAccessException();
     }

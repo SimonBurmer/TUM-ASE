@@ -1,3 +1,5 @@
+import json
+
 import requests.exceptions
 from dotenv import load_dotenv
 
@@ -22,18 +24,18 @@ def authenticate(rfid):
     print("Verifying rfid token: \"" + rfid + "\"")
     res = httpRequest(method="GET", endpoint="/rfid/" + rfid, headers=bearerHeader(JWT))
     if res.status_code == 200:
-        return str(res.content, 'UTF-8')
+        return json.load(res.content)
     if res.status_code == 401:
         return None
     else:
         raise ConnectionError("Unable to verify rfid: " + str(res.text))
 
 
-def placeDeliveries():
+def placeDeliveries(delivererId):
     print("Deliverer placed deliveries")
     xsrf_token = getXSRFToken()
     res = httpRequest(method="PUT", endpoint="/delivery/place",
-                      headers=dict(xsrfHeader(xsrf_token), **bearerHeader(JWT)))
+                      headers=dict(xsrfHeader(xsrf_token), **bearerHeader(JWT)), content=delivererId)
     if res.status_code != 200:
         raise ConnectionError("Unable to place deliveries: " + str(res.text))
 
@@ -53,12 +55,12 @@ try:
             _, rfid = reader.read()
             if rfid == "":
                 continue
-            authenticated = authenticate(rfid.strip())
+            user = authenticate(rfid.strip())
 
-            if authenticated is not None:
+            if user is not None:
 
                 # light led green
-                print("Successfully authenticated as " + authenticated)
+                print("Successfully authenticated as " + user)
                 green()
 
                 # after 10s check if closed
@@ -68,10 +70,10 @@ try:
                     blink_red()
                 print("Box has been closed")
 
-                if authenticated == "DELIVERER":
-                    placeDeliveries()
+                if user["role"] == "DELIVERER":
+                    placeDeliveries(user["id"])
 
-                if authenticated == "CUSTOMER":
+                if user["role"] == "CUSTOMER":
                     retrieveDeliveries()
 
             else:
