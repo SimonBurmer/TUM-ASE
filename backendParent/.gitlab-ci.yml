@@ -2,20 +2,33 @@ image: maven:latest
 
 cache:
   paths:
-    - ./.m2/repository
-    - target/
+    - backendParent/.m2/repository
+    - backendCommon/target
+    - deliveryService/target
+    - discoveryService/target
+    - authService/target
+    - gatewayService/target
+
+variables:
+  MAVEN_CLI_OPTS: "--batch-mode -Dmaven.repo.local=.m2/repository"
 
 build:
   stage: build
   script:
     - cd "$CI_PROJECT_DIR/backendParent"
-    - mvn $MAVEN_CLI_OPTS compile
+    - mvn clean $MAVEN_CLI_OPTS compile
 
 test:
   stage: test
   script:
     - cd "$CI_PROJECT_DIR/backendParent"
     - mvn $MAVEN_CLI_OPTS test
+
+package:
+  stage: deploy
+  script:
+    - cd "$CI_PROJECT_DIR/backendParent"
+    - mvn $MAVEN_CLI_OPTS package -DskipTests=true
 
 #deploy:
 #  stage: deploy
