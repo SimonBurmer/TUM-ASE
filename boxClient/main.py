@@ -24,7 +24,7 @@ def authenticate(rfid):
     print("Verifying rfid token: \"" + rfid + "\"")
     res = httpRequest(method="GET", endpoint="/rfid/" + rfid, headers=bearerHeader(JWT))
     if res.status_code == 200:
-        return json.load(res.content)
+        return json.loads(str(res.content, "UTF-8"))
     if res.status_code == 401:
         return None
     else:
@@ -60,7 +60,7 @@ try:
             if user is not None:
 
                 # light led green
-                print("Successfully authenticated as " + user)
+                print("Successfully authenticated as " + str(user))
                 green()
 
                 # after 10s check if closed
