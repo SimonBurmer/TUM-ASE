@@ -5,6 +5,7 @@ import {apiUrl} from "../constants";
 const initialState = {
     deliveries: [],
     requestError: "",
+    pickUpResult: "",
 }
 
 const api = axios.create({baseURL: apiUrl, withCredentials: true})
@@ -16,7 +17,8 @@ export const deliverySlice = createSlice({
     reducers: {
         resetStateDeliveries: (state) => {
             state.deliveries = []
-            state.reducers = ""
+            state.requestError = ""
+            state.pickUpResult = ""
         },
         resetErrorDeliveries: (state) => {
             state.requestError = ""
@@ -37,12 +39,12 @@ export const deliverySlice = createSlice({
                     }
                     return delivery
                 })
+                state.pickUpResult = "Success"
             })
 
             .addCase(pickupDelivery.rejected, (state, action) => {
-                state.requestError = "Error while picking up delivery with Id: " +
+                state.pickUpResult = "Error while picking up delivery with Id: " +
                     action.payload.deliveryId + ": " + action.payload.errMsg
-
             })
     }
 })
@@ -76,5 +78,7 @@ export const pickupDelivery = createAsyncThunk(
 export default deliverySlice.reducer
 export const selectDeliveries = (state) => state.delivery.deliveries;
 export const selectDeliveryRequestError = (state) => state.delivery.requestError;
+export const selectPickUpResult = (state) => state.delivery.pickUpResult;
+
 export const {resetStateDeliveries, resetErrorDeliveries} = deliverySlice.actions;
 
