@@ -1,6 +1,7 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
 import {apiUrl} from "../constants";
+import {deleteBoxAsync} from "./boxSlice";
 
 const initialState = {
     deliveries: [],
@@ -26,15 +27,52 @@ export const deliverySlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
+            //TODO checken ob das so funktioniert
+            .addCase(createDeliveryAsync.fulfilled, (state, action) => {
+                //hier im store speichern
+                state.deliveries.push(action.payload)
+            })
+            .addCase(createDeliveryAsync.rejected, (state, action) => {
+                state.requestError = "Error while creating delivery: " + action.payload.errMsg
+            })
+
+
+            .addCase(updateDeliveryAsync.fulfilled, (state, action) => {
+                //hier im store speichern
+                state.deliveries = state.deliveries.map((delivery) => {
+                    if (delivery.id === action.payload.id) {
+                        return action.payload;
+                    }
+                    return delivery
+                })
+            })
+            //TODO action.payload.updateDeliveryID wird als undefined ausgegeben
+            .addCase(updateDeliveryAsync.rejected, (state, action) => {
+                state.requestError = "Error while updating delivery with ID: " +
+                    action.payload.updateDeliveryID + ": " + action.payload.errMsg
+            })
+
+
             .addCase(getDeliveriesDelivererCustomerAsync.fulfilled, (state, action) => {
                 //TODO im store speichern
                 state.deliveries = action.payload
             })
-
             .addCase(getDeliveriesDispatcherAsync.fulfilled, (state, action) => {
                 //TODO im store speichern
                 state.deliveries = action.payload
             })
+
+
+            .addCase(deleteDeliveryAsync.fulfilled, (state, action) => {
+                state.deliveries = state.deliveries.filter(object => {
+                    return object.id !== action.payload
+                })
+            })
+            .addCase(deleteDeliveryAsync.rejected, (state, action) => {
+                state.requestError = "Error while deleting delivery with ID: " +
+                    action.payload.delDeliveryID + ": " + action.payload.errMsg
+            })
+
 
             .addCase(pickupDelivery.fulfilled, (state, action) => {
                 //TODO hier im store speichern
@@ -46,14 +84,40 @@ export const deliverySlice = createSlice({
                 })
                 state.pickUpResult = "Success"
             })
-
             .addCase(pickupDelivery.rejected, (state, action) => {
                 state.pickUpResult = "Error while picking up delivery with Id: " +
                     action.payload.deliveryId + ": " + action.payload.errMsg
             })
-
     }
 })
+
+export const createDeliveryAsync = createAsyncThunk(
+    'delivery/createDelivery',
+    async (newDeliveryArg, {rejectWithValue}) => {
+        const {deliveryCustomerEmail, deliveryDelivererEmail, boxID} = newDeliveryArg
+        try {
+            const newDelivery = await api.post('/delivery/' + boxID, { customer: deliveryCustomerEmail, deliverer: deliveryDelivererEmail })
+            return newDelivery.data
+        } catch (err) {
+            return rejectWithValue({errMsg: err.response.data.message})
+        }
+    }
+);
+
+export const updateDeliveryAsync = createAsyncThunk(
+    'delivery/updateDelivery',
+    async (newDeliveryArg, {rejectWithValue}) => {
+        console.log(newDeliveryArg, "in thunk")
+        const {deliveryID, deliveryCustomer, deliveryDeliverer} = newDeliveryArg
+        try {
+            const updatedDelivery = await api.put('/delivery/' + {deliveryID}, {customer: deliveryCustomer, deliverer:deliveryDeliverer})
+            return updatedDelivery.data
+        } catch (err) {
+            return rejectWithValue({updateDeliveryID: deliveryID, errMsg: err.response.data.message})
+        }
+    }
+);
+
 
 export const getDeliveriesDelivererCustomerAsync = createAsyncThunk(
     'delivery/getDeliveries',
@@ -80,6 +144,18 @@ export const getDeliveriesDispatcherAsync = createAsyncThunk(
     }
 );
 
+export const deleteDeliveryAsync = createAsyncThunk(
+    'box/deleteBox',
+    async ({deliveryID}, {rejectWithValue}) => {
+        try {
+            await api.delete('/delivery/' + deliveryID)
+            return deliveryID
+        } catch (err) {
+            return rejectWithValue({delDeliveryID: deliveryID, errMsg: err.response.data.message})
+        }
+    }
+);
+
 export const pickupDelivery = createAsyncThunk(
     'delivery/pickupDelivery', //body is box id
     async (deliveryId, {rejectWithValue}) => {
@@ -92,18 +168,7 @@ export const pickupDelivery = createAsyncThunk(
     }
 );
 
-export const createDeliveryAsync = createAsyncThunk(
-    'delivery/createDelivery',
-    async (newDeliveryArg, {rejectWithValue}) => {
-        const {deliveryCustomerEmail, deliveryDelivererEmail, boxID} = newDeliveryArg
-        try {
-            const newDelivery = await api.post('/delivery/' + boxID, { customer: deliveryCustomerEmail, deliverer: deliveryDelivererEmail })
-            return newDelivery.data
-        } catch (err) {
-            return rejectWithValue({errMsg: err.response.data.message})
-        }
-    }
-);
+
 
 
 export default deliverySlice.reducer

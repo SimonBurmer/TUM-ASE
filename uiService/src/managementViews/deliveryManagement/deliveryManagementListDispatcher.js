@@ -13,8 +13,8 @@ import {selectDeliveries} from "../../app/deliverySlice";
 import NewRequestErrorDialog from "../requestErrorDialog";
 import LocalPostOfficeIcon from '@mui/icons-material/LocalPostOffice';
 import NewDeliveryFormDialog from "./dispatcherDialogues/newDeliveryFormDialog";
-import DeleteBoxAlertDialog from "../boxManagement/dialoges/deleteBoxAlertDialog";
 import ChangeDeliveryFormDialog from "./dispatcherDialogues/changeDeliveryFormDialog";
+import DeleteDeliveryAlertDialog from "./dispatcherDialogues/deleteDeliveryAlertDialog";
 
 
 function generate(deliveries) {
@@ -22,19 +22,18 @@ function generate(deliveries) {
             <ListItem
                 key={delivery.id}
                 divider
-                /*secondaryAction={
+                secondaryAction={
                     <Grid container spacing={0}>
                         <Grid item xs='auto'>
-                            <ChangeDeliveryFormDialog deliveryCustomer={delivery.customer}
-                                                 deliveryDispatcher={delivery._dispatcher}
-                                                 boxAddress={box.address}
-                                                 boxRaspId={box.rasPiId}/>
+                            <ChangeDeliveryFormDialog deliveryID={delivery.id}
+                                                      deliveryCustomer={delivery.customer}
+                                                      deliveryDeliverer={delivery.deliverer}/>
                         </Grid>
                         <Grid item xs='auto'>
-                            <DeleteBoxAlertDialog boxId={box.id}/>
+                            <DeleteDeliveryAlertDialog deliveryID={delivery.id}/>
                         </Grid>
                     </Grid>
-                }*/
+                }
             >
                 <ListItemAvatar>
                     <Avatar>
