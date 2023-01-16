@@ -27,12 +27,17 @@ export const deliverySlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(getDeliveriesDelivererCustomerAsync.fulfilled, (state, action) => {
-                //hier im store speichern
+                //TODO im store speichern
+                state.deliveries = action.payload
+            })
+
+            .addCase(getDeliveriesDispatcherAsync.fulfilled, (state, action) => {
+                //TODO im store speichern
                 state.deliveries = action.payload
             })
 
             .addCase(pickupDelivery.fulfilled, (state, action) => {
-                //hier im store speichern
+                //TODO hier im store speichern
                 state.deliveries = state.deliveries.map((delivery) => {
                     if (delivery.id === action.payload) {
                         delivery.status = "PICKED_UP"
@@ -46,6 +51,7 @@ export const deliverySlice = createSlice({
                 state.pickUpResult = "Error while picking up delivery with Id: " +
                     action.payload.deliveryId + ": " + action.payload.errMsg
             })
+
     }
 })
 
@@ -61,6 +67,18 @@ export const getDeliveriesDelivererCustomerAsync = createAsyncThunk(
     }
 );
 
+export const getDeliveriesDispatcherAsync = createAsyncThunk(
+    'delivery/getAllDeliveries',
+    async () => {
+        const deliveriesResp = await api.get('/delivery/all')
+        let deliveries = deliveriesResp.data
+        //TODO commented code throws an unhandled promise rejection
+        /*deliveries.map(async (delivery) => {
+            delivery.box = await api.get('/delivery/' + delivery.id + '/box')
+        })*/
+        return deliveries
+    }
+);
 
 export const pickupDelivery = createAsyncThunk(
     'delivery/pickupDelivery', //body is box id
@@ -74,11 +92,23 @@ export const pickupDelivery = createAsyncThunk(
     }
 );
 
+export const createDeliveryAsync = createAsyncThunk(
+    'delivery/createDelivery',
+    async (newDeliveryArg, {rejectWithValue}) => {
+        const {deliveryCustomerEmail, deliveryDelivererEmail, boxID} = newDeliveryArg
+        try {
+            const newDelivery = await api.post('/delivery/' + boxID, { customer: deliveryCustomerEmail, deliverer: deliveryDelivererEmail })
+            return newDelivery.data
+        } catch (err) {
+            return rejectWithValue({errMsg: err.response.data.message})
+        }
+    }
+);
+
 
 export default deliverySlice.reducer
 export const selectDeliveries = (state) => state.delivery.deliveries;
 export const selectDeliveryRequestError = (state) => state.delivery.requestError;
 export const selectPickUpResult = (state) => state.delivery.pickUpResult;
-
 export const {resetStateDeliveries, resetErrorDeliveries} = deliverySlice.actions;
 
