@@ -7,15 +7,24 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
+import {useDispatch} from "react-redux";
+import {deleteDeliveryAsync} from "../../../app/deliverySlice";
 
-export default function DeleteDeliveryAlertDialog() {
+export default function DeleteDeliveryAlertDialog({deliveryID}) {
     const [open, setOpen] = React.useState(false);
+
+    const dispatch = useDispatch();
 
     const handleClickOpen = () => {
         setOpen(true);
     };
 
     const handleClose = () => {
+        setOpen(false);
+    };
+
+    const handleDelete = () => {
+        dispatch(deleteDeliveryAsync({deliveryID}))
         setOpen(false);
     };
 
@@ -41,7 +50,7 @@ export default function DeleteDeliveryAlertDialog() {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Do not delete delivery</Button>
-                    <Button onClick={handleClose} autoFocus>
+                    <Button onClick={handleDelete} autoFocus>
                         Delete delivery
                     </Button>
                 </DialogActions>
