@@ -26,7 +26,10 @@ test:
 
 
 publish:
+  image: docker:latest
   stage: deploy
+  services:
+    - docker:dind
   script:
     - cd "$CI_PROJECT_DIR/backendParent"
     - mvn $MAVEN_CLI_OPTS package -DskipTests=true
