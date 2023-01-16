@@ -2,20 +2,20 @@ version: "3"
 services:
 
   authentication-db:
-    build: authService/authenticationDB
+    image: authentication-db-docker
 
   delivery-db:
-    build: deliveryService/deliveryDB
+    image: delivery-db-docker
 
   discovery-service:
-    build: discoveryService
+    image: discovery_service-docker
     ports:
       - "8761:8761"
     environment:
       - EUREKA_HOSTNAME=discovery-service
 
   auth-service:
-    build: authService
+    image: auth_service-docker
     depends_on:
       - authentication-db
       - discovery-service
@@ -26,7 +26,7 @@ services:
       - MONGODB_DATABASE=auth
 
   delivery-service:
-    build: deliveryService
+    image: delivery_service-docker
     depends_on:
       - delivery-db
       - discovery-service
@@ -37,7 +37,7 @@ services:
       - MONGODB_DATABASE=delivery
 
   gateway-service:
-    build: gatewayService
+    image: gateway_service-docker
     ports:
       - "10789:10789"
     depends_on:
@@ -46,8 +46,6 @@ services:
       - EUREKA_SERVER_ADDRESS=discovery-service
 
   frontend-nginx:
-    build:
-      context: uiService
-      dockerfile: Prod.Dockerfile
+    image: ui_service-docker
     ports:
       - '3000:80'
