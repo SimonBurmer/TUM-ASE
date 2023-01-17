@@ -2,8 +2,10 @@ package edu.tum.ase.deliveryService.service;
 
 import edu.tum.ase.backendCommon.model.DeliveryStatus;
 import edu.tum.ase.deliveryService.DeliveryServiceApplication;
+import edu.tum.ase.deliveryService.exceptions.DeliveryDeletionNotAllowedException;
+import edu.tum.ase.deliveryService.exceptions.DeliveryHasAlreadyBeenPickedUpException;
 import edu.tum.ase.deliveryService.exceptions.DeliveryNotFoundException;
-import edu.tum.ase.deliveryService.exceptions.DeliveryStatusException;
+import edu.tum.ase.deliveryService.exceptions.DeliveryModificationNotAllowedException;
 import edu.tum.ase.backendCommon.model.Box;
 import edu.tum.ase.backendCommon.model.Delivery;
 import edu.tum.ase.deliveryService.repository.BoxRepository;
@@ -53,7 +55,7 @@ public class DeliveryService {
 
     public Delivery updateDelivery(Delivery delivery) {
         if (!delivery.getStatus().canBeModified()) {
-            throw new DeliveryStatusException();
+            throw new DeliveryModificationNotAllowedException();
         }
 
         log.info("Updating delivery " + delivery);
@@ -62,7 +64,7 @@ public class DeliveryService {
 
     public Delivery pickupDelivery(Delivery delivery) {
         if (!delivery.getStatus().equals(DeliveryStatus.ORDERED)) {
-            throw new DeliveryStatusException();
+            throw new DeliveryHasAlreadyBeenPickedUpException();
         }
         delivery.setStatus(DeliveryStatus.PICKED_UP);
 
@@ -77,7 +79,7 @@ public class DeliveryService {
 
     public void deleteDelivery(Delivery delivery) {
         if (!delivery.getStatus().canBeRemoved()) {
-            throw new DeliveryStatusException();
+            throw new DeliveryDeletionNotAllowedException();
         }
 
         Box box = delivery.getBox();

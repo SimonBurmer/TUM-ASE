@@ -196,7 +196,7 @@ public class BoxServiceTest {
 
         // When & Then
         if (!status.canBeModified()) {
-            assertThatThrownBy(() -> boxService.assignDelivery(box2, delivery1)).isInstanceOf(DeliveryStatusException.class);
+            assertThatThrownBy(() -> boxService.assignDelivery(box2, delivery1)).isInstanceOf(DeliveryModificationNotAllowedException.class);
         } else {
             assertThatNoException().isThrownBy(() -> boxService.assignDelivery(box2, delivery1));
         }

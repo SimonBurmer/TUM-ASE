@@ -3,7 +3,8 @@ package edu.tum.ase.deliveryService;
 import edu.tum.ase.backendCommon.model.Box;
 import edu.tum.ase.backendCommon.model.Delivery;
 import edu.tum.ase.backendCommon.model.DeliveryStatus;
-import edu.tum.ase.deliveryService.exceptions.DeliveryStatusException;
+import edu.tum.ase.deliveryService.exceptions.DeliveryDeletionNotAllowedException;
+import edu.tum.ase.deliveryService.exceptions.DeliveryModificationNotAllowedException;
 import edu.tum.ase.deliveryService.repository.BoxRepository;
 import edu.tum.ase.deliveryService.repository.DeliveryRepository;
 import edu.tum.ase.deliveryService.service.DeliveryService;
@@ -63,7 +64,7 @@ public class DeliveryServiceTest {
 
         // When & Then
         if (!status.canBeModified()) {
-            assertThatThrownBy(() -> deliveryService.updateDelivery(delivery1)).isInstanceOf(DeliveryStatusException.class);
+            assertThatThrownBy(() -> deliveryService.updateDelivery(delivery1)).isInstanceOf(DeliveryModificationNotAllowedException.class);
         } else {
             assertThatNoException().isThrownBy(() -> deliveryService.updateDelivery(delivery1));
 
@@ -83,7 +84,7 @@ public class DeliveryServiceTest {
         // When & Then
         if (!status.canBeRemoved()) {
 
-            assertThatThrownBy(() -> deliveryService.deleteDelivery(delivery1)).isInstanceOf(DeliveryStatusException.class);
+            assertThatThrownBy(() -> deliveryService.deleteDelivery(delivery1)).isInstanceOf(DeliveryDeletionNotAllowedException.class);
         } else {
             assertThatNoException().isThrownBy(() -> deliveryService.deleteDelivery(delivery1));
 

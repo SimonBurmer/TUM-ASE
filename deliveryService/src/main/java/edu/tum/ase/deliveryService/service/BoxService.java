@@ -75,7 +75,7 @@ public class BoxService {
 
     public Box assignDelivery(Box box, Delivery delivery) {
         if (!delivery.getStatus().canBeModified()) {
-            throw new DeliveryStatusException();
+            throw new DeliveryModificationNotAllowedException();
         }
 
         box.addDelivery(delivery);
