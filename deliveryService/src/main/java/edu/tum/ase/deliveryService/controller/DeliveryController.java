@@ -10,7 +10,6 @@ import edu.tum.ase.deliveryService.request.DeliveryRequest;
 import edu.tum.ase.deliveryService.service.BoxService;
 import edu.tum.ase.deliveryService.service.DeliveryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -132,7 +131,7 @@ public class DeliveryController {
     @PreAuthorize("hasRole('DELIVERER')")
     public Delivery pickUpDelivery(@PathVariable String deliveryId) {
         Delivery delivery = deliveryService.findById(deliveryId);
-        return deliveryService.updateDeliveryStatus(delivery, DeliveryStatus.PICKED_UP);
+        return deliveryService.pickupDelivery(delivery);
         }
 
     @PutMapping("place")

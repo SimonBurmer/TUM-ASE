@@ -60,8 +60,11 @@ public class DeliveryService {
         return deliveryRepository.save(delivery);
     }
 
-    public Delivery updateDeliveryStatus(Delivery delivery, DeliveryStatus status) {
-        delivery.setStatus(status);
+    public Delivery pickupDelivery(Delivery delivery) {
+        if (!delivery.getStatus().equals(DeliveryStatus.ORDERED)) {
+            throw new DeliveryStatusException();
+        }
+        delivery.setStatus(DeliveryStatus.PICKED_UP);
 
         // TODO: send mail
 
