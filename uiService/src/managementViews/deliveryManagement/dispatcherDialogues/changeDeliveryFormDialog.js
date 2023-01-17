@@ -8,10 +8,25 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import EditIcon from "@mui/icons-material/Edit";
 import IconButton from "@mui/material/IconButton";
+import {useState} from "react";
+import {useDispatch} from "react-redux";
+import {updateDeliveryAsync} from "../../../app/deliverySlice";
 
-export default function ChangeDeliveryFormDialog() {
-    let delivery= ["Delivery A", "DID1234567"]
+
+export default function ChangeDeliveryFormDialog({deliveryID, deliveryCustomer, deliveryDeliverer}) {
     const [open, setOpen] = React.useState(false);
+
+    const [newCustomer, setNewCustomer] = useState(deliveryCustomer);
+    const [newDeliverer, setNewDeliverer] = useState(deliveryDeliverer)
+
+    const dispatch = useDispatch()
+
+    const handleChange = () => {
+        if (newCustomer !== "" && newDeliverer !== "") {
+            setOpen(false);
+            dispatch(updateDeliveryAsync({deliveryID: deliveryID, deliveryCustomer: newCustomer, deliveryDeliverer: newDeliverer}))
+        }
+    }
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -27,7 +42,7 @@ export default function ChangeDeliveryFormDialog() {
                 <EditIcon/>
             </IconButton>
             <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>Editing {delivery[0]}</DialogTitle>
+                <DialogTitle>Editing delivery {deliveryID}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
                         Here you can change the properties of your delivery. Only enter the information you would like to change.
@@ -35,25 +50,33 @@ export default function ChangeDeliveryFormDialog() {
                     <TextField
                         autoFocus
                         margin="dense"
-                        id="name"
-                        label="name"
-                        type="name"
+                        id="Customer"
+                        label="Customer"
+                        type="Customer"
                         fullWidth
+                        defaultValue={deliveryCustomer}
                         variant="standard"
+                        onChange={(e) => {
+                            setNewCustomer(e.target.value)
+                        }}
                     />
                     <TextField
                         autoFocus
                         margin="dense"
-                        id="DeliveryID"
-                        label="DeliveryID"
-                        type="DeliveryID"
+                        id="Deliverer"
+                        label="Deliverer"
+                        type="Deliverer"
                         fullWidth
+                        defaultValue={deliveryDeliverer}
                         variant="standard"
+                        onChange={(e) => {
+                            setNewDeliverer(e.target.value)
+                        }}
                     />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
-                    <Button onClick={handleClose}>Change</Button>
+                    <Button onClick={handleChange}>Change</Button>
                 </DialogActions>
             </Dialog>
         </div>

@@ -1,31 +1,46 @@
 import * as React from 'react';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
 import {QrReader} from "react-qr-reader";
-import {pickupDelivery} from "../../../app/deliverySlice";
+import {pickupDelivery, selectPickUpResult} from "../../../app/deliverySlice";
 
 export default function PickupOrderDialog() {
-    const [open, setOpen] = React.useState(false);
+    const [openQR, setOpenQR] = useState(false);
+    const [openResult, setOpenResult] = useState(false);
+    const selectorPickupResult = useSelector(selectPickUpResult)
+
     const [data, setData] = useState('');
 
     const dispatch = useDispatch()
 
     const handleClickOpen = () => {
-        setOpen(true);
+        setOpenQR(true);
     };
 
     const handleClose = () => {
-        setOpen(false);
+        setOpenQR(false);
         setData("");
     };
 
-    const handleAdd = () => {
+
+    useEffect(() => {
+        if (openQR && selectorPickupResult !== "" && data !== "") {
+            setOpenQR(false)
+            setOpenResult(true);
+            setData("")
+
+        }
+    }, [selectorPickupResult])
+
+
+    const handleCloseResult = () => {
+        setOpenResult(false)
     }
 
     return (
@@ -33,24 +48,44 @@ export default function PickupOrderDialog() {
             <Button sx={{ml: 3, mt: 3}} variant="contained" onClick={handleClickOpen} startIcon={<QrCodeScannerIcon/>}>
                 Scan QR Code
             </Button>
-            <Dialog open={open} onClose={handleClose}>
+            <Dialog open={openQR} onClose={handleClose}>
                 <DialogTitle>Scan QR Code</DialogTitle>
                 <DialogContent>
-                    <>
+                    <div>
                         <QrReader
                             onResult={(result, error) => {
-                                if (!!result && (typeof result?.text !== 'undefined') && data === "") {
+                                if (!!result && (typeof result?.text !== 'undefined') && data === "" && openQR) {
                                     setData(result?.text);
                                     dispatch(pickupDelivery(result?.text))
+
                                 }
                             }}
                             style={{width: '100%'}}
-                            constraints={{facingMode: 'user'}}/>
-                    </>
+                            constraints={{facingMode: 'user'}} scanDelay={3000}/>
+                        <p>
+                            Id: {data}
+                        </p>
+                    </div>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
-                    <Button onClick={handleAdd}>Add</Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog open={openResult} onClose={handleCloseResult}>
+                <DialogTitle>Scan Result</DialogTitle>
+                <DialogContent>
+                    <p style={{
+                        color: () => {
+                            if (selectorPickupResult === "Success") {
+                                return "green"
+                            } else {
+                                return "red"
+                            }
+                        }
+                    }}>{selectorPickupResult}</p>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseResult}>OK</Button>
                 </DialogActions>
             </Dialog>
         </div>
