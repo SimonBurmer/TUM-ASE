@@ -110,7 +110,7 @@ export const updateDeliveryAsync = createAsyncThunk(
         console.log(newDeliveryArg, "in thunk")
         const {deliveryID, deliveryCustomer, deliveryDeliverer} = newDeliveryArg
         try {
-            const updatedDelivery = await api.put('/delivery/' + {deliveryID}, {customer: deliveryCustomer, deliverer:deliveryDeliverer})
+            const updatedDelivery = await api.put('/delivery/' + deliveryID, {customer: deliveryCustomer, deliverer:deliveryDeliverer})
             return updatedDelivery.data
         } catch (err) {
             return rejectWithValue({updateDeliveryID: deliveryID, errMsg: err.response.data.message})
