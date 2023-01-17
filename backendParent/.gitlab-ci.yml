@@ -11,6 +11,7 @@ cache:
 
 variables:
   MAVEN_CLI_OPTS: "--batch-mode -Dmaven.repo.local=.m2/repository"
+  AWS_ECR_BASE_URI: "116161384588.dkr.ecr.eu-central-1.amazonaws.com"
 
 build:
   stage: build
@@ -49,22 +50,35 @@ publish:
   before_script:
     - docker info
   script: # build and push images to gitlab registry
-    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER $CI_REGISTRY --password-stdin
-    - docker build -t auth_service-docker  authService/
-    - docker image tag auth_service-docker:latest $CI_REGISTRY
-    - docker push auth_service-docker $CI_REGISTRY
-    - docker build -t delivery_service-docker  deliveryService/
-    - docker push delivery_service-docker
-    - docker build -t discovery_service-docker  discoveryService/
-    - docker push discovery_service-docker
-    - docker build -t gateway_service-docker  gatewayService/
-    - docker push gateway_service-docker
-    - docker build -t ui_service-docker  uiService/
-    - docker push ui_service-docker
-    - docker build -t authentication-db-docker authService/authenticationDB
-    - docker push authentication-db-docker
-    - docker build -t delivery-db-docker deliveryService/deliveryDB
-    - docker push delivery-db-docker
+    - aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin $AWS_ECR_BASE_URI
+    - echo "Building auth-service image"
+    - docker build -t auth-service  authService/
+    - docker tag auth-service:latest ${AWS_ECR_BASE_URI}/auth-service:latest
+    - docker push ${AWS_ECR_BASE_URI}/auth-service:latest
+    - echo "Building delivery-service image"
+    - docker build -t delivery-service  deliveryService/
+    - docker tag delivery-service:latest ${AWS_ECR_BASE_URI}/delivery-service:latest
+    - docker push ${AWS_ECR_BASE_URI}/delivery-service:latest
+    - echo "Building discovery-service image"
+    - docker build -t discovery-service  discoveryService/
+    - docker tag discovery-service:latest ${AWS_ECR_BASE_URI}/discovery-service:latest
+    - docker push ${AWS_ECR_BASE_URI}/discovery-service:latest
+    - echo "Building gateway-service image"
+    - docker build -t gateway-service  gatewayService/
+    - docker tag gateway-service:latest ${AWS_ECR_BASE_URI}/gateway-service:latest
+    - docker push ${AWS_ECR_BASE_URI}/gateway-service:latest
+    - echo "Building frontend image"
+    - docker build -t frontend  uiService/
+    - docker tag frontend:latest ${AWS_ECR_BASE_URI}/frontend:latest
+    - docker push ${AWS_ECR_BASE_URI}/frontend:latest
+    - echo "Building authenticationDB image"
+    - docker build -t authentication-db authService/authenticationDB
+    - docker tag authentication-db:latest ${AWS_ECR_BASE_URI}/authentication-db:latest
+    - docker push ${AWS_ECR_BASE_URI}/authentication-db:latest
+    - echo "Building deliveryDB image"
+    - docker build -t delivery-db deliveryService/deliveryDB
+    - docker tag delivery-db:latest ${AWS_ECR_BASE_URI}/delivery-db:latest
+    - docker push ${AWS_ECR_BASE_URI}/delivery-db:latest
 
 
 deploy:
