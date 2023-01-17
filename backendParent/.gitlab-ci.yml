@@ -11,6 +11,7 @@ cache:
 
 variables:
   MAVEN_CLI_OPTS: "--batch-mode -Dmaven.repo.local=.m2/repository"
+  AWS_ECR_BASE_URI: "116161384588.dkr.ecr.eu-central-1.amazonaws.com"
 
 build:
   stage: build
@@ -53,7 +54,7 @@ publish:
     - aws --version
     - docker --version
   script: # build and push images to gitlab registry
-    - aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${AWS_ECR_BASE_URI}
+    - aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin $AWS_ECR_BASE_URI
     - echo "Building auth-service image"
     - docker build -t auth-service  authService/
     - docker tag auth-service:latest ${AWS_ECR_BASE_URI}/auth-service:latest
