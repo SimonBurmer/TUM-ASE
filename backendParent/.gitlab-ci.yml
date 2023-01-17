@@ -42,12 +42,16 @@ publish:
   variables:
     DOCKER_TLS_CERTDIR: ""
     DOCKER_HOST: tcp://docker:2375
-  image: docker:20.10.16
+  image:
+    name: amazon/aws-cli
+    entrypoint: [ "" ]
   stage: deploy
   services:
     - docker:20.10.16-dind
   before_script:
-    - docker info
+    - amazon-linux-extras install docker
+    - aws --version
+    - docker --version
   script: # build and push images to gitlab registry
     - aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin $AWS_ECR_BASE_URI
     - echo "Building auth-service image"
