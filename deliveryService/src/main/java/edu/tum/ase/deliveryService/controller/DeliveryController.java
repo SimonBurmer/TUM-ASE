@@ -132,11 +132,7 @@ public class DeliveryController {
     @PreAuthorize("hasRole('DELIVERER')")
     public Delivery pickUpDelivery(@PathVariable String deliveryId) {
         Delivery delivery = deliveryService.findById(deliveryId);
-        delivery.setStatus(DeliveryStatus.PICKED_UP);
-
-        // TODO: send mail
-
-        deliveryService.updateDelivery(delivery);
+        deliveryService.updateDeliveryStatus(delivery, DeliveryStatus.PICKED_UP);
         return delivery;
     }
 

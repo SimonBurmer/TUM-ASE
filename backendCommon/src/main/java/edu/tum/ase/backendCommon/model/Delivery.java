@@ -51,7 +51,6 @@ public class Delivery {
     public String toString() {
         return "Delivery{" +
                 "id='" + id + '\'' +
-                ", status=" + status +
                 ", customer='" + customer + '\'' +
                 ", deliverer='" + deliverer + '\'' +
                 '}';

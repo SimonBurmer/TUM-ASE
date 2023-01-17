@@ -1,5 +1,6 @@
 package edu.tum.ase.deliveryService.service;
 
+import edu.tum.ase.backendCommon.model.DeliveryStatus;
 import edu.tum.ase.deliveryService.DeliveryServiceApplication;
 import edu.tum.ase.deliveryService.exceptions.DeliveryNotFoundException;
 import edu.tum.ase.deliveryService.exceptions.DeliveryStatusException;
@@ -56,6 +57,15 @@ public class DeliveryService {
         }
 
         log.info("Updating delivery " + delivery);
+        return deliveryRepository.save(delivery);
+    }
+
+    public Delivery updateDeliveryStatus(Delivery delivery, DeliveryStatus status) {
+        delivery.setStatus(status);
+
+        // TODO: send mail
+
+        log.info("Updating status of delivery " + delivery.getId() + " to " + delivery.getStatus());
         return deliveryRepository.save(delivery);
     }
 
