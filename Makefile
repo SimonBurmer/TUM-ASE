@@ -10,6 +10,7 @@ build:
 	@echo "------------------------------------------------------"
 	@echo "-- BUILD ---------------------------------------------"
 	@echo "------------------------------------------------------"
+	cd ./backendParent/; ./mvnw  package -DskipTests
 	docker build -t auth_service-docker  authService/
 	docker build -t delivery_service-docker  deliveryService/
 	docker build -t discovery_service-docker  discoveryService/

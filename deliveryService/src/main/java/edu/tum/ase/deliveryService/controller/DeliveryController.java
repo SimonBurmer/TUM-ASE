@@ -132,9 +132,8 @@ public class DeliveryController {
     @PreAuthorize("hasRole('DELIVERER')")
     public Delivery pickUpDelivery(@PathVariable String deliveryId) {
         Delivery delivery = deliveryService.findById(deliveryId);
-        deliveryService.updateDeliveryStatus(delivery, DeliveryStatus.PICKED_UP);
-        return delivery;
-    }
+        return deliveryService.updateDeliveryStatus(delivery, DeliveryStatus.PICKED_UP);
+        }
 
     @PutMapping("place")
     @PreAuthorize("hasRole('RASPI')")
