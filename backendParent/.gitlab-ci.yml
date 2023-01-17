@@ -65,8 +65,6 @@ publish:
     - docker build -t delivery-db-docker deliveryService/deliveryDB
     - docker push delivery-db-docker
 
-deploy:
-
 #deploy:
 #  stage: deploy
 #  script:
