@@ -10,7 +10,11 @@ build:
 	@echo "------------------------------------------------------"
 	@echo "-- BUILD ---------------------------------------------"
 	@echo "------------------------------------------------------"
+ifeq ($(OS),Windows_NT)
+	cd backendParent && mvnw.cmd package -DskipTests
+else
 	cd ./backendParent/; ./mvnw  package -DskipTests
+endif
 	docker build -t auth_service-docker  authService/
 	docker build -t delivery_service-docker  deliveryService/
 	docker build -t discovery_service-docker  discoveryService/
