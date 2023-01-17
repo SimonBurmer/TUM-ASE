@@ -30,7 +30,7 @@ package:
   script:
     - cd "$CI_PROJECT_DIR/backendParent"
     - mvn $MAVEN_CLI_OPTS package -DskipTests=true
-  artifacts:
+  artifacts: # specified paths in artifacts are saved across jobs
     paths:
       - deliveryService/target
       - discoveryService/target
@@ -48,7 +48,8 @@ publish:
     - docker:20.10.16-dind
   before_script:
     - docker info
-  script:
+  script: # build and push images to gitlab registry
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER $CI_REGISTRY --password-stdin
     - docker build -t auth_service-docker  authService/
     - docker push auth_service-docker
     - docker build -t delivery_service-docker  deliveryService/
@@ -63,6 +64,8 @@ publish:
     - docker push authentication-db-docker
     - docker build -t delivery-db-docker deliveryService/deliveryDB
     - docker push delivery-db-docker
+
+deploy:
 
 #deploy:
 #  stage: deploy
