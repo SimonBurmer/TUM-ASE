@@ -1,5 +1,6 @@
 package edu.tum.ase.deliveryService;
 
+import edu.tum.ase.backendCommon.exceptions.SingleCustomerPerBoxViolationException;
 import edu.tum.ase.backendCommon.model.Delivery;
 import edu.tum.ase.backendCommon.model.DeliveryStatus;
 import edu.tum.ase.deliveryService.exceptions.*;

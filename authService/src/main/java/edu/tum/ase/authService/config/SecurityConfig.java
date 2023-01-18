@@ -10,22 +10,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends CustomWebSecurityConfigurerAdapter {
 
-    // TODO: do we actually need this at all? Apparently not
-    //@Autowired
-    //UserDetailsService userDetailsService;
-
-    //@Override
-    //public void configure(AuthenticationManagerBuilder builder) throws Exception {
-    //    builder.userDetailsService(userDetailsService);
-    //}
-
-    //@Override
-    //@Bean
-    //// Define an authentication manager to execute authentication services
-    //public AuthenticationManager authenticationManagerBean() throws Exception {
-    //    return super.authenticationManagerBean();
-    //}
-
     @Bean
     // Define an instance of Bcrypt for hashing passwords
     public BCryptPasswordEncoder passwordEncoder() {

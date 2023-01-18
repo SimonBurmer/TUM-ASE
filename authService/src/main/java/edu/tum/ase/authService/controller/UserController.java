@@ -4,6 +4,7 @@ import edu.tum.ase.authService.model.AseUser;
 import edu.tum.ase.authService.request.UserRequest;
 import edu.tum.ase.authService.service.UserService;
 import edu.tum.ase.backendCommon.jwt.JwtUtil;
+import edu.tum.ase.backendCommon.roles.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -61,8 +63,7 @@ public class UserController {
         userRequest.setBCryptPasswordEncoder(bCryptPasswordEncoder);
 
         userRequest.apply(user);
-        userService.createUser(user);
-        return user;
+        return userService.createUser(user);
     }
 
     //##################################################################################################################
@@ -77,9 +78,7 @@ public class UserController {
         userRequest.setBCryptPasswordEncoder(bCryptPasswordEncoder);
 
         userRequest.apply(user);
-        userService.updateUser(user);
-
-        return user;
+        return userService.updateUser(user);
     }
 
     //##################################################################################################################
@@ -87,9 +86,9 @@ public class UserController {
 
     @DeleteMapping("{userId}")
     @PreAuthorize("hasRole('DISPATCHER')")
-    public HttpStatus deleteUser(@PathVariable String userId) {
+    public HttpStatus deleteUser(@PathVariable String userId, HttpServletRequest currentRequest) {
         AseUser user = userService.findById(userId);
-        userService.deleteUser(user);
+        userService.deleteUser(currentRequest, user);
         return HttpStatus.OK;
     }
 

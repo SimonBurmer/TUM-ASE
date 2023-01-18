@@ -1,9 +1,8 @@
 package edu.tum.ase.backendCommon.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mongodb.lang.NonNull;
-import edu.tum.ase.deliveryService.exceptions.SingleCustomerPerBoxViolationException;
+import edu.tum.ase.backendCommon.exceptions.SingleCustomerPerBoxViolationException;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;

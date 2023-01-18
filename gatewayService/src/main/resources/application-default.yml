@@ -4,15 +4,8 @@ spring:
       globalcors:
         corsConfigurations:
           '[/**]':
-            allowedOrigins: "http://localhost:3000"
+            allowedOrigins: "http://localhost:3000" # TODO: add URL of deployed instance here
             allowCredentials: true
             allowedHeaders: "*"
             allowedMethods:
               - "*"
-
-eureka:
-  instance:
-    hostname: localhost
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka

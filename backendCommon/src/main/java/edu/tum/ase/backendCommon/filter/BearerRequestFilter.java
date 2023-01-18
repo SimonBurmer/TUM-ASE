@@ -1,10 +1,12 @@
 package edu.tum.ase.backendCommon.filter;
 
 import edu.tum.ase.backendCommon.jwt.JwtUtil;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -13,17 +15,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 public class BearerRequestFilter extends OncePerRequestFilter {
 
-    private final JwtUtil jwtUtil;
+    private final ApplicationContext applicationContext;
 
     private static final String HEADER_START = "Bearer ";
 
     private static final List<String> INCLUDED_URLS = List.of("/box/**", "/delivery/**", "/rfid/**");
 
-    public BearerRequestFilter(JwtUtil jwtUtil) {
-        this.jwtUtil = jwtUtil;
+    public BearerRequestFilter(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
     }
 
     @Override
@@ -48,6 +51,7 @@ public class BearerRequestFilter extends OncePerRequestFilter {
             return;
         }
 
+        JwtUtil jwtUtil = ((JwtUtil) applicationContext.getBean("jwtUtil"));
         String jwt = authorizationHeader.substring(HEADER_START.length() - 1);
 
         if (!jwtUtil.verifyJwtSignature(jwt)) {
@@ -58,6 +62,18 @@ public class BearerRequestFilter extends OncePerRequestFilter {
         List<SimpleGrantedAuthority> authorityList = jwtUtil.extractAuthorities(jwt);
         String username = jwtUtil.extractUsername(jwt);
         FilterUtil.setSecurityContextFromUsername(username, authorityList);
+
+        Optional<SimpleGrantedAuthority> maybeRole = authorityList.stream().filter((r) -> r.getAuthority().startsWith("ROLE_")).findFirst();
+        if (maybeRole.isEmpty()) {
+            response.sendError(HttpStatus.UNAUTHORIZED.value(), "there is no role stored in jwt");
+            return;
+        }
+
+        RestTemplate restTemplate = applicationContext.getBean(RestTemplate.class);
+        if (!FilterUtil.verifyUser(username, maybeRole.get().getAuthority() , restTemplate)) {
+            response.sendError(HttpStatus.UNAUTHORIZED.value(), "user stored in jwt is not valid");
+            return;
+        }
 
         filterChain.doFilter(request, response);
     }

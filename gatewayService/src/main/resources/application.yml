@@ -3,22 +3,11 @@ spring:
     name: api-gateway
   cloud:
     gateway:
-
-      globalcors:
-        corsConfigurations:
-          '[/**]':
-            allowedOrigins: "http://localhost:3000"
-            allowCredentials: true
-            allowedHeaders: "*"
-            allowedMethods:
-              - "*"
-
-      # TODO: Configure routes to access project services
       routes:
         - id: cas-service
           uri: lb://AUTH-SERVICE
           predicates:
-            - Path=/auth/**,/user/**, /rfid/**
+            - Path=/auth/**, /user/**, /rfid/**
         - id: delivery-service
           uri: lb://DELIVERY-SERVICE
           predicates:
