@@ -31,5 +31,5 @@ run:
 	@echo "------------------------------------------------------"
 	@echo "-- RUN   ---------------------------------------------"
 	@echo "------------------------------------------------------"
-	docker-compose down
+	docker-compose down --remove-orphans
 	docker-compose up --abort-on-container-exit

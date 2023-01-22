@@ -18,7 +18,11 @@ import {resetStateCurrUser, selectLoginState, selectUserMail, selectUserRole} fr
 import {useDispatch, useSelector} from "react-redux";
 import {getUsersAsync, resetStateUsers} from "../app/userSlice";
 import {getBoxesAsync, resetStateBoxes} from "../app/boxSlice";
-import {getDeliveriesDelivererCustomerAsync, resetStateDeliveries} from "../app/deliverySlice";
+import {
+    getDeliveriesDelivererCustomerAsync,
+    getDeliveriesDispatcherAsync,
+    resetStateDeliveries
+} from "../app/deliverySlice";
 
 const pagesDispatcher = ['userManagement', 'boxManagement', 'deliveryManagement'];
 const pagesUserDeliverer = ['deliveryManagement']
@@ -63,13 +67,13 @@ function ResponsiveAppBar() {
             case "deliveryManagement":
                 switch (selectorUser) {
                     case "DISPATCHER":
-                        //todo
+                        dispatch(getDeliveriesDispatcherAsync())
                         break;
                     case "DELIVERER":
                         dispatch(getDeliveriesDelivererCustomerAsync())
                         break;
                     case "CUSTOMER":
-                        //todo
+                        dispatch(getDeliveriesDelivererCustomerAsync())
                         break;
                 }
                 break;

@@ -127,12 +127,21 @@ export const updateDeliveryAsync = createAsyncThunk(
 export const getDeliveriesDelivererCustomerAsync = createAsyncThunk(
     'delivery/getDeliveries',
     async () => {
-        const deliveriesResp = await api.get('/delivery')
-        let deliveries = deliveriesResp.data
-        //TODO implement get address for box (this code does not work properly)
-        /*deliveries.map(async (delivery) => {
-            delivery.box = await api.get('/delivery/' + delivery.id + '/box')
-        })*/
+        let deliveriesResp = api.get('/delivery')
+        const deliveries = deliveriesResp.then((response) => {
+            let deliveriesPromise = [...(response.data)]
+
+            async function getBoxes(deliveriesPromise) {
+                for (const element of deliveriesPromise) {
+                    let boxResponse = await api.get('/delivery/' + element.id + '/box')
+                    element.box = boxResponse.data
+                }
+                return deliveriesPromise
+            }
+
+
+            return getBoxes(deliveriesPromise)
+        })
         return deliveries
     }
 );
@@ -140,12 +149,21 @@ export const getDeliveriesDelivererCustomerAsync = createAsyncThunk(
 export const getDeliveriesDispatcherAsync = createAsyncThunk(
     'delivery/getAllDeliveries',
     async () => {
-        const deliveriesResp = await api.get('/delivery/all')
-        let deliveries = deliveriesResp.data
-        //TODO implement get address for box (this code does not work properly)
-        /*deliveries.map(async (delivery) => {
-            delivery.box = await api.get('/delivery/' + delivery.id + '/box')
-        })*/
+        let deliveriesResp = api.get('/delivery/all')
+        const deliveries = deliveriesResp.then((response) => {
+            let deliveriesPromise = [...(response.data)]
+
+            async function getBoxes(deliveriesPromise) {
+                for (const element of deliveriesPromise) {
+                    let boxResponse = await api.get('/delivery/' + element.id + '/box')
+                    element.box = boxResponse.data
+                }
+                return deliveriesPromise
+            }
+
+
+            return getBoxes(deliveriesPromise)
+        })
         return deliveries
     }
 );
