@@ -12,32 +12,12 @@ import {useSelector} from "react-redux";
 import {selectDeliveries} from "../../app/deliverySlice";
 import NewRequestErrorDialog from "../requestErrorDialog";
 import LocalPostOfficeIcon from '@mui/icons-material/LocalPostOffice';
-import NewDeliveryFormDialog from "./dispatcherDialogues/newDeliveryFormDialog";
-import ChangeDeliveryFormDialog from "./dispatcherDialogues/changeDeliveryFormDialog";
-import DeleteDeliveryAlertDialog from "./dispatcherDialogues/deleteDeliveryAlertDialog";
-import DisplayQRCodeButton from "./dispatcherDialogues/DisplayQRCodeButton";
-
 
 function generate(deliveries) {
     return deliveries.map((delivery) => (
             <ListItem
                 key={delivery.id}
                 divider
-                secondaryAction={
-                    <Grid container spacing={0}>
-                        <Grid item xs='auto'>
-                            <DisplayQRCodeButton deliveryID={delivery.id}/>
-                        </Grid>
-                        <Grid item xs='auto'>
-                            <ChangeDeliveryFormDialog deliveryID={delivery.id}
-                                                      deliveryCustomer={delivery.customer}
-                                                      deliveryDeliverer={delivery.deliverer}/>
-                        </Grid>
-                        <Grid item xs='auto'>
-                            <DeleteDeliveryAlertDialog deliveryID={delivery.id}/>
-                        </Grid>
-                    </Grid>
-                }
             >
                 <ListItemAvatar>
                     <Avatar>
@@ -46,8 +26,8 @@ function generate(deliveries) {
                 </ListItemAvatar>
                 <Typography component={'div'}>
                     <ListItemText
-                        primary={"Delivery ID: " + delivery.id + " | Customer: " + delivery.customer}
-                        secondary={"Status: " + delivery.status + " | Deliverer: " + delivery.deliverer}
+                        primary={"ID: " + delivery.id}
+                        secondary={"Address: " + delivery.address}
                     />
                 </Typography>
             </ListItem>
@@ -60,9 +40,8 @@ const Demo = styled('div')(({theme}) => ({
     backgroundColor: theme.palette.background.paper,
 }));
 
-export default function DeliveryManagementListDispatcher() {
+export default function DeliveryManagementListCustomer() {
     const deliveries = useSelector(selectDeliveries)
-
     return (
         <Container>
             <NewRequestErrorDialog/>
@@ -71,9 +50,6 @@ export default function DeliveryManagementListDispatcher() {
                     <Typography sx={{mt: 3, mb: 2, ml: 3}} variant="h6" component="div">
                         Deliveries
                     </Typography>
-                </Grid>
-                <Grid item xs={2}>
-                    <NewDeliveryFormDialog/>
                 </Grid>
             </Grid>
             <Demo>

@@ -33,14 +33,13 @@ export default function PickupOrderDialog() {
         if (openQR && selectorPickupResult !== "" && data !== "") {
             setOpenQR(false)
             setOpenResult(true);
-            setData("")
-
         }
     }, [selectorPickupResult])
 
 
     const handleCloseResult = () => {
         setOpenResult(false)
+        window.location.reload()
     }
 
     return (
@@ -55,9 +54,8 @@ export default function PickupOrderDialog() {
                         <QrReader
                             onResult={(result, error) => {
                                 if (!!result && (typeof result?.text !== 'undefined') && data === "" && openQR) {
-                                    setData(result?.text);
+                                    setData(result?.text)
                                     dispatch(pickupDelivery(result?.text))
-
                                 }
                             }}
                             style={{width: '100%'}}

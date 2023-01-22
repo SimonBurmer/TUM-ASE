@@ -28,7 +28,7 @@ function generate(deliveries) {
                 <Typography component={'div'}>
                     <ListItemText
                         primary={"ID: " + delivery.id}
-                        secondary={"Address: " + delivery.address}
+                        secondary={"Address: " + delivery.box}
                         // secondary={<List>
                         //     <ListItemText>
                         //         {delivery.address}

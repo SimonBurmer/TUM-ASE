@@ -1,7 +1,6 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
 import {apiUrl} from "../constants";
-import {deleteBoxAsync} from "./boxSlice";
 
 const initialState = {
     deliveries: [],
@@ -96,7 +95,10 @@ export const createDeliveryAsync = createAsyncThunk(
     async (newDeliveryArg, {rejectWithValue}) => {
         const {deliveryCustomerEmail, deliveryDelivererEmail, boxID} = newDeliveryArg
         try {
-            const newDelivery = await api.post('/delivery/' + boxID, { customer: deliveryCustomerEmail, deliverer: deliveryDelivererEmail })
+            const newDelivery = await api.post('/delivery/' + boxID, {
+                customer: deliveryCustomerEmail,
+                deliverer: deliveryDelivererEmail
+            })
             return newDelivery.data
         } catch (err) {
             return rejectWithValue({errMsg: err.response.data.message})
@@ -110,7 +112,10 @@ export const updateDeliveryAsync = createAsyncThunk(
         console.log(newDeliveryArg, "in thunk")
         const {deliveryID, deliveryCustomer, deliveryDeliverer} = newDeliveryArg
         try {
-            const updatedDelivery = await api.put('/delivery/' + deliveryID, {customer: deliveryCustomer, deliverer:deliveryDeliverer})
+            const updatedDelivery = await api.put('/delivery/' + deliveryID, {
+                customer: deliveryCustomer,
+                deliverer: deliveryDeliverer
+            })
             return updatedDelivery.data
         } catch (err) {
             return rejectWithValue({updateDeliveryID: deliveryID, errMsg: err.response.data.message})
@@ -124,9 +129,10 @@ export const getDeliveriesDelivererCustomerAsync = createAsyncThunk(
     async () => {
         const deliveriesResp = await api.get('/delivery')
         let deliveries = deliveriesResp.data
-        deliveries.map(async (delivery) => {
+        //TODO implement get address for box (this code does not work properly)
+        /*deliveries.map(async (delivery) => {
             delivery.box = await api.get('/delivery/' + delivery.id + '/box')
-        })
+        })*/
         return deliveries
     }
 );
@@ -136,7 +142,7 @@ export const getDeliveriesDispatcherAsync = createAsyncThunk(
     async () => {
         const deliveriesResp = await api.get('/delivery/all')
         let deliveries = deliveriesResp.data
-        //TODO commented code throws an unhandled promise rejection
+        //TODO implement get address for box (this code does not work properly)
         /*deliveries.map(async (delivery) => {
             delivery.box = await api.get('/delivery/' + delivery.id + '/box')
         })*/
@@ -167,8 +173,6 @@ export const pickupDelivery = createAsyncThunk(
         }
     }
 );
-
-
 
 
 export default deliverySlice.reducer

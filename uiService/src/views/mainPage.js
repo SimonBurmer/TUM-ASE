@@ -9,16 +9,17 @@ import DeliveryManagementListDeliverer from "../managementViews/deliveryManageme
 import UserManagementList from "../managementViews/userManagement/userManagementList";
 import BoxManagementList from "../managementViews/boxManagement/boxManagementList";
 import {getDeliveriesDelivererCustomerAsync, getDeliveriesDispatcherAsync} from "../app/deliverySlice";
-import DeliveryManagementListDispatcher
-    from "../managementViews/deliveryManagement/deliveryManagementListDispatcher";
+import DeliveryManagementListDispatcher from "../managementViews/deliveryManagement/deliveryManagementListDispatcher";
+import DeliveryManagementListCustomer from "../managementViews/deliveryManagement/deliveryManagementListCustomer";
 
 function GetDeliveryComponent(role) {
     switch (role) {
-        case "DELIVERER":
-            return <Route path={"/DeliveryManagement"} element={<DeliveryManagementListDeliverer/>}/>
         case "DISPATCHER":
             return <Route path={"/DeliveryManagement"} element={<DeliveryManagementListDispatcher/>}/>
-        //TODO others
+        case "DELIVERER":
+            return <Route path={"/DeliveryManagement"} element={<DeliveryManagementListDeliverer/>}/>
+        case "CUSTOMER":
+            return <Route path={"/DeliveryManagement"} element={<DeliveryManagementListCustomer/>}/>
     }
     return ""
 }
@@ -38,7 +39,9 @@ function MainPage() {
             case "DELIVERER":
                 dispatch(getDeliveriesDelivererCustomerAsync())
                 break;
-            //TODO others
+            case "CUSTOMER":
+                dispatch(getDeliveriesDelivererCustomerAsync())
+                break;
         }
     }, [selectorUser])
 
