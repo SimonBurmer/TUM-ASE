@@ -9,13 +9,18 @@ import {useDispatch, useSelector} from "react-redux";
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
 import {QrReader} from "react-qr-reader";
 import {pickupDelivery, selectPickUpResult} from "../../../app/deliverySlice";
+import {useNavigate} from "react-router-dom";
 
 export default function PickupOrderDialog() {
     const [openQR, setOpenQR] = useState(false);
     const [openResult, setOpenResult] = useState(false);
     const selectorPickupResult = useSelector(selectPickUpResult)
+    const navigate = useNavigate();
 
     const [data, setData] = useState('');
+    const [prevData, setPrevData] = useState('');
+    const [displayData, setDisplayData] = useState('');
+
 
     const dispatch = useDispatch()
 
@@ -33,13 +38,27 @@ export default function PickupOrderDialog() {
         if (openQR && selectorPickupResult !== "" && data !== "") {
             setOpenQR(false)
             setOpenResult(true);
+            setData("")
         }
     }, [selectorPickupResult])
+
+    useEffect(() => {
+        if (data !== "" && data !== prevData) {
+            setPrevData(data)
+            setDisplayData(data)
+            dispatch(pickupDelivery(data))
+        }
+        // if (data !== "" && data === prevData ) {
+        //     setDisplayData(data)
+        //     setOpenResult(true);
+        // }
+    }, [data])
 
 
     const handleCloseResult = () => {
         setOpenResult(false)
-        window.location.reload()
+        setDisplayData("")
+        setData("")
     }
 
     return (
@@ -55,13 +74,12 @@ export default function PickupOrderDialog() {
                             onResult={(result, error) => {
                                 if (!!result && (typeof result?.text !== 'undefined') && data === "" && openQR) {
                                     setData(result?.text)
-                                    dispatch(pickupDelivery(result?.text))
                                 }
                             }}
                             style={{width: '100%'}}
                             constraints={{facingMode: 'user'}} scanDelay={3000}/>
                         <p>
-                            Id: {data}
+                            Id: {displayData}
                         </p>
                     </div>
                 </DialogContent>
