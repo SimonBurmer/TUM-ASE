@@ -53,7 +53,7 @@ publish:
     - amazon-linux-extras install docker
     - aws --version
     - docker --version
-  script: # build and push images to gitlab registry
+  script: # build and push images to AWS ECR
     - aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin $AWS_ECR_BASE_URI
     - echo "Building auth-service image"
     - docker build -t auth-service  authService/
@@ -83,4 +83,25 @@ publish:
     - docker build -t delivery-db deliveryService/deliveryDB
     - docker tag delivery-db:latest ${AWS_ECR_BASE_URI}/delivery-db:latest
     - docker push ${AWS_ECR_BASE_URI}/delivery-db:latest
+
+run:
+  variables:
+    DOCKER_TLS_CERTDIR: ""
+    DOCKER_HOST: tcp://docker:2375
+  image:
+    name: amazon/aws-cli
+    entrypoint: [ "" ]
+  stage: deploy
+  services:
+    - docker:20.10.16-dind
+  before_script:
+    - amazon-linux-extras install docker
+    - aws --version
+    - docker --version
+  script: 
+    #
+    - echo "Test Simon"
+    - echo ${EC2_PEM} > ec2.pem
+    - ssh -i ec2.pem ec2-user@3.73.154.39
+    - echo "Test Simon online"
 
