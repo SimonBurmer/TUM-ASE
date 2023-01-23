@@ -33,7 +33,7 @@ run:
   script: 
     # Push composefile to EC2
     - echo "Push Composefile"
-    - scp -tt -o StrictHostKeyChecking=no -i ec2.pem docker-compose.yaml ec2-user@3.73.154.39:docker-compose.yaml
+    - scp -tt -o StrictHostKeyChecking=no -i ec2.pem docker-compose.yaml ec2-user@3.73.154.39
 
     # Connect to EC2 and download images
     - echo "Connect to EC2"
