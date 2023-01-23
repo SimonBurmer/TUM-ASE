@@ -33,12 +33,18 @@ run:
   script: 
     # Push composefile to EC2
     - echo "Push Composefile"
+
+    - ssh -tt -o StrictHostKeyChecking=no -i ec2.pem ec2-user@3.73.154.39 "docker images"
+
     # - scp -tt -o StrictHostKeyChecking=no -i ec2.pem docker-compose.yaml ec2-user@3.73.154.39:online1.yaml
-    - scp -o StrictHostKeyChecking=no -i ec2.pem docker-compose.yaml ec2-user@3.73.154.39:online1.yaml
+    - scp -o StrictHostKeyChecking=no -i ec2.pem docker-compose.yaml ec2-user@3.73.154.39:docker-compose.yaml
 
     # Connect to EC2 and download images
     - echo "Connect to EC2"
-    - ssh -tt -o StrictHostKeyChecking=no -i ec2.pem ec2-user@3.73.154.39
+    - ssh -tt -o StrictHostKeyChecking=no -i ec2.pem ec2-user@3.73.154.39 "docker images"
+
+    - docker-compose down --remove-orphans
+
     - docker pull ${AWS_ECR_BASE_URI}/auth-service:latest
     - docker pull ${AWS_ECR_BASE_URI}/delivery-service:latest
     - docker pull ${AWS_ECR_BASE_URI}/discovery-service:latest
@@ -48,7 +54,6 @@ run:
     - docker pull ${AWS_ECR_BASE_URI}/delivery-db:latest
 
     # Start Docker container
-    - docker-compose down --remove-orphans
     - docker-compose up --abort-on-container-exit
 
 
