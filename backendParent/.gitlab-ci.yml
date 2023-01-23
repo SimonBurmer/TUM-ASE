@@ -1,4 +1,4 @@
-image: maven:latest
+image: busybox:latest
 
 cache:
   paths:
@@ -25,7 +25,6 @@ run:
     - docker:20.10.16-dind
   before_script:
     - echo "Before Script"
-    - apk add openssh
     - echo ${EC2_PEM} > ec2.pem
 
   script: 
