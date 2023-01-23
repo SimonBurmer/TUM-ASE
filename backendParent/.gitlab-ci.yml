@@ -25,7 +25,7 @@ run:
     - docker:20.10.16-dind
   before_script:
     - echo "Before Script"
-    - apt-get install openssh-client
+    - apk add openssh
     - echo ${EC2_PEM} > ec2.pem
 
   script: 
