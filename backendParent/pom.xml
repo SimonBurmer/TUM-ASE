@@ -23,6 +23,7 @@
         <module>../discoveryService</module>
         <module>../authService</module>
         <module>../gatewayService</module>
+        <module>../emailService</module>
     </modules>
 
     <properties>
