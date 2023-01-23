@@ -26,12 +26,12 @@ run:
   before_script:
     - echo "Before Script"
     #- echo ${EC2_PEM} > ec2.pem
-    - chmod 400 ec2.pem
+    #- chmod 400 ec2.pem
     #- apt-get -y update 
     #- apt-get -y install openssh-server 
 
   script: 
-    # Push composefile to EC2
+    # Push compose-file to EC2
     - echo "Push Composefile"
     - ssh -tt -o StrictHostKeyChecking=no -i ec2.pem ec2-user@3.73.154.39 "rm -f docker-compose.yaml"
     - scp -o StrictHostKeyChecking=no -i ec2.pem docker-compose.yaml ec2-user@3.73.154.39:docker-compose.yaml
@@ -63,7 +63,7 @@ run:
      docker pull ${AWS_ECR_BASE_URI}/delivery-db:latest;
      docker tag ${AWS_ECR_BASE_URI}/delivery-db:latest delivery-db-docker;
 
-     docker-compose up --abort-on-container-exit"
+     docker-compose up -d --abort-on-container-exit"
 
 
 
