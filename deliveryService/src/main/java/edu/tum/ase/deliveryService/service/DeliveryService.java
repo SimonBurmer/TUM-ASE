@@ -68,7 +68,7 @@ public class DeliveryService {
         }
         delivery.setStatus(DeliveryStatus.PICKED_UP);
 
-        // TODO: send mail
+        // TODO: send mail (Role DELIVERER)
 
         log.info("Updating status of delivery " + delivery.getId() + " to " + delivery.getStatus());
         return deliveryRepository.save(delivery);

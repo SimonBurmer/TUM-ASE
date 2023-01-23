@@ -12,6 +12,10 @@ spring:
           uri: lb://DELIVERY-SERVICE
           predicates:
             - Path=/box/**,/delivery/**
+        - id: email-service
+          uri: lb://EMAIL-SERVICE
+          predicates:
+            - Path=/email/**
 
 server:
   port: ${PORT:10789}

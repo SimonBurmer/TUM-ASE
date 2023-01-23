@@ -1,8 +1,7 @@
 package edu.tum.ase.authService;
 
-import edu.tum.ase.authService.model.AseUser;
+import edu.tum.ase.backendCommon.model.AseUser;
 import edu.tum.ase.authService.service.RfidService;
-import edu.tum.ase.authService.service.UserService;
 import edu.tum.ase.backendCommon.model.Box;
 import edu.tum.ase.backendCommon.model.Delivery;
 import edu.tum.ase.backendCommon.model.DeliveryStatus;

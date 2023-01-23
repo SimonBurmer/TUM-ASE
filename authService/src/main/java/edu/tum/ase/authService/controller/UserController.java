@@ -1,10 +1,9 @@
 package edu.tum.ase.authService.controller;
 
-import edu.tum.ase.authService.model.AseUser;
+import edu.tum.ase.backendCommon.model.AseUser;
 import edu.tum.ase.authService.request.UserRequest;
 import edu.tum.ase.authService.service.UserService;
 import edu.tum.ase.backendCommon.jwt.JwtUtil;
-import edu.tum.ase.backendCommon.roles.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,6 +48,12 @@ public class UserController {
     public AseUser getCurrentUsers() {
         String id = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         return userService.findById(id);
+    }
+
+    @GetMapping("{userId}")
+    @PreAuthorize("hasAnyRole('DISPATCHER', 'DELIVERER', 'RASPI')")
+    public AseUser getByUserId(@PathVariable String userId) {
+        return userService.findById(userId);
     }
 
     //##################################################################################################################
@@ -96,7 +101,7 @@ public class UserController {
     // User Checks
     @PreAuthorize("hasRole('DISPATCHER')")
     @GetMapping("is_customer/{userId}")
-    public ResponseEntity<Boolean> userIsCustomer(@PathVariable String userId){
+    public ResponseEntity<Boolean> userIsCustomer(@PathVariable String userId) {
         if (userService.findById(userId).getRole().equals("CUSTOMER")) {
             return new ResponseEntity<>(true, HttpStatus.OK);
         } else {
@@ -106,7 +111,7 @@ public class UserController {
 
     @PreAuthorize("hasRole('DISPATCHER')")
     @GetMapping("is_deliverer/{userId}")
-    public ResponseEntity<Boolean> userIsDeliverer(@PathVariable String userId){
+    public ResponseEntity<Boolean> userIsDeliverer(@PathVariable String userId) {
         if (userService.findById(userId).getRole().equals("DELIVERER")) {
             return new ResponseEntity<>(true, HttpStatus.OK);
         } else {
