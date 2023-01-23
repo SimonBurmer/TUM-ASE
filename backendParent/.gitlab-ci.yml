@@ -25,7 +25,7 @@ run:
     - docker:20.10.16-dind
   before_script:
     - echo "Before Script"
-    - echo ${EC2_PEM} > ec2.pem
+    #- echo ${EC2_PEM} > ec2.pem
     - chmod 400 ec2.pem
     #- apt-get -y update 
     #- apt-get -y install openssh-server 
@@ -34,7 +34,6 @@ run:
     # Push composefile to EC2
     - echo "Push Composefile"
     - ls 
-    - echo ls
     - ssh -tt -o StrictHostKeyChecking=no -i ec2.pem ec2-user@3.73.154.39
     - scp -tt -o StrictHostKeyChecking=no -y -i ec2.pem docker-compose.yaml ec2-user@3.73.154.39:docker-compose.yaml
 
