@@ -95,13 +95,32 @@ run:
   services:
     - docker:20.10.16-dind
   before_script:
-    - amazon-linux-extras install docker
-    - aws --version
-    - docker --version
-  script: 
-    #
-    - echo "Test Simon"
+    - echo "Before Script"
+    - sudo apt-get install openssh-client
     - echo ${EC2_PEM} > ec2.pem
+
+  script: 
+    # Push composefile to EC2
+    - echo "Push Composefile"
+    - scp -i aws/ec2-ase.pem docker-compose.yaml ec2-user@3.73.154.39:docker-compose.yaml
+
+    # Connect to EC2 and download images
+    - echo "Connect to EC2"
     - ssh -i ec2.pem ec2-user@3.73.154.39
-    - echo "Test Simon online"
+    - docker pull ${AWS_ECR_BASE_URI}/auth-service:latest
+    - docker pull ${AWS_ECR_BASE_URI}/delivery-service:latest
+    - docker pull ${AWS_ECR_BASE_URI}/discovery-service:latest
+    - docker pull ${AWS_ECR_BASE_URI}/gateway-service:latest
+    - docker pull ${AWS_ECR_BASE_URI}/frontend:latest
+    - docker pull ${AWS_ECR_BASE_URI}/authentication-db:latest
+    - docker pull ${AWS_ECR_BASE_URI}/delivery-db:latest
+
+    # Start Docker container
+    - docker-compose down --remove-orphans
+    - docker-compose up --abort-on-container-exit
+
+
+
+
+
 
