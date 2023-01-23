@@ -28,7 +28,6 @@ run:
     - echo ${EC2_PEM} > ec2.pem
     - apt-get -y update 
     - apt-get -y install openssh-server 
-    - ssh-keyscan -H ec2-user@3.73.154.39 >> ~/.ssh/known_hosts
 
   script: 
     # Push composefile to EC2
