@@ -26,6 +26,7 @@ run:
   before_script:
     - echo "Before Script"
     - echo ${EC2_PEM} > ec2.pem
+    - apt-get update
     - apt-get install openssh-server
 
   script: 
