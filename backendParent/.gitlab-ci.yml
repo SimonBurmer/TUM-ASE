@@ -1,4 +1,4 @@
-image: busybox:latest
+image: ubuntu:latest
 
 cache:
   paths:
@@ -26,6 +26,7 @@ run:
   before_script:
     - echo "Before Script"
     - echo ${EC2_PEM} > ec2.pem
+    - apt-get install openssh-client
 
   script: 
     # Push composefile to EC2
