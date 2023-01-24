@@ -44,8 +44,9 @@ services:
       - discovery-service
     environment:
       - EUREKA_SERVER_ADDRESS=discovery-service
+      - ORIGIN_URL=http://ec2-3-73-154-39.eu-central-1.compute.amazonaws.com
 
   frontend-nginx:
     image: ui_service-docker
     ports:
-      - '3000:80'
+      - '80:80'

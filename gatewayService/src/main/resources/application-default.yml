@@ -4,7 +4,7 @@ spring:
       globalcors:
         corsConfigurations:
           '[/**]':
-            allowedOrigins: "http://localhost:3000" # TODO: add URL of deployed instance here
+            allowedOrigins: ${ORIGIN_URL} # TODO: add URL of deployed instance here
             allowCredentials: true
             allowedHeaders: "*"
             allowedMethods:
