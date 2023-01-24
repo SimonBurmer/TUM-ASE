@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -8,11 +8,12 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import {useDispatch, useSelector} from "react-redux";
-import {generateBearerToken, selectBearerToken} from "../../../app/boxSlice";
+import {generateBearerToken, resetToken, selectBearerToken} from "../../../app/boxSlice";
 
 export default function GenerateTokenButton({boxId}) {
     const [open, setOpen] = useState(false);
-    const token = useSelector(selectBearerToken);
+    const tokenSelector = useSelector(selectBearerToken);
+    const [token, setToken] = useState("")
 
     const dispatch = useDispatch()
 
@@ -23,7 +24,15 @@ export default function GenerateTokenButton({boxId}) {
 
     const handleClose = () => {
         setOpen(false);
+        setToken("")
+        dispatch(resetToken())
     };
+
+    useEffect(() => {
+        if (tokenSelector !== "") {
+            setToken(tokenSelector)
+        }
+    }, [tokenSelector])
 
 
     return (
@@ -44,10 +53,10 @@ export default function GenerateTokenButton({boxId}) {
                         type="Token"
                         fullWidth
                         variant="standard"
-                        defaultValue={token}
                         inputProps={
                             {readOnly: true,}
                         }
+                        value={token}
 
                     />
                 </DialogContent>

@@ -9,8 +9,6 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import {useDispatch} from "react-redux";
 import {updateUserAsync} from "../../../app/userSlice";
-import {FormControl, InputLabel, Select} from "@mui/material";
-import MenuItem from "@mui/material/MenuItem";
 import EditIcon from "@mui/icons-material/Edit";
 import IconButton from "@mui/material/IconButton";
 
@@ -101,22 +99,6 @@ export default function ChangeUserFormDialog({
                         }}
                     />
 
-                    <FormControl fullWidth>
-                        <InputLabel id="Role Selection">Role</InputLabel>
-                        <Select
-                            labelId="Role Selection"
-                            id="role"
-                            value={userRole}
-                            label="Role"
-                            onChange={(e) => {
-                                setNewRole(e.target.value)
-                            }}
-                        >
-                            <MenuItem value={"CUSTOMER"}>Customer</MenuItem>
-                            <MenuItem value={"DELIVERER"}>Deliverer</MenuItem>
-                            <MenuItem value={"DISPATCHER"}>Dispatcher</MenuItem>
-                        </Select>
-                    </FormControl>
 
                 </DialogContent>
                 <DialogActions>

@@ -23,7 +23,7 @@ export default function NewRequestErrorDialog() {
         if (boxRequestError !== "") {
             setErrorMsg(boxRequestError)
             setOpen(true)
-            dispatch(resetErrorBoxes)
+            dispatch(resetErrorBoxes())
 
         }
     }, [boxRequestError])
@@ -32,7 +32,7 @@ export default function NewRequestErrorDialog() {
         if (userRequestError !== "") {
             setErrorMsg(userRequestError)
             setOpen(true)
-            dispatch(resetErrorUser)
+            dispatch(resetErrorUser())
         }
     }, [userRequestError])
 
@@ -40,12 +40,13 @@ export default function NewRequestErrorDialog() {
         if (deliveryRequestError !== "") {
             setErrorMsg(deliveryRequestError)
             setOpen(true)
-            dispatch(resetErrorDeliveries)
+            dispatch(resetErrorDeliveries())
         }
     }, [deliveryRequestError])
 
     const handleClose = () => {
         setOpen(false);
+        setErrorMsg("")
     };
 
 

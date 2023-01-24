@@ -54,7 +54,11 @@ function ResponsiveAppBar() {
     const handleCloseNavMenu = () => {
         setAnchorElNav(null);
     };
-
+    // TODO replace display of ids with emails
+    // TODO dropdown for delivery creation
+    // TODO order tracking for customer
+    // TODO add request error for login page
+    // TODO nginx refresh 404 not found https://stackoverflow.com/questions/56213079/404-error-on-page-refresh-with-angular-7-nginx-and-docker
     const handleLinkClick = (page) => {
         setAnchorElNav(null);
         switch (page) {
@@ -78,6 +82,7 @@ function ResponsiveAppBar() {
                 }
                 break;
         }
+        navigate(`/mainPage/${page}`)
     };
 
     const handleCloseUserMenu = () => {
@@ -139,7 +144,7 @@ function ResponsiveAppBar() {
                             {pages.map((page) => (
                                 <MenuItem key={page} onClick={() => handleLinkClick(page)}>
                                     <Typography textAlign="center">
-                                        <Link to={`/mainPage/${page}`}>{page.toUpperCase()}</Link>
+                                        {page.toUpperCase()}
                                     </Typography>
                                 </MenuItem>
                             ))}
@@ -170,8 +175,7 @@ function ResponsiveAppBar() {
                                 onClick={() => handleLinkClick(page)}
                                 sx={{my: 2, color: 'white', display: 'block'}}
                             >
-                                <Link style={{textDecoration: "none", color: "white"}}
-                                      to={`/mainPage/${page}`}>{page.toUpperCase()}</Link>
+                                {page.toUpperCase()}
                             </Button>
                         ))}
                     </Box>

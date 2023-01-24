@@ -22,7 +22,10 @@ export const boxSlice = createSlice({
         },
         resetErrorBoxes: (state) => {
             state.requestError = ""
-        }
+        },
+        resetToken: (state) => {
+            state.bearerToken = ""
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -141,6 +144,6 @@ export default boxSlice.reducer
 export const selectBoxes = (state) => state.box.boxes;
 export const selectBoxRequestError = (state) => state.box.requestError;
 export const selectBearerToken = (state) => state.box.bearerToken;
-export const {resetStateBoxes, resetErrorBoxes} = boxSlice.actions;
+export const {resetStateBoxes, resetErrorBoxes, resetToken} = boxSlice.actions;
 
 
