@@ -36,7 +36,7 @@ run:
     - echo "Connect to EC2"
     - ssh -tt -o StrictHostKeyChecking=no -i ec2.pem ec2-user@3.73.154.39 "
      
-     aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin {AWS_ECR_BASE_URI};
+     aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${AWS_ECR_BASE_URI};
      docker pull ${AWS_ECR_BASE_URI}/auth-service:latest;
      docker tag ${AWS_ECR_BASE_URI}/auth-service:latest auth_service-docker;
 
