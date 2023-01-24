@@ -14,15 +14,9 @@ variables:
   AWS_ECR_BASE_URI: "116161384588.dkr.ecr.eu-central-1.amazonaws.com"
 
 run:
-  variables:
-    DOCKER_TLS_CERTDIR: ""
-    DOCKER_HOST: tcp://docker:2375
   image:
     name: linuxserver/openssh-server
-    entrypoint: [ "" ]
   stage: deploy
-  services:
-    - docker:20.10.16-dind
   before_script:
     - echo "Before Script"
     #- echo ${EC2_PEM} > ec2.pem
