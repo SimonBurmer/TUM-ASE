@@ -58,7 +58,7 @@ run:
      docker pull ${AWS_ECR_BASE_URI}/delivery-db:latest;
      docker tag ${AWS_ECR_BASE_URI}/delivery-db:latest delivery-db-docker;
 
-     docker-compose up -d
+     docker-compose up -d"
 
 
 
