@@ -13,76 +13,6 @@ variables:
   MAVEN_CLI_OPTS: "--batch-mode -Dmaven.repo.local=.m2/repository"
   AWS_ECR_BASE_URI: "116161384588.dkr.ecr.eu-central-1.amazonaws.com"
 
-build:
-  stage: build
-  script:
-    - cd "$CI_PROJECT_DIR/backendParent"
-    - mvn clean $MAVEN_CLI_OPTS compile
-
-test:
-  stage: test
-  script:
-    - cd "$CI_PROJECT_DIR/backendParent"
-    - mvn $MAVEN_CLI_OPTS test
-
-
-package:
-  stage: deploy
-  script:
-    - cd "$CI_PROJECT_DIR/backendParent"
-    - mvn $MAVEN_CLI_OPTS package -DskipTests=true
-  artifacts: # specified paths in artifacts are saved across jobs
-    paths:
-      - deliveryService/target
-      - discoveryService/target
-      - authService/target
-      - gatewayService/target
-    expire_in: 1 week
-
-publish:
-  variables:
-    DOCKER_TLS_CERTDIR: ""
-    DOCKER_HOST: tcp://docker:2375
-  image:
-    name: amazon/aws-cli
-    entrypoint: [ "" ]
-  stage: deploy
-  services:
-    - docker:20.10.16-dind
-  before_script:
-    - amazon-linux-extras install docker
-    - aws --version
-    - docker --version
-  script: # build and push images to AWS ECR
-    - aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin $AWS_ECR_BASE_URI
-    - echo "Building auth-service image"
-    - docker build -t auth-service  authService/
-    - docker tag auth-service:latest ${AWS_ECR_BASE_URI}/auth-service:latest
-    - docker push ${AWS_ECR_BASE_URI}/auth-service:latest
-    - echo "Building delivery-service image"
-    - docker build -t delivery-service  deliveryService/
-    - docker tag delivery-service:latest ${AWS_ECR_BASE_URI}/delivery-service:latest
-    - docker push ${AWS_ECR_BASE_URI}/delivery-service:latest
-    - echo "Building discovery-service image"
-    - docker build -t discovery-service  discoveryService/
-    - docker tag discovery-service:latest ${AWS_ECR_BASE_URI}/discovery-service:latest
-    - docker push ${AWS_ECR_BASE_URI}/discovery-service:latest
-    - echo "Building gateway-service image"
-    - docker build -t gateway-service  gatewayService/
-    - docker tag gateway-service:latest ${AWS_ECR_BASE_URI}/gateway-service:latest
-    - docker push ${AWS_ECR_BASE_URI}/gateway-service:latest
-    - echo "Building frontend image"
-    - docker build -t frontend  uiService/
-    - docker tag frontend:latest ${AWS_ECR_BASE_URI}/frontend:latest
-    - docker push ${AWS_ECR_BASE_URI}/frontend:latest
-    - echo "Building authenticationDB image"
-    - docker build -t authentication-db authService/authenticationDB
-    - docker tag authentication-db:latest ${AWS_ECR_BASE_URI}/authentication-db:latest
-    - docker push ${AWS_ECR_BASE_URI}/authentication-db:latest
-    - echo "Building deliveryDB image"
-    - docker build -t delivery-db deliveryService/deliveryDB
-    - docker tag delivery-db:latest ${AWS_ECR_BASE_URI}/delivery-db:latest
-    - docker push ${AWS_ECR_BASE_URI}/delivery-db:latest
 
 run:
   image:
@@ -90,10 +20,7 @@ run:
   stage: deploy
   before_script:
     - echo "Before Script"
-    #- echo ${EC2_PEM} > ec2.pem
-    - chmod 400 ec2.pem
-    #- apt-get -y update 
-    #- apt-get -y install openssh-server 
+    - chmod 400 ec2.pem 
 
   script: 
     # EC2: Stop Compose, delete compose-file, push new compose-file
