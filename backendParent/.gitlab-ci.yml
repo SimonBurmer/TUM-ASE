@@ -83,3 +83,47 @@ publish:
     - docker build -t delivery-db deliveryService/deliveryDB
     - docker tag delivery-db:latest ${AWS_ECR_BASE_URI}/delivery-db:latest
     - docker push ${AWS_ECR_BASE_URI}/delivery-db:latest
+
+run:
+  image:
+    name: linuxserver/openssh-server
+  stage: deploy
+  before_script:
+    - echo "Before Script"
+    - chmod 400 ec2.pem
+
+  script: 
+    # EC2: Stop Compose, delete compose-file, push new compose-file
+    - echo "Push Composefile"
+    - ssh -tt -o StrictHostKeyChecking=no -i ec2.pem ec2-user@35.158.138.25 "docker-compose down --remove-orphans"
+    - ssh -tt -o StrictHostKeyChecking=no -i ec2.pem ec2-user@35.158.138.25 "rm -f docker-compose.yaml"
+
+    - scp -o StrictHostKeyChecking=no -i ec2.pem docker-compose.yaml ec2-user@35.158.138.25:docker-compose.yaml
+
+    # Connect to EC2, login to ECR, download images, start compose
+    - echo "Connect to EC2"
+    - ssh -tt -o StrictHostKeyChecking=no -i ec2.pem ec2-user@35.158.138.25 "
+     
+     aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${AWS_ECR_BASE_URI};
+     docker pull ${AWS_ECR_BASE_URI}/auth-service:latest;
+     docker tag ${AWS_ECR_BASE_URI}/auth-service:latest auth_service-docker;
+
+     docker pull ${AWS_ECR_BASE_URI}/delivery-service:latest;
+     docker tag ${AWS_ECR_BASE_URI}/delivery-service:latest delivery_service-docker;
+     
+     docker pull ${AWS_ECR_BASE_URI}/discovery-service:latest;
+     docker tag ${AWS_ECR_BASE_URI}/discovery-service:latest discovery_service-docker;
+
+     docker pull ${AWS_ECR_BASE_URI}/gateway-service:latest;
+     docker tag ${AWS_ECR_BASE_URI}/gateway-service:latest gateway_service-docker;
+     
+     docker pull ${AWS_ECR_BASE_URI}/frontend:latest;
+     docker tag ${AWS_ECR_BASE_URI}/frontend:latest ui_service-docker;
+     
+     docker pull ${AWS_ECR_BASE_URI}/authentication-db:latest;
+     docker tag ${AWS_ECR_BASE_URI}/authentication-db:latest authentication-db-docker;
+     
+     docker pull ${AWS_ECR_BASE_URI}/delivery-db:latest;
+     docker tag ${AWS_ECR_BASE_URI}/delivery-db:latest delivery-db-docker;
+
+     docker-compose up -d"
