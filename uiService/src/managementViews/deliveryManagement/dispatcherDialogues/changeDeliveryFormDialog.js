@@ -1,6 +1,6 @@
 import * as React from 'react';
+import {useState} from 'react';
 import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -8,23 +8,36 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import EditIcon from "@mui/icons-material/Edit";
 import IconButton from "@mui/material/IconButton";
-import {useState} from "react";
 import {useDispatch} from "react-redux";
-import {updateDeliveryAsync} from "../../../app/deliverySlice";
+import {updateDeliveryAsync, updateDeliveryBoxAsync} from "../../../app/deliverySlice";
+import {UserDropDown} from "../../../app/userSlice";
+import {BoxesDropDown} from "../../../app/boxSlice";
 
 
-export default function ChangeDeliveryFormDialog({deliveryID, deliveryCustomer, deliveryDeliverer}) {
+export default function ChangeDeliveryFormDialog({deliveryID, deliveryCustomer, deliveryDeliverer, deliveryBox}) {
     const [open, setOpen] = React.useState(false);
 
     const [newCustomer, setNewCustomer] = useState(deliveryCustomer);
     const [newDeliverer, setNewDeliverer] = useState(deliveryDeliverer)
+    const [newBox, setNewBox] = useState(deliveryBox)
 
     const dispatch = useDispatch()
 
     const handleChange = () => {
-        if (newCustomer !== "" && newDeliverer !== "") {
+        if (newCustomer !== deliveryCustomer || newDeliverer !== deliveryDeliverer) {
             setOpen(false);
-            dispatch(updateDeliveryAsync({deliveryID: deliveryID, deliveryCustomer: newCustomer, deliveryDeliverer: newDeliverer}))
+            dispatch(updateDeliveryAsync({
+                deliveryID: deliveryID,
+                deliveryCustomer: newCustomer.id,
+                deliveryDeliverer: newDeliverer.id,
+            }))
+        }
+        if (newBox !== deliveryBox) {
+            setOpen(false);
+            dispatch(updateDeliveryBoxAsync({
+                deliveryID: deliveryID,
+                box: newBox,
+            }))
         }
     }
 
@@ -38,41 +51,19 @@ export default function ChangeDeliveryFormDialog({deliveryID, deliveryCustomer, 
 
     return (
         <div>
-            <IconButton  edge="end" aria-label="delete" onClick={handleClickOpen}>
+            <IconButton edge="end" aria-label="delete" onClick={handleClickOpen}>
                 <EditIcon/>
             </IconButton>
             <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>Editing delivery {deliveryID}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Here you can change the properties of your delivery. Only enter the information you would like to change.
+                        Here you can change the properties of your delivery. Only enter the information you would like
+                        to change.
                     </DialogContentText>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="Customer"
-                        label="Customer"
-                        type="Customer"
-                        fullWidth
-                        defaultValue={deliveryCustomer}
-                        variant="standard"
-                        onChange={(e) => {
-                            setNewCustomer(e.target.value)
-                        }}
-                    />
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="Deliverer"
-                        label="Deliverer"
-                        type="Deliverer"
-                        fullWidth
-                        defaultValue={deliveryDeliverer}
-                        variant="standard"
-                        onChange={(e) => {
-                            setNewDeliverer(e.target.value)
-                        }}
-                    />
+                    <UserDropDown defaultUser={deliveryCustomer} role={"CUSTOMER"} callbackChange={setNewCustomer}/>
+                    <UserDropDown defaultUser={deliveryDeliverer} role={"DELIVERER"} callbackChange={setNewDeliverer}/>
+                    <BoxesDropDown defaultBox={deliveryBox} callbackChange={setNewBox}/>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>

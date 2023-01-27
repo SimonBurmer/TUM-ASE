@@ -32,7 +32,8 @@ export const deliverySlice = createSlice({
                 state.deliveries.push(action.payload)
             })
             .addCase(createDeliveryAsync.rejected, (state, action) => {
-                state.requestError = "Error while creating delivery: " + action.payload.errMsg
+                console.log(action.payload)
+                state.requestError = "Error while creating delivery: " + action.payload
             })
 
 
@@ -40,7 +41,23 @@ export const deliverySlice = createSlice({
                 //hier im store speichern
                 state.deliveries = state.deliveries.map((delivery) => {
                     if (delivery.id === action.payload.id) {
-                        return action.payload;
+                        delivery.customer = action.payload.customer
+                        delivery.deliverer = action.payload.deliverer
+                    }
+                    return delivery
+                })
+            })
+            //TODO action.payload.updateDeliveryID wird als undefined ausgegeben
+            .addCase(updateDeliveryBoxAsync.rejected, (state, action) => {
+                state.requestError = "Error while updating box of delivery with ID: " +
+                    action.payload.updateDeliveryID + ": " + action.payload.errMsg
+            })
+            .addCase(updateDeliveryBoxAsync.fulfilled, (state, action) => {
+                const {deliveryID, box} = action.payload
+                //hier im store speichern
+                state.deliveries = state.deliveries.map((delivery) => {
+                    if (delivery.id === deliveryID) {
+                        delivery.box = box
                     }
                     return delivery
                 })
@@ -93,13 +110,16 @@ export const deliverySlice = createSlice({
 export const createDeliveryAsync = createAsyncThunk(
     'delivery/createDelivery',
     async (newDeliveryArg, {rejectWithValue}) => {
-        const {deliveryCustomerEmail, deliveryDelivererEmail, boxID} = newDeliveryArg
+        const {deliveryCustomerId, deliveryDelivererId, boxID} = newDeliveryArg
         try {
             const newDelivery = await api.post('/delivery/' + boxID, {
-                customer: deliveryCustomerEmail,
-                deliverer: deliveryDelivererEmail
+                customer: deliveryCustomerId,
+                deliverer: deliveryDelivererId
             })
-            return newDelivery.data
+            let newDeliveryWBox = {...(newDelivery.data)}
+            let boxResponse = await api.get('/delivery/' + newDelivery.data.id + '/box')
+            newDeliveryWBox.box = boxResponse.data
+            return newDeliveryWBox
         } catch (err) {
             return rejectWithValue({errMsg: err.response.data.message})
         }
@@ -117,6 +137,19 @@ export const updateDeliveryAsync = createAsyncThunk(
                 deliverer: deliveryDeliverer
             })
             return updatedDelivery.data
+        } catch (err) {
+            return rejectWithValue({updateDeliveryID: deliveryID, errMsg: err.response.data.message})
+        }
+    }
+);
+
+export const updateDeliveryBoxAsync = createAsyncThunk(
+    'delivery/updateDeliveryBox',
+    async (newDeliveryArg, {rejectWithValue}) => {
+        const {deliveryID, box} = newDeliveryArg
+        try {
+            const updatedDelivery = await api.put('/delivery/' + deliveryID + '/assign/' + box.id)
+            return {deliveryID, box}
         } catch (err) {
             return rejectWithValue({updateDeliveryID: deliveryID, errMsg: err.response.data.message})
         }

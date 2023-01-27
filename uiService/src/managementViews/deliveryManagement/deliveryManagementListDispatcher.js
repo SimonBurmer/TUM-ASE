@@ -16,9 +16,12 @@ import NewDeliveryFormDialog from "./dispatcherDialogues/newDeliveryFormDialog";
 import ChangeDeliveryFormDialog from "./dispatcherDialogues/changeDeliveryFormDialog";
 import DeleteDeliveryAlertDialog from "./dispatcherDialogues/deleteDeliveryAlertDialog";
 import DisplayQRCodeButton from "./dispatcherDialogues/DisplayQRCodeButton";
+import {selectUsers} from "../../app/userSlice";
 
 
-function generate(deliveries) {
+function generate(deliveries, users) {
+
+
     return deliveries.map((delivery) => (
             <ListItem
                 key={delivery.id}
@@ -26,12 +29,15 @@ function generate(deliveries) {
                 secondaryAction={
                     <Grid container spacing={0}>
                         <Grid item xs='auto'>
-                            <DisplayQRCodeButton deliveryID={delivery.id}/>
+                            <DisplayQRCodeButton deliveryID={delivery.id} boxAddress={delivery.box.address}/>
                         </Grid>
                         <Grid item xs='auto'>
-                            <ChangeDeliveryFormDialog deliveryID={delivery.id}
-                                                      deliveryCustomer={delivery.customer}
-                                                      deliveryDeliverer={delivery.deliverer}/>
+                            {delivery.status !== "DELIVERED" ?
+                                <ChangeDeliveryFormDialog deliveryID={delivery.id}
+                                                          deliveryCustomer={users.filter((user => user.id === delivery.customer))[0]}
+                                                          deliveryDeliverer={users.filter((user => user.id === delivery.deliverer))[0]}
+                                                          deliveryBox={delivery.box}
+                                /> : ""}
                         </Grid>
                         <Grid item xs='auto'>
                             <DeleteDeliveryAlertDialog deliveryID={delivery.id}/>
@@ -46,8 +52,10 @@ function generate(deliveries) {
                 </ListItemAvatar>
                 <Typography component={'div'}>
                     <ListItemText
-                        primary={"Delivery ID: " + delivery.id + " | Customer: " + delivery.customer}
-                        secondary={"Status: " + delivery.status + " | Deliverer: " + delivery.deliverer + " | Box: " + delivery?.box.address}
+                        primary={"Delivery ID: " + delivery.id + " | Customer: " +
+                            users.filter((user => user.id === delivery.customer))[0].email}
+                        secondary={"Status: " + delivery.status + " | Deliverer: " +
+                            users.filter((user => user.id === delivery.deliverer))[0].email + " | Box: " + delivery?.box.address}
                     />
                 </Typography>
             </ListItem>
@@ -62,6 +70,7 @@ const Demo = styled('div')(({theme}) => ({
 
 export default function DeliveryManagementListDispatcher() {
     const deliveries = useSelector(selectDeliveries)
+    const users = useSelector(selectUsers)
 
     return (
         <Container>
@@ -78,7 +87,7 @@ export default function DeliveryManagementListDispatcher() {
             </Grid>
             <Demo>
                 <List dense={false}>
-                    {generate(deliveries)}
+                    {generate(deliveries, users)}
                 </List>
             </Demo>
         </Container>

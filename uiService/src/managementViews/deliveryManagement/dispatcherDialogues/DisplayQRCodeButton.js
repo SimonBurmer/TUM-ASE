@@ -8,7 +8,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import QRCode from "react-qr-code";
 import {useReactToPrint} from "react-to-print";
 
-export default function DisplayQRCodeButton({deliveryID}) {
+export default function DisplayQRCodeButton({deliveryID, boxAddress}) {
     const [open, setOpen] = useState(false);
     const componentRef = useRef();
 
@@ -33,6 +33,7 @@ export default function DisplayQRCodeButton({deliveryID}) {
             <Dialog open={open} onClose={handleClose} ref={componentRef}>
                 <DialogTitle> QR code for delivery {deliveryID} </DialogTitle>
                 <DialogContent>
+                    <p>{boxAddress}</p>
                     <div>
                         <QRCode value={deliveryID}/>
                     </div>

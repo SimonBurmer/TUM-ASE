@@ -38,8 +38,8 @@ export const currUserSlice = createSlice({
                     state.loginState = "loggedIn"
                 }
             })
-            .addCase(authUserAsync.rejected, (state) => {
-                console.log("login Failed");
+            .addCase(authUserAsync.rejected, (state, action) => {
+                console.log("login Failed: " + action.payload);
                 if (state.loginState !== "failed") {
                     state.loginState = "failed";
                 }
@@ -54,34 +54,37 @@ export const currUserSlice = createSlice({
 
 export const authUserAsync = createAsyncThunk(
     'user/postUser',
-    async (payload) => {
+    async (payload, {rejectWithValue}) => {
 
         await console.log(`Attempting login with email: ${payload.email} and ${payload.password}`)
+        try {
+            const publicKey = api.get('/auth/pkey')
+            let encryptedPassword =
+                await publicKey.then((response) => {
+                    let rsaKey = Jose.Utils.importRsaPublicKey({
+                        "e": parseInt(response.data.e),
+                        "n": response.data.n
+                    }, "RSA-OAEP");
+                    console.log("Key built");
+                    return rsaKey;
+                })
+                    .then(async (rsaKey) => {
 
-        const publicKey = api.get('/auth/pkey')
-        let encryptedPassword =
-            await publicKey.then((response) => {
-                let rsaKey = Jose.Utils.importRsaPublicKey({
-                    "e": parseInt(response.data.e),
-                    "n": response.data.n
-                }, "RSA-OAEP");
-                console.log("Key built");
-                return rsaKey;
-            })
-                .then(async (rsaKey) => {
+                        let cryptographer = await new Jose.WebCryptographer();
+                        let encrypter = await new Jose.JoseJWE.Encrypter(cryptographer, rsaKey);
 
-                    let cryptographer = await new Jose.WebCryptographer();
-                    let encrypter = await new Jose.JoseJWE.Encrypter(cryptographer, rsaKey);
+                        let password = encrypter.encrypt(payload.password)
 
-                    let password = encrypter.encrypt(payload.password)
+                        await console.log(`encrypted pw: ${password}`);
+                        return password
 
-                    await console.log(`encrypted pw: ${password}`);
-                    return password
-
-                });
-        await api.post('/auth', {email: payload.email, password_enc: encryptedPassword});
-        const userInfo = await api.get('user/current')
-        return userInfo.data
+                    });
+            await api.post('/auth', {email: payload.email, password_enc: encryptedPassword});
+            const userInfo = await api.get('user/current')
+            return userInfo.data
+        } catch (err) {
+            return rejectWithValue(err)
+        }
     }
 );
 

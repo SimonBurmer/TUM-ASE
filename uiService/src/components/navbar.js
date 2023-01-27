@@ -54,10 +54,7 @@ function ResponsiveAppBar() {
     const handleCloseNavMenu = () => {
         setAnchorElNav(null);
     };
-    // TODO replace display of ids with emails
-    // TODO dropdown for delivery creation
     // TODO order tracking for customer
-    // TODO add request error for login page
     // TODO nginx refresh 404 not found https://stackoverflow.com/questions/56213079/404-error-on-page-refresh-with-angular-7-nginx-and-docker
     const handleLinkClick = (page) => {
         setAnchorElNav(null);

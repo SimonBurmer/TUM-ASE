@@ -2,6 +2,10 @@ import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
 import {Jose} from "jose-jwe-jws";
 import {apiUrl} from "../constants";
+import {FormControl, InputLabel, Select} from "@mui/material";
+import MenuItem from "@mui/material/MenuItem";
+import * as React from "react";
+import {useSelector} from "react-redux";
 
 const initialState = {
     users: [],
@@ -162,6 +166,29 @@ export const updateUserAsync = createAsyncThunk(
         }
     }
 );
+
+export function UserDropDown({defaultUser, role, callbackChange}) {
+    const selectorUsers = useSelector(selectUsers)
+    return (<FormControl fullWidth>
+        <InputLabel id="SelectUser">{role}</InputLabel>
+        <Select
+            labelId="User Selection"
+            id="user"
+            value={JSON.stringify(defaultUser) ?? null}
+            label="Role"
+            onChange={(e) => {
+                callbackChange(JSON.parse(e.target.value))
+            }}
+        >
+            {selectorUsers.map(user => {
+                if (user.role === role) {
+                    return <MenuItem key={user.id} value={JSON.stringify(user)}>{user.email}</MenuItem>
+                }
+            })
+            }
+        </Select>
+    </FormControl>)
+}
 
 
 export default userSlice.reducer
