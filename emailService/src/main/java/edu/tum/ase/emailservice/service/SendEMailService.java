@@ -32,14 +32,13 @@ public class SendEMailService {
         this.sendEMail(to, notificationCreatedSubject, text);
     }
 
-    public void sendNotificationInTargetBox(String to, String deliveryId) {
-        String text = String.format(notificationInTargetBoxText, deliveryId);
+    public void sendNotificationInTargetBox(String to, String deliveryId, String address) {
+        String text = String.format(notificationInTargetBoxText, deliveryId, address);
         this.sendEMail(to, notificationInTargetBoxSubject, text);
     }
 
     public void sendNotificationDelivered(String to, List<String> deliveryIds) {
-        String deliveryIdsText = deliveryIds.stream()
-                .collect(Collectors.joining(", "));
+        String deliveryIdsText = String.join(", ", deliveryIds);
         String text = deliveryIds.size() > 1 ? String.format(notificationMultipleDeliveredText, deliveryIdsText) :
                 String.format(notificationDeliveredText, deliveryIdsText);
         this.sendEMail(to, notificationDeliveredSubject, text);

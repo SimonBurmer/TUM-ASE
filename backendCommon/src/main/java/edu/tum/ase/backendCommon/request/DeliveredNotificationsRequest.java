@@ -6,7 +6,7 @@ import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Data
-public class EMailMultipleNotificationsRequest {
+public class DeliveredNotificationsRequest {
 
     @NotEmpty(message = "customerId is required")
     private final String customerId;

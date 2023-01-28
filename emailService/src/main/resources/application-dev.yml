@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: email-service
+  mail:
+    protocol: smtp
+    host: smtp.gmail.com
+    port: 587
+    username: asedelivery10@gmail.com
+    password: riacwjufsuucqkgj
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+server:
+  port: ${PORT:9096}
+  error:
+    include-message: always
+    include-binding-errors: always
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
