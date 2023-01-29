@@ -71,7 +71,7 @@ public class DeliveryServiceApplication implements CommandLineRunner {
 
                 boxRepository.save(garching);
 
-                Box schwabing = new Box("Schwabing", "Ludwigstraße 28, 80539", "6789");
+                Box schwabing = new Box("Schwabing", "Ludwigstraße 28, 80539 München", "6789");
                 schwabing.setId("63bd7e0e6a7619035ecf9b39");
                 boxRepository.save(schwabing);
                 Delivery delivery3 = new Delivery("63bd7c881d73037a057a2d91", "63bd7c881d73037a057a2d92", schwabing);

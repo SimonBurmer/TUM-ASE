@@ -49,6 +49,10 @@ def retrieveDeliveries():
         raise ConnectionError("Unable to retrieve deliveries: " + str(res.text))
 
 
+hostname = os.getenv("REMOTE_HOST")
+port = os.getenv("REMOTE_PORT")
+print("Client configured for host http://" + hostname + ":" + str(port))
+
 try:
     while True:
         try:

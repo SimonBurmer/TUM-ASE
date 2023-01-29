@@ -69,12 +69,6 @@ public class BearerRequestFilter extends OncePerRequestFilter {
             return;
         }
 
-        RestTemplate restTemplate = applicationContext.getBean(RestTemplate.class);
-        if (!FilterUtil.verifyUser(username, maybeRole.get().getAuthority() , restTemplate)) {
-            response.sendError(HttpStatus.UNAUTHORIZED.value(), "user stored in jwt is not valid");
-            return;
-        }
-
         filterChain.doFilter(request, response);
     }
 }

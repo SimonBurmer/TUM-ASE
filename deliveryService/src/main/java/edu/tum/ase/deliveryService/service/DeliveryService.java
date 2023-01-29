@@ -70,7 +70,8 @@ public class DeliveryService {
 
         // TODO: send mail
 
-        log.info("Updating status of delivery " + delivery.getId() + " to " + delivery.getStatus());
+        log.info("Delivery " + delivery.getId() + " has been picked up for delivery by deliverer "
+                + delivery.getDeliverer() + " - status: " + delivery.getStatus());
         return deliveryRepository.save(delivery);
     }
 
