@@ -73,7 +73,7 @@ export const authUserAsync = createAsyncThunk(
                         let cryptographer = await new Jose.WebCryptographer();
                         let encrypter = await new Jose.JoseJWE.Encrypter(cryptographer, rsaKey);
 
-                        let password = await encrypter.encrypt(payload.password)
+                        let password = await encrypter.encrypt(`{"password":"${payload.password}"}`)
 
                         await console.log(`encrypted pw: ${password}`);
                         return password
