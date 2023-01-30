@@ -98,6 +98,6 @@ public class UserService {
         }
 
         ResponseEntity<List<Delivery>> response = restTemplate.exchange("lb://DELIVERY-SERVICE/delivery/all", HttpMethod.GET, entity, new ParameterizedTypeReference<>() {});
-        return response.getStatusCode() == HttpStatus.OK && response.getBody() != null && response.getBody().stream().noneMatch(predicate);
+        return response.getStatusCode() == HttpStatus.OK && response.getBody() != null && response.getBody().stream().anyMatch(predicate);
     }
 }
