@@ -1,7 +1,7 @@
 package edu.tum.ase.authService;
 
 import com.mongodb.client.MongoClient;
-import edu.tum.ase.authService.model.AseUser;
+import edu.tum.ase.backendCommon.model.AseUser;
 import edu.tum.ase.authService.repository.UserRepository;
 import edu.tum.ase.backendCommon.roles.UserRole;
 import org.slf4j.Logger;

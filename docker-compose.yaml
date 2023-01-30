@@ -45,6 +45,11 @@ services:
     environment:
       - EUREKA_SERVER_ADDRESS=discovery-service
       - ORIGIN_URL=http://ec2-35-158-138-25.eu-central-1.compute.amazonaws.com
+  
+  email-service:
+    image: email_service-docker
+    environment:
+      - EUREKA_SERVER_ADDRESS=email-service
 
   frontend-nginx:
     image: ui_service-docker

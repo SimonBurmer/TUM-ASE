@@ -1,6 +1,6 @@
 package edu.tum.ase.authService.repository;
 
-import edu.tum.ase.authService.model.AseUser;
+import edu.tum.ase.backendCommon.model.AseUser;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;

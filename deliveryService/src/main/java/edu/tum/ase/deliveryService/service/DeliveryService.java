@@ -68,8 +68,6 @@ public class DeliveryService {
         }
         delivery.setStatus(DeliveryStatus.PICKED_UP);
 
-        // TODO: send mail
-
         log.info("Delivery " + delivery.getId() + " has been picked up for delivery by deliverer "
                 + delivery.getDeliverer() + " - status: " + delivery.getStatus());
         return deliveryRepository.save(delivery);

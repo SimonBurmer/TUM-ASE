@@ -8,6 +8,7 @@ cache:
     - discoveryService/target
     - authService/target
     - gatewayService/target
+    - emailService/target
 
 variables:
   MAVEN_CLI_OPTS: "--batch-mode -Dmaven.repo.local=.m2/repository"
@@ -37,6 +38,7 @@ package:
       - discoveryService/target
       - authService/target
       - gatewayService/target
+      - emailService/target
     expire_in: 1 week
 
 publish:
@@ -83,6 +85,10 @@ publish:
     - docker build -t delivery-db deliveryService/deliveryDB
     - docker tag delivery-db:latest ${AWS_ECR_BASE_URI}/delivery-db:latest
     - docker push ${AWS_ECR_BASE_URI}/delivery-db:latest
+    - echo "Building email-service image"
+    - docker build -t email-service emailService/
+    - docker tag email-service:latest ${AWS_ECR_BASE_URI}/email-service:latest
+    - docker push ${AWS_ECR_BASE_URI}/email-service:latest
 
 run:
   image:
@@ -92,7 +98,7 @@ run:
     - echo "Before Script"
     - chmod 400 ec2.pem
 
-  script: 
+  script:
     # EC2: Stop Compose, delete compose-file, push new compose-file
     - echo "Push Composefile"
     - ssh -tt -o StrictHostKeyChecking=no -i ec2.pem ec2-user@35.158.138.25 "docker-compose down --remove-orphans"
