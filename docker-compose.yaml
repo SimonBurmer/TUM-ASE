@@ -44,6 +44,13 @@ services:
       - discovery-service
     environment:
       - EUREKA_SERVER_ADDRESS=discovery-service
+  
+  email-service:
+    image: email_service-docker
+    ports:
+      - "9096:9096"
+    environment:
+      - EUREKA_SERVER_ADDRESS=email-service
 
   frontend-nginx:
     image: ui_service-docker
