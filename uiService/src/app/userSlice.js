@@ -35,7 +35,7 @@ export const userSlice = createSlice({
             })
             .addCase(deleteUserAsync.fulfilled, (state, action) => {
                 state.users = state.users.filter(object => {
-                    return object.email !== action.payload
+                    return object.id !== action.payload
                 })
             })
             .addCase(deleteUserAsync.rejected, (state, action) => {
