@@ -1,20 +1,28 @@
 package edu.tum.ase.deliveryService.service;
 
-import edu.tum.ase.deliveryService.DeliveryServiceApplication;
-import edu.tum.ase.deliveryService.exceptions.*;
 import edu.tum.ase.backendCommon.model.Box;
 import edu.tum.ase.backendCommon.model.Delivery;
 import edu.tum.ase.backendCommon.model.DeliveryStatus;
+import edu.tum.ase.backendCommon.request.CreatedNotificationRequest;
+import edu.tum.ase.backendCommon.request.DeliveredNotificationsRequest;
+import edu.tum.ase.backendCommon.request.InTargetBoxNotificationRequest;
+import edu.tum.ase.deliveryService.DeliveryServiceApplication;
+import edu.tum.ase.deliveryService.exceptions.BoxAlreadyExistsException;
+import edu.tum.ase.deliveryService.exceptions.BoxHasPendingDeliveriesException;
+import edu.tum.ase.deliveryService.exceptions.BoxNotFoundException;
+import edu.tum.ase.deliveryService.exceptions.DeliveryModificationNotAllowedException;
 import edu.tum.ase.deliveryService.repository.BoxRepository;
 import edu.tum.ase.deliveryService.repository.DeliveryRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BoxService {
@@ -26,6 +34,9 @@ public class BoxService {
 
     @Autowired
     private DeliveryRepository deliveryRepository;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     //##################################################################################################################
     // Create
@@ -80,9 +91,12 @@ public class BoxService {
 
         box.addDelivery(delivery);
 
-        // TODO: send email
         log.info("Assigning delivery " + delivery + " to box " + box);
         deliveryRepository.save(delivery);
+
+        CreatedNotificationRequest request = new CreatedNotificationRequest(delivery.getCustomer(), delivery.getId());
+        this.restTemplate.postForEntity("lb://EMAIL-SERVICE/email/notificationCreated", request, String.class);
+
         return boxRepository.save(box);
     }
 
@@ -95,7 +109,9 @@ public class BoxService {
                 deliveryRepository.save(delivery);
                 log.info("Delivery " + delivery + " has been placed in " + box + " - status: " + delivery.getStatus());
 
-                // TODO: send email
+                InTargetBoxNotificationRequest request = new InTargetBoxNotificationRequest(delivery.getCustomer(),
+                        delivery.getId(), box.getAddress());
+                this.restTemplate.postForEntity("lb://EMAIL-SERVICE/email/notificationInTargetBox", request, String.class);
             }
         }
 
@@ -112,8 +128,6 @@ public class BoxService {
             if (delivery.getStatus().equals(DeliveryStatus.IN_TARGET_BOX)) {
                 delivery.setStatus(DeliveryStatus.DELIVERED);
 
-                // TODO: send email
-
                 shouldBeRemoved.add(delivery);
                 deliveryRepository.save(delivery);
             }
@@ -123,6 +137,14 @@ public class BoxService {
             box.removeDelivery(delivery);
             log.info("Delivery " + delivery.getId() + " has been picked up by customer "
                     + delivery.getDeliverer() + " at box " + box + " - status: " + delivery.getStatus());
+        }
+
+        if (!shouldBeRemoved.isEmpty()) {
+            String customerId = shouldBeRemoved.get(0).getCustomer();
+            List<String> deliveryIds = shouldBeRemoved.stream().map(Delivery::getId).collect(Collectors.toList());
+            DeliveredNotificationsRequest request = new DeliveredNotificationsRequest(customerId, deliveryIds);
+
+            this.restTemplate.postForEntity("lb://EMAIL-SERVICE/email/notificationDelivered", request, String.class);
         }
 
         return boxRepository.save(box);

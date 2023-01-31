@@ -1,7 +1,7 @@
 package edu.tum.ase.authService.controller;
 
 import edu.tum.ase.authService.exceptions.BoxAccessException;
-import edu.tum.ase.authService.model.AseUser;
+import edu.tum.ase.backendCommon.model.AseUser;
 import edu.tum.ase.authService.service.RfidService;
 import edu.tum.ase.authService.service.UserService;
 import edu.tum.ase.backendCommon.roles.UserRole;

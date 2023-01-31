@@ -4,7 +4,7 @@ import edu.tum.ase.authService.exceptions.UserAlreadyExistsException;
 import edu.tum.ase.authService.exceptions.UserHasDeliveriesException;
 import edu.tum.ase.authService.exceptions.UserNotFoundException;
 import edu.tum.ase.authService.exceptions.UserSelfDeletionException;
-import edu.tum.ase.authService.model.AseUser;
+import edu.tum.ase.backendCommon.model.AseUser;
 import edu.tum.ase.authService.repository.UserRepository;
 import edu.tum.ase.backendCommon.model.Delivery;
 import edu.tum.ase.backendCommon.roles.UserRole;
@@ -14,7 +14,6 @@ import org.springframework.http.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
@@ -98,6 +97,6 @@ public class UserService {
         }
 
         ResponseEntity<List<Delivery>> response = restTemplate.exchange("lb://DELIVERY-SERVICE/delivery/all", HttpMethod.GET, entity, new ParameterizedTypeReference<>() {});
-        return response.getStatusCode() == HttpStatus.OK && response.getBody() != null && response.getBody().stream().noneMatch(predicate);
+        return response.getStatusCode() == HttpStatus.OK && response.getBody() != null && response.getBody().stream().anyMatch(predicate);
     }
 }

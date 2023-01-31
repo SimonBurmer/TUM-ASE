@@ -1,7 +1,7 @@
 package edu.tum.ase.authService.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import edu.tum.ase.authService.model.AseUser;
+import edu.tum.ase.backendCommon.model.AseUser;
 import edu.tum.ase.backendCommon.jwt.JwtUtil;
 import edu.tum.ase.backendCommon.request.Request;
 import edu.tum.ase.backendCommon.roles.UserRole;

@@ -1,10 +1,14 @@
 package edu.tum.ase.deliveryService;
 
 import edu.tum.ase.backendCommon.exceptions.SingleCustomerPerBoxViolationException;
+import edu.tum.ase.backendCommon.model.Box;
 import edu.tum.ase.backendCommon.model.Delivery;
 import edu.tum.ase.backendCommon.model.DeliveryStatus;
-import edu.tum.ase.deliveryService.exceptions.*;
-import edu.tum.ase.backendCommon.model.Box;
+import edu.tum.ase.backendCommon.request.CreatedNotificationRequest;
+import edu.tum.ase.deliveryService.exceptions.BoxAlreadyExistsException;
+import edu.tum.ase.deliveryService.exceptions.BoxHasPendingDeliveriesException;
+import edu.tum.ase.deliveryService.exceptions.BoxNotFoundException;
+import edu.tum.ase.deliveryService.exceptions.DeliveryModificationNotAllowedException;
 import edu.tum.ase.deliveryService.repository.BoxRepository;
 import edu.tum.ase.deliveryService.repository.DeliveryRepository;
 import edu.tum.ase.deliveryService.service.BoxService;
@@ -14,13 +18,13 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 public class BoxServiceTest {
@@ -30,6 +34,9 @@ public class BoxServiceTest {
 
     @Mock
     private DeliveryRepository deliveryRepository;
+
+    @Mock
+    private RestTemplate restTemplate;
 
     @InjectMocks
     private BoxService boxService;
@@ -172,6 +179,8 @@ public class BoxServiceTest {
         verify(boxRepository).save(box2);
         verify(deliveryRepository).save(delivery1);
         verify(deliveryRepository).save(delivery1);
+        verify(restTemplate, times(2)).postForEntity("lb://EMAIL-SERVICE/email/notificationCreated",
+                new CreatedNotificationRequest(delivery1.getCustomer(), null), String.class);
         assertThat(box1.getDeliveries()).contains(delivery1);
         assertThat(box2.getDeliveries()).contains(delivery2);
         assertThat(delivery1.getBox()).isEqualTo(box1);

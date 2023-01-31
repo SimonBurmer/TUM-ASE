@@ -1,6 +1,6 @@
 package edu.tum.ase.authService.service;
 
-import edu.tum.ase.authService.model.AseUser;
+import edu.tum.ase.backendCommon.model.AseUser;
 import edu.tum.ase.backendCommon.roles.UserRole;
 import edu.tum.ase.authService.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
