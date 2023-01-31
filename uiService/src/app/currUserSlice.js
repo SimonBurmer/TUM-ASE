@@ -1,6 +1,6 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
-import {Jose} from 'jose-jwe-jws';
+//import {Jose} from 'jose-jwe-jws';
 import {apiUrl} from "../constants";
 
 export const initialStateCurrUser = {
@@ -59,15 +59,15 @@ export const authUserAsync = createAsyncThunk(
         await console.log(`Attempting login with email: ${payload.email} and ${payload.password}`)
         try {
             const publicKey = api.get('/auth/pkey')
-            let encryptedPassword =
-                await publicKey.then((response) => {
-                    let rsaKey = Jose.Utils.importRsaPublicKey({
-                        "e": parseInt(response.data.e),
-                        "n": response.data.n
-                    }, "RSA-OAEP");
-                    console.log("Key built");
-                    return rsaKey;
-                })
+            //let encryptedPassword =
+            //    await publicKey.then((response) => {
+            //        let rsaKey = Jose.Utils.importRsaPublicKey({
+            //            "e": parseInt(response.data.e),
+            //            "n": response.data.n
+            //        }, "RSA-OAEP");
+            //        console.log("Key built");
+            //        return rsaKey;
+            //    })
             //     .then(async (rsaKey) => {
             //         let cryptographer = await new Jose.WebCryptographer();
             //         let encrypter = await new Jose.JoseJWE.Encrypter(cryptographer, rsaKey);
