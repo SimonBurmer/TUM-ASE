@@ -44,5 +44,9 @@ public class CustomWebSecurityConfigurerAdapter extends WebSecurityConfigurerAda
         http.authorizeRequests()
                 .antMatchers("/box/**").authenticated()
                 .antMatchers("/delivery/**").authenticated();
+
+        http.authorizeRequests()
+                .antMatchers("/email/**").permitAll()
+                .and().csrf().disable(); // Not mapped by gateway
     }
 }

@@ -14,6 +14,9 @@ spring:
           starttls:
             enable: true
 
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration, org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration
+
 server:
   port: ${PORT:9096}
   error:
