@@ -34,8 +34,9 @@ def authenticate(rfid):
 def placeDeliveries(delivererId):
     print("Deliverer placed deliveries")
     xsrf_token = getXSRFToken()
+    content = {'deliverer' : delivererId}
     res = httpRequest(method="PUT", endpoint="/delivery/place",
-                      headers=dict(xsrfHeader(xsrf_token), **bearerHeader(JWT)), content=delivererId)
+                      headers=dict(xsrfHeader(xsrf_token), **bearerHeader(JWT)), content=content)
     if res.status_code != 200:
         raise ConnectionError("Unable to place deliveries: " + str(res.text))
 
