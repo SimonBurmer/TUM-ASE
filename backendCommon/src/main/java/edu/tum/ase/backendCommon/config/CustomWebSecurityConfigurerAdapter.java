@@ -33,7 +33,7 @@ public class CustomWebSecurityConfigurerAdapter extends WebSecurityConfigurerAda
     protected void configure(HttpSecurity http) throws Exception {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.cors().disable() // This should be fine, since CORS is done by the gateway
-                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .csrf().ignoringAntMatchers("/email/**").csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .and().addFilterBefore(new AuthRequestFilter(appContext), AnonymousAuthenticationFilter.class)
                 .addFilterAfter(new BearerRequestFilter(appContext), AuthRequestFilter.class);
 
@@ -46,7 +46,6 @@ public class CustomWebSecurityConfigurerAdapter extends WebSecurityConfigurerAda
                 .antMatchers("/delivery/**").authenticated();
 
         http.authorizeRequests()
-                .antMatchers("/email/**").permitAll()
-                .and().csrf().disable(); // Not mapped by gateway
+                .antMatchers("/email/**").permitAll(); // Not mapped by gateway
     }
 }
