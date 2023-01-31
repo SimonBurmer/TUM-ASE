@@ -53,9 +53,9 @@ public class AuthServiceApplication implements CommandLineRunner {
         if (Arrays.stream(environment.getActiveProfiles()).noneMatch(p -> p.equals("test"))) {
             // Only create dummy users when there is no other user in DB
             if (userRepository.findAll().size() == 0) {
-                AseUser bob = new AseUser("bob@priv.de", bCryptPasswordEncoder.encode("password"), UserRole.CUSTOMER, "customer001");
-                AseUser alice = new AseUser("alice@apd.de", bCryptPasswordEncoder.encode("test1234"), UserRole.DELIVERER, "deliverer001");
-                AseUser kate = new AseUser("kate@apd.de", bCryptPasswordEncoder.encode("xyz"), UserRole.DISPATCHER);
+                AseUser bob = new AseUser("bob@example.com", bCryptPasswordEncoder.encode("password"), UserRole.CUSTOMER, "customer001");
+                AseUser alice = new AseUser("alice@example.com", bCryptPasswordEncoder.encode("test1234"), UserRole.DELIVERER, "deliverer001");
+                AseUser kate = new AseUser("kate@example.com", bCryptPasswordEncoder.encode("xyz"), UserRole.DISPATCHER);
 
                 bob.setId("63bd7c881d73037a057a2d91");
                 alice.setId("63bd7c881d73037a057a2d92");

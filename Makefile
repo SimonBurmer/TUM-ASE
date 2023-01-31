@@ -22,6 +22,7 @@ endif
 	docker build -t auth_service-docker  authService/
 	docker build -t delivery_service-docker  deliveryService/
 	docker build -t discovery_service-docker  discoveryService/
+	docker build -t email_service-docker  emailService/
 	docker build -t gateway_service-docker  gatewayService/
 	docker build -t ui_service-docker  uiService/
 	docker build -t authentication-db-docker authService/authenticationDB
