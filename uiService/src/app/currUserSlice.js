@@ -60,8 +60,8 @@ export const authUserAsync = createAsyncThunk(
         try {
             const publicKey = api.get('/auth/pkey')
             let encryptedPassword =
-                await publicKey.then((response) => {
-                    let rsaKey = Jose.Utils.importRsaPublicKey({
+                await publicKey.then(async (response) => {
+                    let rsaKey = await Jose.Utils.importRsaPublicKey({
                         "e": parseInt(response.data.e),
                         "n": response.data.n
                     }, "RSA-OAEP");
@@ -69,11 +69,11 @@ export const authUserAsync = createAsyncThunk(
                     return rsaKey;
                 })
                     .then(async (rsaKey) => {
-                        let cryptographer = new Jose.WebCryptographer();
-                        let encrypter = new Jose.JoseJWE.Encrypter(cryptographer, rsaKey);
+                        let cryptographer = await new Jose.WebCryptographer();
+                        let encrypter = await new Jose.JoseJWE.Encrypter(cryptographer, rsaKey);
 
                         console.log(`Start pw encryption`);
-                        let password = encrypter.encrypt(payload.password)
+                        let password = await encrypter.encrypt(payload.password)
 
                         await console.log(`encrypted pw: ${password}`);
                         return password
