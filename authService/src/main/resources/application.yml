@@ -10,7 +10,7 @@ server:
 
 eureka:
   instance:
-    hostname: auth-service
+    hostname: ${HOSTNAME:auth-service}
   client:
     serviceUrl:
       defaultZone: http://${EUREKA_SERVER_ADDRESS}:8761/eureka
