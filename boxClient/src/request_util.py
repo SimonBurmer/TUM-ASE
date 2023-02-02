@@ -7,10 +7,10 @@ hostUrl = os.getenv("REMOTE_URL")
 
 def httpRequest(method, endpoint, headers=None, content=None):
     if method == 'GET':
-        res = requests.get(hostUrl + endpoint, headers=headers)
+        res = requests.get(hostUrl + endpoint, headers=headers, verify=False)
         return res
     elif method == 'PUT':
-        res = requests.put(hostUrl + endpoint, headers=headers, json=content)
+        res = requests.put(hostUrl + endpoint, headers=headers, json=content, verify=False)
         return res
     else:
         raise ValueError('Method Not Found')
