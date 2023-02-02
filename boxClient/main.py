@@ -15,6 +15,8 @@ from src.request_util import getXSRFToken, httpRequest, xsrfHeader, bearerHeader
 from src.led import green, red, blink_red
 from src.sensor import is_closed
 
+requests.packages.urllib3.disable_warnings()
+
 JWT = os.getenv("JWT")
 
 reader = SimpleMFRC522()
