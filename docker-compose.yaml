@@ -39,12 +39,12 @@ services:
   gateway-service:
     image: gateway_service-docker
     ports:
-      - "10789:10789"
+      - "10790:10789"
     depends_on:
       - discovery-service
     environment:
       - EUREKA_SERVER_ADDRESS=discovery-service
-      - ORIGIN_URL=http://ec2-35-158-138-25.eu-central-1.compute.amazonaws.com
+      - ORIGIN_URL=https://ec2-35-158-138-25.eu-central-1.compute.amazonaws.com
   
   email-service:
     image: email_service-docker
@@ -54,4 +54,4 @@ services:
   frontend-nginx:
     image: ui_service-docker
     ports:
-      - '80:80'
+      - '8080:80'
