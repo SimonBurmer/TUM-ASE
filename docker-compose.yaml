@@ -54,4 +54,4 @@ services:
   frontend-nginx:
     image: ui_service-docker
     ports:
-      - '80:80'
+      - '444:80'
