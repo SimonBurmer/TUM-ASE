@@ -2,9 +2,7 @@ import os
 
 import requests
 
-hostname = os.getenv("REMOTE_HOST")
-port = os.getenv("REMOTE_PORT")
-hostUrl = "http://" + hostname + ":" + str(port)
+hostUrl = os.getenv("REMOTE_URL")
 
 
 def httpRequest(method, endpoint, headers=None, content=None):
