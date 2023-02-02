@@ -79,7 +79,11 @@ export const authUserAsync = createAsyncThunk(
                         return password
 
                     });
-            await api.post('/auth', {email: payload.email, password_enc: encryptedPassword});
+            await api.post('/auth', {
+                email: payload.email,
+                password_enc: encryptedPassword,
+                remember: payload.remember
+            });
             const userInfo = await api.get('user/current')
             return userInfo.data
         } catch (err) {

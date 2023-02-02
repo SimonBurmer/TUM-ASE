@@ -55,7 +55,11 @@ const LoginForm = () => {
         onSubmit: () => {
             setIsSubmitting(true)
             console.log("submitting...");
-            dispatch(authUserAsync({email: formik.values.email, password: formik.values.password}))
+            dispatch(authUserAsync({
+                email: formik.values.email,
+                password: formik.values.password,
+                remember: formik.values.remember
+            }))
         },
     });
 
