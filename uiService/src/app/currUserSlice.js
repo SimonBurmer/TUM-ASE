@@ -1,6 +1,6 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
-//import {Jose} from 'jose-jwe-jws';
+import {Jose} from 'jose-jwe-jws';
 import {apiUrl} from "../constants";
 
 export const initialStateCurrUser = {
@@ -59,28 +59,31 @@ export const authUserAsync = createAsyncThunk(
         await console.log(`Attempting login with email: ${payload.email} and ${payload.password}`)
         try {
             const publicKey = api.get('/auth/pkey')
-            //let encryptedPassword =
-            //    await publicKey.then((response) => {
-            //        let rsaKey = Jose.Utils.importRsaPublicKey({
-            //            "e": parseInt(response.data.e),
-            //            "n": response.data.n
-            //        }, "RSA-OAEP");
-            //        console.log("Key built");
-            //        return rsaKey;
-            //    })
-            //     .then(async (rsaKey) => {
-            //         let cryptographer = await new Jose.WebCryptographer();
-            //         let encrypter = await new Jose.JoseJWE.Encrypter(cryptographer, rsaKey);
-            //
-            //         console.log(`Start pw encryption`);
-            //         let password = await encrypter.encrypt(payload.password)
-            //
-            //         await console.log(`encrypted pw: ${password}`);
-            //         return password
-            //
-            //     });
-            const loginInfo = payload.email + ":" + payload.password
-            await api.post('/auth/legacy', {}, {headers: {"Authorization": "Basic " + btoa(loginInfo)}});
+            let encryptedPassword =
+               await publicKey.then((response) => {
+
+                    console.log(`e: ${response.data.e}`);
+                    console.log(`n: ${response.data.n}`);
+
+                   let rsaKey = Jose.Utils.importRsaPublicKey({
+                       "e": parseInt(response.data.e),
+                       "n": response.data.n
+                   }, "RSA-OAEP");
+                   console.log("Key built");
+                   return rsaKey;
+               })
+                    .then(async (rsaKey) => {
+                        let cryptographer = await new Jose.WebCryptographer();
+                        let encrypter = await new Jose.JoseJWE.Encrypter(cryptographer, rsaKey);
+
+                        console.log(`Start pw encryption`);
+                        let password = await encrypter.encrypt(payload.password)
+
+                        await console.log(`encrypted pw: ${password}`);
+                        return password
+
+                    });
+            await api.post('/auth', {email: payload.email, password_enc: encryptedPassword});
             const userInfo = await api.get('user/current')
             return userInfo.data
         } catch (err) {

@@ -2,6 +2,7 @@ import React from "react";
 import {Box, Container, Typography} from "@mui/material";
 import styled from "@emotion/styled";
 import LoginForm from "../components/LoginForm";
+import Simons from "../components/simons";
 import Logo from "../components/Logo";
 import {motion} from "framer-motion";
 
@@ -58,6 +59,8 @@ const LoginPage = () => {
 
 
                     <LoginForm/>
+
+                    <Simons/>
 
                 </ContentStyle>
             </Container>
