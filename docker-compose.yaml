@@ -38,8 +38,6 @@ services:
 
   gateway-service:
     image: gateway_service-docker
-    ports:
-      - "10790:10789"
     depends_on:
       - discovery-service
     environment:
@@ -53,5 +51,7 @@ services:
 
   frontend-nginx:
     image: ui_service-docker
+    depends_on:
+      - gateway-service
     ports:
-      - '8080:80'
+      - '${PORT}:80'
