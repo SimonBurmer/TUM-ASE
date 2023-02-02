@@ -105,6 +105,8 @@ run:
     - ssh -tt -o StrictHostKeyChecking=no -i ec2.pem ec2-user@35.158.138.25 "rm -f docker-compose.yaml"
 
     - scp -o StrictHostKeyChecking=no -i ec2.pem docker-compose.yaml ec2-user@35.158.138.25:docker-compose.yaml
+    - scp -o StrictHostKeyChecking=no -i ec2.pem .env.prod ec2-user@35.158.138.25:.env.prod
+
 
     # Connect to EC2, login to ECR, download images, start compose
     - echo "Connect to EC2"
@@ -135,4 +137,4 @@ run:
       docker pull ${AWS_ECR_BASE_URI}/delivery-db:latest;
       docker tag ${AWS_ECR_BASE_URI}/delivery-db:latest delivery-db-docker;
       
-      docker-compose up -d"
+      docker-compose --env-file .env.prod up -d"
