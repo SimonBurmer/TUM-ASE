@@ -60,18 +60,14 @@ export const authUserAsync = createAsyncThunk(
         try {
             const publicKey = api.get('/auth/pkey')
             let encryptedPassword =
-               await publicKey.then((response) => {
-
-                    console.log(`e: ${response.data.e}`);
-                    console.log(`n: ${response.data.n}`);
-
-                   let rsaKey = Jose.Utils.importRsaPublicKey({
-                       "e": parseInt(response.data.e),
-                       "n": response.data.n
-                   }, "RSA-OAEP");
-                   console.log("Key built");
-                   return rsaKey;
-               })
+                await publicKey.then(async (response) => {
+                    let rsaKey = await Jose.Utils.importRsaPublicKey({
+                        "e": parseInt(response.data.e),
+                        "n": response.data.n
+                    }, "RSA-OAEP");
+                    console.log("Key built");
+                    return rsaKey;
+                })
                     .then(async (rsaKey) => {
                         let cryptographer = await new Jose.WebCryptographer();
                         let encrypter = await new Jose.JoseJWE.Encrypter(cryptographer, rsaKey);

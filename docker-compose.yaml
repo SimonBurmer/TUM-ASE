@@ -49,7 +49,7 @@ services:
   email-service:
     image: email_service-docker
     environment:
-      - EUREKA_SERVER_ADDRESS=email-service
+      - EUREKA_SERVER_ADDRESS=discovery-service
 
   frontend-nginx:
     image: ui_service-docker

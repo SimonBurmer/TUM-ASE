@@ -11,7 +11,7 @@ server:
 
 eureka:
   instance:
-    hostname: delivery-service
+    hostname: ${HOSTNAME:delivery-service}
   client:
     serviceUrl:
       defaultZone: http://${EUREKA_SERVER_ADDRESS}:8761/eureka

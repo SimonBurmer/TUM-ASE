@@ -25,7 +25,7 @@ server:
 
 eureka:
   instance:
-    hostname: email-service
+    hostname: ${HOSTNAME:email-service}
   client:
     serviceUrl:
       defaultZone: http://${EUREKA_SERVER_ADDRESS}:8761/eureka
