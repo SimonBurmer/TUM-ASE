@@ -4,6 +4,12 @@ spring:
   cloud:
     gateway:
       routes:
+        - id: api-proxy
+          uri: lb://API-GATEWAY
+          predicates:
+            - Path=/api/**
+          filters:
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
         - id: cas-service
           uri: lb://AUTH-SERVICE
           predicates:
