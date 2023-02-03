@@ -169,14 +169,17 @@ export const updateUserAsync = createAsyncThunk(
 
 export function UserDropDown({defaultUser, role, callbackChange}) {
     const selectorUsers = useSelector(selectUsers)
+    const [chosenUser, setChosenUser] = React.useState('');
+
     return (<FormControl fullWidth>
         <InputLabel id="SelectUser">{role}</InputLabel>
         <Select
             labelId="User Selection"
             id="user"
-            value={JSON.stringify(defaultUser) ?? null}
+            value={chosenUser}
             label="Role"
             onChange={(e) => {
+                setChosenUser(e.target.value)
                 callbackChange(JSON.parse(e.target.value))
             }}
         >

@@ -145,14 +145,16 @@ export const generateBearerToken = createAsyncThunk(
 
 export function BoxesDropDown({defaultBox, callbackChange}) {
     const selectorBoxes = useSelector(selectBoxes)
+    const [chosenBox, setChosenBox] = React.useState('');
     return (<FormControl fullWidth>
         <InputLabel id="SelectBoxes">BOX</InputLabel>
         <Select
             labelId="Box Selection"
             id="box"
-            value={JSON.stringify(defaultBox) ?? null}
+            value={chosenBox}
             label="Box"
             onChange={(e) => {
+                setChosenBox(e.target.value)
                 callbackChange(JSON.parse(e.target.value))
             }}
         >
