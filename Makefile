@@ -32,5 +32,5 @@ run:
 	@echo "------------------------------------------------------"
 	@echo "-- RUN   ---------------------------------------------"
 	@echo "------------------------------------------------------"
-	docker-compose down --remove-orphans
+	docker-compose --env-file .env.local down --remove-orphans
 	docker-compose --env-file .env.local up --abort-on-container-exit

@@ -101,7 +101,7 @@ run:
   script:
     # EC2: Stop Compose, delete compose-file, push new compose-file
     - echo "Push Composefile"
-    - ssh -tt -o StrictHostKeyChecking=no -i ec2.pem ec2-user@35.158.138.25 "docker-compose down --remove-orphans"
+    - ssh -tt -o StrictHostKeyChecking=no -i ec2.pem ec2-user@35.158.138.25 "docker-compose down --env-file .env.local --remove-orphans"
     - ssh -tt -o StrictHostKeyChecking=no -i ec2.pem ec2-user@35.158.138.25 "rm -f docker-compose.yaml"
 
     - scp -o StrictHostKeyChecking=no -i ec2.pem docker-compose.yaml ec2-user@35.158.138.25:docker-compose.yaml
