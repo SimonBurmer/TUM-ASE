@@ -30,7 +30,8 @@ export default function NewUserFormDialog() {
     };
 
     const handleAdd = () => {
-        if (newEmail !== "" && newRole !== "" && newRfid !== "") {
+        if ((newRole === "DISPATCHER" && newEmail !== "" && newRole !== "" && newPassword !== "") ||
+            (newEmail !== "" && newRole !== "" && newRfid !== "" && newPassword !== "")) {
             setOpen(false);
             console.log(newEmail, newRfid, newRole, newPassword)
             dispatch(createUserAsync({
@@ -66,6 +67,7 @@ export default function NewUserFormDialog() {
                         }}
                     />
                     <TextField
+                        disabled={newRole === "DISPATCHER"}
                         autoFocus
                         margin="dense"
                         id="Rfid"
@@ -77,6 +79,7 @@ export default function NewUserFormDialog() {
                             setNewRfid(e.target.value)
                         }}
                     />
+
                     <TextField
                         autoFocus
                         margin="dense"

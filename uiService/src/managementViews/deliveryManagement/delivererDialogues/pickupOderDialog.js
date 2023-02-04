@@ -59,6 +59,7 @@ export default function PickupOrderDialog() {
         setOpenResult(false)
         setDisplayData("")
         setData("")
+        window.location.reload()
     }
 
     return (
@@ -66,7 +67,7 @@ export default function PickupOrderDialog() {
             <Button sx={{ml: 3, mt: 3}} variant="contained" onClick={handleClickOpen} startIcon={<QrCodeScannerIcon/>}>
                 Scan QR Code
             </Button>
-            <Dialog open={openQR} onClose={handleClose}>
+            <Dialog open={openQR} onClose={handleClose} fullWidth={true}>
                 <DialogTitle>Scan QR Code</DialogTitle>
                 <DialogContent>
                     <div>

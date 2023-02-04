@@ -74,6 +74,7 @@ export default function ChangeUserFormDialog({
                         }}
                     />
                     <TextField
+                        disabled={newRole === "DISPATCHER"}
                         autoFocus
                         margin="dense"
                         id="Rfid"

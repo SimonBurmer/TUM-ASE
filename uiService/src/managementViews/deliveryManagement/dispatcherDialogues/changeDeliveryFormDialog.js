@@ -10,11 +10,17 @@ import EditIcon from "@mui/icons-material/Edit";
 import IconButton from "@mui/material/IconButton";
 import {useDispatch} from "react-redux";
 import {updateDeliveryAsync, updateDeliveryBoxAsync} from "../../../app/deliverySlice";
-import {UserDropDown} from "../../../app/userSlice";
-import {BoxesDropDown} from "../../../app/boxSlice";
+import {UserDropDown} from "./UserDropDown";
+import {BoxesDropDown} from "./BoxesDropDown";
 
 
-export default function ChangeDeliveryFormDialog({deliveryID, deliveryCustomer, deliveryDeliverer, deliveryBox}) {
+export default function ChangeDeliveryFormDialog({
+                                                     deliveryID,
+                                                     deliveryCustomer,
+                                                     deliveryDeliverer,
+                                                     deliveryBox,
+                                                     enabled
+                                                 }) {
     const [open, setOpen] = React.useState(false);
 
     const [newCustomer, setNewCustomer] = useState(deliveryCustomer);
@@ -51,7 +57,7 @@ export default function ChangeDeliveryFormDialog({deliveryID, deliveryCustomer, 
 
     return (
         <div>
-            <IconButton edge="end" aria-label="delete" onClick={handleClickOpen}>
+            <IconButton disabled={!enabled} edge="end" aria-label="delete" onClick={handleClickOpen}>
                 <EditIcon/>
             </IconButton>
             <Dialog open={open} onClose={handleClose}>

@@ -56,7 +56,6 @@ export const authUserAsync = createAsyncThunk(
     'user/postUser',
     async (payload, {rejectWithValue}) => {
 
-        await console.log(`Attempting login with email: ${payload.email} and ${payload.password}`)
         try {
             const publicKey = api.get('/auth/pkey')
             let encryptedPassword =
@@ -65,17 +64,14 @@ export const authUserAsync = createAsyncThunk(
                         "e": parseInt(response.data.e),
                         "n": response.data.n
                     }, "RSA-OAEP");
-                    console.log("Key built");
                     return rsaKey;
                 })
                     .then(async (rsaKey) => {
                         let cryptographer = await new Jose.WebCryptographer();
                         let encrypter = await new Jose.JoseJWE.Encrypter(cryptographer, rsaKey);
 
-                        console.log(`Start pw encryption`);
                         let password = await encrypter.encrypt(payload.password)
 
-                        await console.log(`encrypted pw: ${password}`);
                         return password
 
                     });

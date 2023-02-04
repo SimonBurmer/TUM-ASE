@@ -35,12 +35,12 @@ function generate(deliveries, users) {
                         gap: 1
                     }}>
                         <DisplayQRCodeButton deliveryID={delivery.id} boxAddress={delivery.box.address}/>
-                        {delivery.status !== "DELIVERED" ?
-                            <ChangeDeliveryFormDialog deliveryID={delivery.id}
-                                                      deliveryCustomer={users.filter((user => user.id === delivery.customer))[0]}
-                                                      deliveryDeliverer={users.filter((user => user.id === delivery.deliverer))[0]}
-                                                      deliveryBox={delivery.box}
-                            /> : ""}
+                        <ChangeDeliveryFormDialog deliveryID={delivery.id}
+                                                  deliveryCustomer={users.filter((user => user.id === delivery.customer))[0]}
+                                                  deliveryDeliverer={users.filter((user => user.id === delivery.deliverer))[0]}
+                                                  deliveryBox={delivery.box}
+                                                  enabled={delivery.status === "ORDERED"}
+                        />
                         <DeleteDeliveryAlertDialog deliveryID={delivery.id}/>
                     </Box>
                 }
@@ -93,3 +93,4 @@ export default function DeliveryManagementListDispatcher() {
         </Container>
     );
 }
+

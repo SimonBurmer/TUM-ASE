@@ -8,8 +8,8 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import {createDeliveryAsync} from "../../../app/deliverySlice";
 import {useDispatch} from "react-redux";
-import {UserDropDown} from "../../../app/userSlice";
-import {BoxesDropDown} from "../../../app/boxSlice";
+import {UserDropDown} from "./UserDropDown";
+import {BoxesDropDown} from "./BoxesDropDown";
 
 export default function NewDeliveryFormDialog() {
     const [open, setOpen] = React.useState(false);

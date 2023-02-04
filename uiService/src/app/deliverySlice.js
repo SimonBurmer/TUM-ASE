@@ -33,7 +33,7 @@ export const deliverySlice = createSlice({
             })
             .addCase(createDeliveryAsync.rejected, (state, action) => {
                 console.log(action.payload)
-                state.requestError = "Error while creating delivery: " + action.payload
+                state.requestError = "Error while creating delivery: " + action.payload.errMsg
             })
 
 

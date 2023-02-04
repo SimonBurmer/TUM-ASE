@@ -14,7 +14,7 @@ import {selectDeliveries} from "../../app/deliverySlice";
 import NewRequestErrorDialog from "../requestErrorDialog";
 import LocalPostOfficeIcon from '@mui/icons-material/LocalPostOffice';
 import Button from "@mui/material/Button";
-import SearchForDeliveryDialog from "./CustomerDialogues/searchForDeliveryDialog";
+import SearchForDeliveryDialog from "./customerDialogues/searchForDeliveryDialog";
 
 function generate(deliveries) {
     return deliveries.map((delivery) => (
@@ -76,26 +76,28 @@ export default function DeliveryManagementListCustomer() {
                     {generate(deliveriesToDisplay)}
                 </List>
             </Demo>
-            <Button variant="contained" disabled={deliveryHeader === "Received Deliveries"} onClick={() => {
-                setDeliveryHeader("Received Deliveries")
-                setInTargetBoxDeliveries("")
-                setOrderedDeliveries("")
-                setPickedUpDeliveries("")
-                setDeliveredDeliveries("DELIVERED")
-            }
-            }>
-                Show received deliveries
-            </Button>
-            <Button variant="contained" disabled={deliveryHeader === "Current Deliveries"} onClick={() => {
-                setDeliveryHeader("Current Deliveries")
-                setInTargetBoxDeliveries("IN_TARGET_BOX")
-                setOrderedDeliveries("ORDERED")
-                setPickedUpDeliveries("PICKED_UP")
-                setDeliveredDeliveries("")
-            }
-            }>
-                Show current deliveries
-            </Button>
+            {deliveryHeader !== "Received Deliveries" ?
+                <Button variant="contained" onClick={() => {
+                    setDeliveryHeader("Received Deliveries")
+                    setInTargetBoxDeliveries("")
+                    setOrderedDeliveries("")
+                    setPickedUpDeliveries("")
+                    setDeliveredDeliveries("DELIVERED")
+                }
+                }>
+                    Show received deliveries
+                </Button> : ""}
+            {deliveryHeader !== "Current Deliveries" ?
+                <Button variant="contained" onClick={() => {
+                    setDeliveryHeader("Current Deliveries")
+                    setInTargetBoxDeliveries("IN_TARGET_BOX")
+                    setOrderedDeliveries("ORDERED")
+                    setPickedUpDeliveries("PICKED_UP")
+                    setDeliveredDeliveries("")
+                }
+                }>
+                    Show current deliveries
+                </Button> : ""}
         </Container>
     );
 }
