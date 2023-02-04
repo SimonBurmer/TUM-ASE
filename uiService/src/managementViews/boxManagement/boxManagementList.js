@@ -9,7 +9,7 @@ import Avatar from '@mui/material/Avatar';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import DeleteBoxAlertDialog from "./dialoges/deleteBoxAlertDialog";
-import {Container} from "@mui/material";
+import {Box, Container} from "@mui/material";
 import ChangeBoxFormDialog from "./dialoges/changeBoxFormDialog";
 import NewBoxFormDialog from "./dialoges/newBoxFormDialog";
 import {useSelector} from "react-redux";
@@ -24,20 +24,20 @@ function generate(boxes) {
                 key={box.id}
                 divider
                 secondaryAction={
-                    <Grid container spacing={0}>
-                        <Grid item xs='auto'>
-                            <GenerateTokenButton boxId={box.id}/>
-                        </Grid>
-                        <Grid item xs='auto'>
-                            <ChangeBoxFormDialog boxId={box.id}
-                                                 boxName={box.name}
-                                                 boxAddress={box.address}
-                                                 boxRaspId={box.rasPiId}/>
-                        </Grid>
-                        <Grid item xs='auto'>
-                            <DeleteBoxAlertDialog boxId={box.id}/>
-                        </Grid>
-                    </Grid>
+                    <Box sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'flex-end',
+                        alignItems: 'center',
+                        gap: 1
+                    }}>
+                        <GenerateTokenButton boxId={box.id}/>
+                        <ChangeBoxFormDialog boxId={box.id}
+                                             boxName={box.name}
+                                             boxAddress={box.address}
+                                             boxRaspId={box.rasPiId}/>
+                        <DeleteBoxAlertDialog boxId={box.id}/>
+                    </Box>
                 }
             >
                 <ListItemAvatar>

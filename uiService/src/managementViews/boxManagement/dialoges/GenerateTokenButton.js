@@ -37,7 +37,7 @@ export default function GenerateTokenButton({boxId}) {
 
     return (
         <div>
-            <Button sx={{ml: 3, mt: 3}} variant="outlined" onClick={handleClickOpen}>
+            <Button variant="outlined" onClick={handleClickOpen}>
                 Generate RPI Token
             </Button>
             <Dialog open={open} onClose={handleClose}>
