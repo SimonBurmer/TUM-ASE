@@ -22,6 +22,9 @@ export const deliverySlice = createSlice({
         },
         resetErrorDeliveries: (state) => {
             state.requestError = ""
+        },
+        resetPickUpResult: (state) => {
+            state.pickUpResult = ""
         }
     },
     extraReducers: (builder) => {
@@ -98,7 +101,7 @@ export const deliverySlice = createSlice({
                     }
                     return delivery
                 })
-                state.pickUpResult = "Success"
+                state.pickUpResult = "Success " + action.payload
             })
             .addCase(pickupDelivery.rejected, (state, action) => {
                 state.pickUpResult = "Error while picking up delivery with Id: " +
@@ -230,5 +233,5 @@ export default deliverySlice.reducer
 export const selectDeliveries = (state) => state.delivery.deliveries;
 export const selectDeliveryRequestError = (state) => state.delivery.requestError;
 export const selectPickUpResult = (state) => state.delivery.pickUpResult;
-export const {resetStateDeliveries, resetErrorDeliveries} = deliverySlice.actions;
+export const {resetStateDeliveries, resetErrorDeliveries, resetPickUpResult} = deliverySlice.actions;
 

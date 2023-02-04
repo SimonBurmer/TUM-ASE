@@ -62,6 +62,12 @@ export default function PickupOrderDialog() {
         window.location.reload()
     }
 
+    const onResult = (result, _) => {
+        if (!!result) {
+            setData(result?.text)
+        }
+    }
+
     return (
         <div>
             <Button sx={{ml: 3, mt: 3}} variant="contained" onClick={handleClickOpen} startIcon={<QrCodeScannerIcon/>}>
@@ -72,11 +78,7 @@ export default function PickupOrderDialog() {
                 <DialogContent>
                     <div>
                         <QrReader
-                            onResult={(result, error) => {
-                                if (!!result && (typeof result?.text !== 'undefined') && data === "" && openQR) {
-                                    setData(result?.text)
-                                }
-                            }}
+                            onResult={onResult}
                             style={{width: '100%'}}
                             constraints={{facingMode: 'user'}} scanDelay={3000}/>
                         <p>

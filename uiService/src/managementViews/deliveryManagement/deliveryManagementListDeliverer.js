@@ -12,7 +12,7 @@ import {useSelector} from "react-redux";
 import {selectDeliveries} from "../../app/deliverySlice";
 import NewRequestErrorDialog from "../requestErrorDialog";
 import LocalPostOfficeIcon from '@mui/icons-material/LocalPostOffice';
-import PickupOrderDialog from "./delivererDialogues/pickupOderDialog"
+import PickupOrderDialog from "./delivererDialogues/pickupOrderDialog"
 
 function generate(deliveries) {
     return deliveries.map((delivery) => (
@@ -29,14 +29,6 @@ function generate(deliveries) {
                     <ListItemText
                         primary={"ID: " + delivery.id}
                         secondary={"Address: " + delivery?.box.address + " | " + delivery?.status}
-                        // secondary={<List>
-                        //     <ListItemText>
-                        //         {delivery.address}
-                        //     </ListItemText>
-                        //     <ListItemText>
-                        //         {delivery.rasPiId} || {delivery.id}
-                        //     </ListItemText>
-                        // </List>}
                     />
                 </Typography>
             </ListItem>

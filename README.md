@@ -10,8 +10,8 @@
 
 ### run
 
-- make build
-- make run
+- ```make build```
+- ```make run```
 
 Frontend is served on port 80 (localhost) http://localhost
 
