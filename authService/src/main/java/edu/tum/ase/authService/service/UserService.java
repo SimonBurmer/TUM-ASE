@@ -1,9 +1,6 @@
 package edu.tum.ase.authService.service;
 
-import edu.tum.ase.authService.exceptions.UserAlreadyExistsException;
-import edu.tum.ase.authService.exceptions.UserHasDeliveriesException;
-import edu.tum.ase.authService.exceptions.UserNotFoundException;
-import edu.tum.ase.authService.exceptions.UserSelfDeletionException;
+import edu.tum.ase.authService.exceptions.*;
 import edu.tum.ase.backendCommon.model.AseUser;
 import edu.tum.ase.authService.repository.UserRepository;
 import edu.tum.ase.backendCommon.model.Delivery;
@@ -18,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 @Service
@@ -35,6 +33,10 @@ public class UserService {
     public AseUser createUser(AseUser user) {
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new UserAlreadyExistsException();
+        }
+
+        if (userRepository.findByRfid(user.getRfid()).isPresent()) {
+            throw new RfidAlreadyExistsException();
         }
 
         return userRepository.save(user);
@@ -63,6 +65,17 @@ public class UserService {
     // Update
 
     public AseUser updateUser(AseUser user) {
+
+        Optional<AseUser> maybeOtherEmail = userRepository.findByEmail(user.getEmail());
+        if (maybeOtherEmail.isPresent() && !maybeOtherEmail.get().getId().equals(user.getId())) {
+            throw new UserAlreadyExistsException();
+        }
+
+        Optional<AseUser> maybeOtherRfid = userRepository.findByRfid(user.getRfid());
+        if (maybeOtherRfid.isPresent() && !maybeOtherRfid.get().getId().equals(user.getId())) {
+            throw new RfidAlreadyExistsException();
+        }
+
         return userRepository.save(user);
     }
 
