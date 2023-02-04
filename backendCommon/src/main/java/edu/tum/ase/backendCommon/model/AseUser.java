@@ -28,6 +28,7 @@ public class AseUser {
     private String role;
 
     @Nullable
+    @Indexed(unique = true)
     private String rfid;
 
     public AseUser() {
