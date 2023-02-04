@@ -22,7 +22,8 @@ def blink_red():
         GPIO.output(RED_GPIO, GPIO.LOW)
         sleep(0.1)
 
-def green():
+def green_on():
     GPIO.output(GREEN_GPIO, GPIO.HIGH)
-    sleep(1)
+
+def green_off():
     GPIO.output(GREEN_GPIO, GPIO.LOW)

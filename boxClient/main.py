@@ -67,10 +67,11 @@ try:
 
                 # light led green
                 print("Successfully authenticated as " + str(user))
-                green()
+                green_on()
 
                 # after 10s check if closed
                 sleep(10)
+                green_off()
                 while not is_closed():
                     # if not blink red until it is closed
                     blink_red()
