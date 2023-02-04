@@ -4,6 +4,7 @@ import edu.tum.ase.backendCommon.model.Box;
 import edu.tum.ase.backendCommon.model.Delivery;
 import edu.tum.ase.backendCommon.model.DeliveryStatus;
 import edu.tum.ase.deliveryService.Util;
+import edu.tum.ase.deliveryService.exceptions.OtherDelivererException;
 import edu.tum.ase.deliveryService.exceptions.UnauthorizedException;
 import edu.tum.ase.deliveryService.request.DeliveryPlacingRequest;
 import edu.tum.ase.deliveryService.request.DeliveryRequest;
@@ -131,6 +132,12 @@ public class DeliveryController {
     @PreAuthorize("hasRole('DELIVERER')")
     public Delivery pickUpDelivery(@PathVariable String deliveryId) {
         Delivery delivery = deliveryService.findById(deliveryId);
+
+        String deliverer = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        if (!delivery.getDeliverer().equals(deliverer)) {
+            throw new OtherDelivererException();
+        }
+
         return deliveryService.pickupDelivery(delivery);
         }
 

@@ -25,7 +25,7 @@ export default function SearchForDeliveryDialog() {
 
     return (
         <div>
-            <Button variant="outlined" onClick={handleClickOpen}>
+            <Button sx={{ml: 3, mt: 3}} variant="outlined" onClick={handleClickOpen}>
                 Track a delivery
             </Button>
             <Dialog open={open} onClose={handleClose}>
