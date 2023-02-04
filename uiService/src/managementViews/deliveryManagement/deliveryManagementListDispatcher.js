@@ -7,7 +7,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Avatar from '@mui/material/Avatar';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import {Container} from "@mui/material";
+import {Box, Container} from "@mui/material";
 import {useSelector} from "react-redux";
 import {selectDeliveries} from "../../app/deliverySlice";
 import NewRequestErrorDialog from "../requestErrorDialog";
@@ -27,22 +27,22 @@ function generate(deliveries, users) {
                 key={delivery.id}
                 divider
                 secondaryAction={
-                    <Grid container spacing={0}>
-                        <Grid item xs='auto'>
-                            <DisplayQRCodeButton deliveryID={delivery.id} boxAddress={delivery.box.address}/>
-                        </Grid>
-                        <Grid item xs='auto'>
-                            {delivery.status !== "DELIVERED" ?
-                                <ChangeDeliveryFormDialog deliveryID={delivery.id}
-                                                          deliveryCustomer={users.filter((user => user.id === delivery.customer))[0]}
-                                                          deliveryDeliverer={users.filter((user => user.id === delivery.deliverer))[0]}
-                                                          deliveryBox={delivery.box}
-                                /> : ""}
-                        </Grid>
-                        <Grid item xs='auto'>
-                            <DeleteDeliveryAlertDialog deliveryID={delivery.id}/>
-                        </Grid>
-                    </Grid>
+                    <Box sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'flex-end',
+                        alignItems: 'center',
+                        gap: 1
+                    }}>
+                        <DisplayQRCodeButton deliveryID={delivery.id} boxAddress={delivery.box.address}/>
+                        {delivery.status !== "DELIVERED" ?
+                            <ChangeDeliveryFormDialog deliveryID={delivery.id}
+                                                      deliveryCustomer={users.filter((user => user.id === delivery.customer))[0]}
+                                                      deliveryDeliverer={users.filter((user => user.id === delivery.deliverer))[0]}
+                                                      deliveryBox={delivery.box}
+                            /> : ""}
+                        <DeleteDeliveryAlertDialog deliveryID={delivery.id}/>
+                    </Box>
                 }
             >
                 <ListItemAvatar>

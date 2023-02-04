@@ -27,7 +27,7 @@ export default function DisplayQRCodeButton({deliveryID, boxAddress}) {
 
     return (
         <div>
-            <Button sx={{ml: 3, mt: 3}} variant="outlined" onClick={handleClickOpen}>
+            <Button variant="outlined" onClick={handleClickOpen}>
                 Display QR-Code
             </Button>
             <Dialog open={open} onClose={handleClose} ref={componentRef}>
