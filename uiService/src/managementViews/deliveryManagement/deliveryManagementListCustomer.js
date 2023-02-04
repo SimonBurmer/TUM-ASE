@@ -14,7 +14,7 @@ import {selectDeliveries} from "../../app/deliverySlice";
 import NewRequestErrorDialog from "../requestErrorDialog";
 import LocalPostOfficeIcon from '@mui/icons-material/LocalPostOffice';
 import Button from "@mui/material/Button";
-import SearchForDeliveryDialog from "./customerDialogues/searchForDeliveryDialog";
+import SearchForDeliveryDialog from "./CustomerDialogues/searchForDeliveryDialog";
 
 function generate(deliveries) {
     return deliveries.map((delivery) => (
