@@ -5,6 +5,7 @@ import com.nimbusds.jose.crypto.RSADecrypter;
 import com.nimbusds.jwt.EncryptedJWT;
 import edu.tum.ase.backendCommon.exceptions.JWEDecryptException;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,8 +63,12 @@ public class JwtUtil {
     }
 
     private boolean isTokenExpired(String token) {
-        Date expirationDate = extractExpiration(token);
-        return expirationDate != null && expirationDate.before(new Date());
+        try {
+            Date expirationDate = extractExpiration(token);
+            return expirationDate != null && expirationDate.before(new Date());
+        } catch (ExpiredJwtException e) {
+            return true;
+        }
     }
 
     // Check if the JWT is signed by us, and is not expired

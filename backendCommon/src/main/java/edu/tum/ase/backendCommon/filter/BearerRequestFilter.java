@@ -55,7 +55,7 @@ public class BearerRequestFilter extends OncePerRequestFilter {
         String jwt = authorizationHeader.substring(HEADER_START.length() - 1);
 
         if (!jwtUtil.verifyJwtSignature(jwt)) {
-            response.sendError(HttpStatus.UNAUTHORIZED.value(), "jwt is not valid");
+            response.sendError(HttpStatus.FORBIDDEN.value(), "jwt is not valid");
             return;
         }
 
@@ -65,7 +65,7 @@ public class BearerRequestFilter extends OncePerRequestFilter {
 
         Optional<SimpleGrantedAuthority> maybeRole = authorityList.stream().filter((r) -> r.getAuthority().startsWith("ROLE_")).findFirst();
         if (maybeRole.isEmpty()) {
-            response.sendError(HttpStatus.UNAUTHORIZED.value(), "there is no role stored in jwt");
+            response.sendError(HttpStatus.FORBIDDEN.value(), "there is no role stored in jwt");
             return;
         }
 

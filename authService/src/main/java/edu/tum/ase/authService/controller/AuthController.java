@@ -28,11 +28,11 @@ public class AuthController {
         return authService.authenticateUser(authRequest.getEmail(), authRequest.getPassword_enc(), authRequest.isRemember(), response);
     }
 
-    @PostMapping("legacy") // TODO: remove this
-    // DONE: Implement Authentication of the user credentials
-    public ResponseEntity<String> authenticateUserLegacy(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization, HttpServletResponse response) {
-        return authService.authenticateUser(authorization, response);
-    }
+    //@PostMapping("legacy") // DONE: remove this
+    //// DONE: Implement Authentication of the user credentials
+    //public ResponseEntity<String> authenticateUserLegacy(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization, HttpServletResponse response) {
+    //    return authService.authenticateUser(authorization, response);
+    //}
 
     @PreAuthorize("hasRole('DISPATCHER')")
     @PostMapping("bearer")

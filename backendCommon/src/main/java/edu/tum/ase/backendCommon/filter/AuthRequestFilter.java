@@ -65,7 +65,7 @@ public class AuthRequestFilter extends OncePerRequestFilter {
         JwtUtil jwtUtil = ((JwtUtil) applicationContext.getBean("jwtUtil"));
 
         if (!jwtUtil.verifyJwtSignature(jwt)) {
-            response.sendError(HttpStatus.UNAUTHORIZED.value(), "jwt is not valid");
+            response.sendError(HttpStatus.FORBIDDEN.value(), "jwt is not valid");
             return;
         }
 
@@ -74,13 +74,13 @@ public class AuthRequestFilter extends OncePerRequestFilter {
 
         Optional<SimpleGrantedAuthority> maybeRole = authorityList.stream().filter((r) -> r.getAuthority().startsWith("ROLE_")).findFirst();
         if (maybeRole.isEmpty()) {
-            response.sendError(HttpStatus.UNAUTHORIZED.value(), "there is no role stored in jwt");
+            response.sendError(HttpStatus.FORBIDDEN.value(), "there is no role stored in jwt");
             return;
         }
 
         RestTemplate restTemplate = applicationContext.getBean(RestTemplate.class);
         if (!FilterUtil.verifyUser(username, maybeRole.get().getAuthority() , restTemplate)) {
-            response.sendError(HttpStatus.UNAUTHORIZED.value(), "user stored in jwt is not valid");
+            response.sendError(HttpStatus.FORBIDDEN.value(), "user stored in jwt is not valid");
             return;
         }
 
