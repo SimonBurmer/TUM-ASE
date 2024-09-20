@@ -1,7 +1,9 @@
-## How to use:
+## TUM ASE Project 2022 (Grade 1.0)
+
+![Alt text](relative-path-to-image/systemDiagram.png)
+![Alt text](relative-path-to-image/pipeline.png)
 
 ## Local Deployment
-
 ### Requirements on host machine
 
 - docker
